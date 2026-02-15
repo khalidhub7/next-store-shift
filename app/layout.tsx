@@ -10,7 +10,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <header className="flex h-14 border border-gray-200 items-center justify-between px-4">
           <Avatar size="lg">
             <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>avatar</AvatarFallback>
           </Avatar>
           {/* nav */}
 
@@ -36,7 +36,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         </header>
         <main>{children}</main>
 
-        <footer></footer>
+        <footer className="flex h-14 border border-gray-200 items-center justify-center absolute bottom-0 w-full">
+          <p>learn next js</p>
+        </footer>
       </body>
     </html>
   );
