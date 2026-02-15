@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
@@ -14,12 +14,19 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           </Avatar>
           {/* nav */}
 
-          <Button>
-            <Link>
-            
-            </Link>
-          </Button>
-          
+          <nav>
+            <ul>
+              <Button>
+                <Link href="/auth">sign(in/up)</Link>
+              </Button>
+              <Button>
+                <Link href="/about">about</Link>
+              </Button>
+              <Button>
+                <Link href="/products">products</Link>
+              </Button>
+            </ul>
+          </nav>
         </header>
         <main>{children}</main>
 
