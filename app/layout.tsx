@@ -16,15 +16,21 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 
           <nav>
             <ul>
-              <Button>
-                <Link href="/auth">sign(in/up)</Link>
-              </Button>
-              <Button>
-                <Link href="/about">about</Link>
-              </Button>
-              <Button>
-                <Link href="/products">products</Link>
-              </Button>
+              <li>
+                <Button asChild>
+                  <Link href="/auth">sign(in/up)</Link>
+                </Button>
+              </li>
+              <li>
+                <Button asChild>
+                  <Link href="/about">about</Link>
+                </Button>
+              </li>
+              <li>
+                <Button asChild>
+                  <Link href="/products">products</Link>
+                </Button>
+              </li>
             </ul>
           </nav>
         </header>
