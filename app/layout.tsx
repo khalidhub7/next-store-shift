@@ -8,26 +8,26 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     <html lang="en">
       <body className="">
         <header className="flex h-14 border border-gray-200 items-center justify-between px-4">
-          <Avatar>
+          <Avatar size="lg">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           {/* nav */}
 
-          <nav>
-            <ul>
+          <nav className="">
+            <ul className="flex w-3/4 justify-end gap-4">
               <li>
-                <Button asChild>
+                <Button asChild size="sm" variant="outline">
                   <Link href="/auth">sign(in/up)</Link>
                 </Button>
               </li>
               <li>
-                <Button asChild>
+                <Button asChild size="sm" variant="outline">
                   <Link href="/about">about</Link>
                 </Button>
               </li>
               <li>
-                <Button asChild>
+                <Button asChild size="sm" variant="outline">
                   <Link href="/products">products</Link>
                 </Button>
               </li>
