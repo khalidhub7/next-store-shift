@@ -1,3 +1,6 @@
+import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+
 const Products = async () => {
   // add n to make it realistic
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
@@ -11,11 +14,23 @@ const Products = async () => {
         <h3>products</h3>
       </header>
       <ul>
-        {data.products.map((p) => (
+        {data.products.map((p: any) => (
           <li key={p.id}>
             <div>
               <h3> {p.title} </h3>
               <span>${p.price}</span>
+            </div>
+            <div>
+              <AspectRatio ratio={16 / 9}>
+                <Image
+                  src={p.thumbnail}
+                  alt={p.title}
+                  width={600}
+                  height={600}
+                  priority
+                  sizes="(max-width: 768px) 100vw, 600px"
+                />
+              </AspectRatio>
             </div>
           </li>
         ))}
