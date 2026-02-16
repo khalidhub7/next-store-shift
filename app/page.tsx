@@ -3,8 +3,8 @@ import Link from "next/link";
 
 const Home = () => (
   <>
-    <div className=" max-w-3/4 mx-auto mt-10 p-6 rounded-lg shadow-md text-center ">
-      <h3>electroNext</h3>
+    <div className=" max-w-3/4 mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
+      <h1>electroNext</h1>
       <hr />
       <p>
         Your one-stop shop for modern electronic products. Discover laptops,
@@ -12,7 +12,7 @@ const Home = () => (
         delivery. Built for performance, quality, and everyday use.
       </p>
       <hr />
-      <Button asChild size="lg" variant="outline">
+      <Button asChild size="lg" variant="destructive" className="w-fit">
         <Link href="/products">discover products</Link>
       </Button>
     </div>
