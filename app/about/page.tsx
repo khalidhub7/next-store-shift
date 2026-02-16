@@ -1,5 +1,5 @@
 const About = () => (
-  <section className=" max-w-3/4 mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
+  <section className="max-w-3/4 mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
     <header>
       <h3>About page</h3>
     </header>
