@@ -1,4 +1,5 @@
 const Auth = () => {
+  // we can say that is user LoggedIn or session is experied
   const isLoggedIn = Math.random() < 0.5;
 
   return (
