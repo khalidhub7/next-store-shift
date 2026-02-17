@@ -13,23 +13,19 @@ const Products = async () => {
       <header>
         <h3>products</h3>
       </header>
-      <ul>
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
         {data.products.map((p: any) => (
-          <li key={p.id}>
-            <div>
+          <li
+            key={p.id}
+            className="border rounded shadow p-4 flex flex-col gap-4 w-sm md:w-full"
+          >
+            <div className="flex items-center justify-between">
               <h3> {p.title} </h3>
               <span>${p.price}</span>
             </div>
-            <div>
-              <AspectRatio ratio={16 / 9}>
-                <Image
-                  src={p.thumbnail}
-                  alt={p.title}
-                  width={600}
-                  height={600}
-                  priority
-                  sizes="(max-width: 768px) 100vw, 600px"
-                />
+            <div className="">
+              <AspectRatio ratio={16 / 12}>
+                <Image src={p.thumbnail} alt={p.title} fill />
               </AspectRatio>
             </div>
           </li>
