@@ -1,0 +1,172 @@
+
+=== app/about/page.tsx ===
+const About = () => (
+  <section className="max-w-3/4 mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
+    <header>
+      <h3>About page</h3>
+    </header>
+    <p>
+      We are an online store that sells high-quality electronic products like
+      phones, laptops, accessories, and smart devices. Our goal is to offer
+      reliable products at fair prices with fast delivery and friendly support.
+      We focus on quality, simplicity, and customer satisfaction.
+    </p>
+  </section>
+);
+
+export default About;
+
+=== app/Header.tsx ===
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+const Header = () => (
+  <header className="flex h-14 border border-gray-200 items-center justify-between px-4">
+    <Avatar size="lg">
+      <AvatarImage src="https://github.com/shadcn.png" />
+      <AvatarFallback>avatar</AvatarFallback>
+    </Avatar>
+    {/* nav */}
+
+    <nav className="">
+      <ul className="flex w-3/4 justify-end gap-4">
+        <li>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/">home</Link>
+          </Button>
+        </li>
+        <li>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/login">sign(in/up)</Link>
+          </Button>
+        </li>
+        <li>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/about">about</Link>
+          </Button>
+        </li>
+        <li>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/products">products</Link>
+          </Button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+);
+
+export default Header;
+
+=== app/layout.tsx ===
+import "./globals.css";
+import Header from "./Header";
+
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <html lang="en">
+      <body className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">{children}</main>
+
+        <footer className="flex h-14 border border-gray-200 items-center justify-center realtive bottom-0 w-full mt-10">
+          <p>learn next js</p>
+        </footer>
+      </body>
+    </html>
+  );
+};
+
+export default RootLayout;
+
+=== app/login/page.tsx ===
+const Auth = async ({ searchParams }: any) => {
+  const { auth } = await searchParams;
+  const isLoggedIn = auth === "true";
+
+  return (
+    <div className="p-24 text-center text-fuchsia-500 ">
+      <p>{isLoggedIn ? "You are logged in" : "You are not logged in"}</p>
+    </div>
+  );
+};
+
+export const dynamic = "force-dynamic";
+export default Auth;
+
+=== app/page.tsx ===
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+const Home = () => (
+  <section className=" max-w-3/4 mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
+    <h1>electroNext</h1>
+
+    <p>
+      Your one-stop shop for modern electronic products. Discover laptops,
+      phones, and accessories with clean design, fair prices, and fast delivery.
+      Built for performance, quality, and everyday use.
+    </p>
+
+    <Button asChild size="lg" variant="destructive" className="w-fit">
+      <Link href="/products">discover products</Link>
+    </Button>
+  </section>
+);
+
+export default Home;
+
+=== app/products/loading.tsx ===
+const Loading = () => (
+  <div className="p-24 text-center text-fuchsia-500 ">
+    <p>fetching products...</p>
+  </div>
+);
+
+export default Loading;
+
+=== app/products/page.tsx ===
+import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+
+// hint: Uses parallel fetch if more than one dataset
+
+const Products = async () => {
+  // add n to make it realistic
+  const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+  const data = await fetch(`https://dummyjson.com/products?limit=${n}`)
+    .then((res) => res.json())
+    .catch(() => console.log("something's wrong while fetching products"));
+
+  return (
+    <section className="max-w-3xl mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
+      <header>
+        <h2 className="text-fuchsia-600 font-bold">Products</h2>
+      </header>
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
+        {data.products.map((p: any) => (
+          <li
+            key={p.id}
+            className="border rounded shadow p-4 flex flex-col gap-4 w-sm md:w-full"
+          >
+            <article>
+              <div className="flex items-center justify-between">
+                <h3> {p.title} </h3>
+                <span>${p.price}</span>
+              </div>
+              <div className="">
+                <AspectRatio ratio={16 / 12}>
+                  <Image src={p.thumbnail} alt={p.title} fill />
+                </AspectRatio>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+};
+
+export const revalidate = 60; // revalidate every 60 seconds
+export default Products;
+
