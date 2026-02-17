@@ -6,7 +6,7 @@ import Link from "next/link";
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <body className="">
+      <body className="min-h-screen flex flex-col">
         <header className="flex h-14 border border-gray-200 items-center justify-between px-4">
           <Avatar size="lg">
             <AvatarImage src="https://github.com/shadcn.png" />
@@ -39,7 +39,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             </ul>
           </nav>
         </header>
-        <main>{children}</main>
+        <main className="flex-1" >{children}</main>
 
         <footer className="flex h-14 border border-gray-200 items-center justify-center realtive bottom-0 w-full mt-10">
           <p>learn next js</p>
