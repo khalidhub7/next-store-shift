@@ -23,7 +23,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
               </li>
               <li>
                 <Button asChild size="sm" variant="outline">
-                  <Link href="/auth">sign(in/up)</Link>
+                  <Link href="/login">sign(in/up)</Link>
                 </Button>
               </li>
               <li>
@@ -41,7 +41,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         </header>
         <main>{children}</main>
 
-        <footer className="flex h-14 border border-gray-200 items-center justify-center relative bottom-0 w-full mt-10">
+        <footer className="flex h-14 border border-gray-200 items-center justify-center realtive bottom-0 w-full mt-10">
           <p>learn next js</p>
         </footer>
       </body>
