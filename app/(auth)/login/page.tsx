@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import Status from "@/app/auth-status";
 
 const Auth = async ({ searchParams }: any) => {
   const { auth } = await searchParams;
@@ -6,10 +6,7 @@ const Auth = async ({ searchParams }: any) => {
 
   return (
     <div className=" h-96 text-fuchsia-500 flex items-center justify-center font-mono ">
-      auth status:{" "}
-      <Badge variant="destructive">
-        {isLoggedIn ? "logged in" : "logged out"}
-      </Badge>
+      auth status:{" "} <Status isLoggedIn={isLoggedIn} />
     </div>
   );
 };
