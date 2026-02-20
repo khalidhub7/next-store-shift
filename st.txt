@@ -1,0 +1,19 @@
+app/
+├── (auth)
+│   └── login
+│       └── page.tsx
+├── (public)
+│   ├── about
+│   │   └── page.tsx
+│   └── page.tsx
+├── (shop)
+│   └── products
+│       ├── loading.tsx
+│       └── page.tsx
+├── Header.tsx
+├── error.tsx
+├── globals.css
+├── layout.tsx
+└── not-found.tsx
+
+6 directories, 10 files
