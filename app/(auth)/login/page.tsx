@@ -6,7 +6,7 @@ const Auth = async ({ searchParams }: any) => {
 
   return (
     <div className=" h-96 text-fuchsia-500 flex items-center justify-center font-mono ">
-      auth status:{" "}
+      auth status:
       <Badge variant="destructive">
         {isLoggedIn ? "logged in" : "logged out"}
       </Badge>
