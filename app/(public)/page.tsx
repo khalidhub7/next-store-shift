@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const Home = () => (
-  <section className=" max-w-3/4 mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
+  <section className="md:max-w-4/5 mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
     <h1>electroNext</h1>
 
     <p>
