@@ -11,9 +11,10 @@ app/
 │       ├── loading.tsx
 │       └── page.tsx
 ├── Header.tsx
+├── auth-status.tsx
 ├── error.tsx
 ├── globals.css
 ├── layout.tsx
 └── not-found.tsx
 
-6 directories, 10 files
+6 directories, 11 files
