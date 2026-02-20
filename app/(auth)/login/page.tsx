@@ -3,7 +3,7 @@ const Auth = async ({ searchParams }: any) => {
   const isLoggedIn = auth === "true";
 
   return (
-    <div className="p-24 text-center text-fuchsia-500 ">
+    <div className=" h-96 text-fuchsia-500 flex items-center justify-center ">
       <p>{isLoggedIn ? "You are logged in" : "You are not logged in"}</p>
     </div>
   );
