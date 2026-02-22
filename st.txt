@@ -16,4 +16,4 @@ app/
 ├── layout.tsx
 └── not-found.tsx
 
-6 directories, 11 files
+6 directories, 10 files
