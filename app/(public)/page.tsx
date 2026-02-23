@@ -6,12 +6,18 @@ const Home = () => (
     <h1 className="text-4xl font-medium text-fuchsia-500">GlowEssence</h1>
 
     <p>
-  Elevate your beauty routine with everyday makeup essentials. From bold lipsticks
-  to smooth mascaras and versatile palettes, our products are designed for quality,
-  style, and confidence—at prices that fit your routine.
-</p>
+      Elevate your beauty routine with everyday makeup essentials. From bold
+      lipsticks to smooth mascaras and versatile palettes, our products are
+      designed for quality, style, and confidence—at prices that fit your
+      routine.
+    </p>
 
-    <Button asChild size="lg" variant="destructive" className="w-fit hover:opacity-80">
+    <Button
+      asChild
+      size="lg"
+      variant="destructive"
+      className="w-fit hover:opacity-80"
+    >
       <Link href="/products">discover</Link>
     </Button>
   </section>
