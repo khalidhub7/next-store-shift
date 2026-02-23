@@ -12,7 +12,7 @@ const Home = () => (
     </p>
 
     <Button asChild size="lg" variant="destructive" className="w-fit">
-      <Link href="/products">discover products</Link>
+      <Link href="/products">discover</Link>
     </Button>
   </section>
 );
