@@ -11,7 +11,7 @@ const Home = () => (
       Built for performance, quality, and everyday use.
     </p>
 
-    <Button asChild size="lg" variant="destructive" className="w-fit">
+    <Button asChild size="lg" variant="destructive" className="w-fit hover:opacity-80">
       <Link href="/products">discover</Link>
     </Button>
   </section>
