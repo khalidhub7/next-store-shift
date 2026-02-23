@@ -6,10 +6,10 @@ const Home = () => (
     <h1 className="text-4xl font-medium text-fuchsia-500">electroNext</h1>
 
     <p>
-      Your one-stop shop for modern electronic products. Discover laptops,
-      phones, and accessories with clean design, fair prices, and fast delivery.
-      Built for performance, quality, and everyday use.
-    </p>
+  Elevate your beauty routine with everyday makeup essentials. From bold lipsticks
+  to smooth mascaras and versatile palettes, our products are designed for quality,
+  style, and confidence—at prices that fit your routine.
+</p>
 
     <Button asChild size="lg" variant="destructive" className="w-fit hover:opacity-80">
       <Link href="/products">discover</Link>
