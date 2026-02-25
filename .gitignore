@@ -1,3 +1,7 @@
 .next/
 node_modules/
 package-lock.json
+
+# debug files
+struct.txt
+output.txt
