@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 // hint: Uses parallel fetch if more than one dataset
@@ -34,6 +36,11 @@ const Products = async () => {
                 <AspectRatio ratio={16 / 12}>
                   <Image src={p.thumbnail} alt={p.title} fill />
                 </AspectRatio>
+              </div>
+              <div className="flex justify-end " >
+                <Button asChild size="sm" variant="destructive" >
+                   <Link href={`/products/${p.id}`} >details</Link>
+                </Button>
               </div>
             </article>
           </li>
