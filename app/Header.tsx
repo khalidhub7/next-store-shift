@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 
 const Header = () => (
   <header className="bg-gray-50 flex h-14 border border-gray-200 items-center justify-between px-4">
