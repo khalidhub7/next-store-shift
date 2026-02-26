@@ -8,10 +8,10 @@ const Home = () => (
     </h1>
 
     <p>
-      Elevate your beauty routine with everyday makeup essentials.
-      From bold lipsticks to smooth mascaras and versatile palettes,
-      our products are designed for quality, style, and confidence—at
-      prices that fit your routine.
+      Elevate your beauty routine with everyday makeup essentials. From bold
+      lipsticks to smooth mascaras and versatile palettes, our products are
+      designed for quality, style, and confidence—at prices that fit your
+      routine.
     </p>
 
     <Button
