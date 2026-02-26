@@ -3,9 +3,9 @@ interface Props {
 }
 
 const ProductDetails = async ({ params }: Props) => {
-  const data = await fetch(`https://dummyjson.com/products/${params.id}`).then(
-    (res) => res.json(),
-  );
+  const data = await fetch(
+    `https://dummyjson.com/products/${(await params).id}`,
+  ).then((res) => res.json());
 
   return <p> {data.id} </p>;
 };
