@@ -9,12 +9,15 @@ const ProductDetails = async ({ params }: Props) => {
   ).then((res) => res.json());
 
   return (
-    <section className=" w-4/5 ">
-      <article>
+    <section className=" w-4/5 h-screen mx-auto ">
+      <article className="">
         <h3> {data.title} </h3>
+        
+        {/* should replace with chadcn carousel like */}
         <Image
           src={data.thumbnail}
-          fill
+          height={200}
+          width={200}
           alt={data.title}
           sizes="(max-width: 768px) 100vw, 300px"
         />

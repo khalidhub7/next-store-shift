@@ -37,7 +37,7 @@ const Products = async () => {
                     src={p.thumbnail}
                     alt={p.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 300px"
+                    sizes="(max-width: 768px) 100vw, 300px" /* If screen ≤ 768px → image is 100vw (full width) */
                   />
                 </AspectRatio>
               </div>
