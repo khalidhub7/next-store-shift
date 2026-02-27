@@ -12,7 +12,12 @@ const ProductDetails = async ({ params }: Props) => {
     <section className=" w-4/5 ">
       <article>
         <h3> {data.title} </h3>
-        <Image src={data.thumbnail} fill alt={data.title} />
+        <Image
+          src={data.thumbnail}
+          fill
+          alt={data.title}
+          sizes="(max-width: 768px) 100vw, 300px"
+        />
 
         <div>{data.description}</div>
         <div>
