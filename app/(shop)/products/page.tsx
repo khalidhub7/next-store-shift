@@ -10,7 +10,7 @@ const Products = async () => {
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
   const data = await fetch(`https://dummyjson.com/products?limit=${n}`)
     .then((res) => res.json())
-    .catch(() => ({ products: [] }));
+    .catch((err) => console.log(err.message));
 
   return (
     <section className="max-w-3xl mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
@@ -30,7 +30,12 @@ const Products = async () => {
               </div>
               <div className="">
                 <AspectRatio ratio={16 / 12}>
-                  <Image src={p.thumbnail} alt={p.title} fill />
+                  <Image
+                    src={p.thumbnail}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 300px"
+                  />
                 </AspectRatio>
               </div>
               <div className="flex justify-end ">
