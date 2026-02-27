@@ -13,6 +13,8 @@ const Products = async () => {
     .then((res) => res.json())
     .catch(() => ({ products: [] }));
 
+  // always differentiate HTTP errors from network errors
+
   return (
     <section className="max-w-3xl mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
       <header>
