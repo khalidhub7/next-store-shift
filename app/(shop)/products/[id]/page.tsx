@@ -9,10 +9,24 @@ const ProductDetails = async ({ params }: Props) => {
   ).then((res) => res.json());
 
   return (
-    <section>
+    <section className="">
       <article>
         <h3> {data.title} </h3>
         <Image src={data.thumbnail} fill alt={data.title} />
+
+        <div>{data.description}</div>
+        <div>
+          <div>
+            <p> {data.rating} </p>
+            <p> {data.stock} </p>
+            <p> {data.category} </p>
+          </div>
+          <div>
+            <p> {data.brand} </p>
+            <p> {data.discountPercentage} </p>
+            <p> {data.price} </p>
+          </div>
+        </div>
       </article>
     </section>
   );
