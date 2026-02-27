@@ -8,9 +8,16 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 const Products = async () => {
   // add n to make it realistic
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-  const data = await fetch(`https://dummyjson.com/products?limit=${n}`)
+  /* const data = await fetch(`https://dummyjson.com/products?limit=${n}`)
     .then((res) => res.json())
-    .catch((err) => console.log(err.message));
+    .catch(() => ({products: []})); */
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Fetch failed: ${res.status} ${res.statusText}`);
+  }
+
+  const data = await res.json();
 
   return (
     <section className="max-w-3xl mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
