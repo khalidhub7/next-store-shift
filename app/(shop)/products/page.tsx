@@ -14,10 +14,14 @@ const Products = async () => {
     .catch(() => ({products: []})); */
 
   const res = await fetch(url);
-  if (!res.ok) {
+  /* if (!res.ok) {
     throw new Error(`Fetch failed: ${res.status} ${res.statusText}`);
-  }
+  } */
   const data = await res.json();
+
+  /* todo: that happen bcs of Network failure not HTTP error
+  i think should fix wsl connection
+  */
 
   return (
     <section className="max-w-3xl mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
