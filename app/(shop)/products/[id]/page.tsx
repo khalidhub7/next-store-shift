@@ -8,24 +8,34 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+/* types should define in other file hmm */
+
 interface Props {
   params: Promise<{ id: string }>;
 }
 interface Product {
   title: string;
+  stock: number;
+  brand: string;
+  price: number;
+  rating: number;
+  category: string;
+  description: string;
   images: Array<string>;
+  discountPercentage: number;
 }
 
 const ProductDetails = async ({ params }: Props) => {
   const { id } = await params;
   const url = `https://dummyjson.com/products/${id}`;
   /* console.log(params instanceof Promise) */
+
   const data: Product = await fetch(url).then((res) => res.json());
 
   return (
     <section className=" w-4/5 h-screen mx-auto ">
       <article className="">
-        <h3> {data.title} </h3>
+        <h1> {data.title} </h1>
 
         <Carousel>
           <CarouselContent>
@@ -46,18 +56,16 @@ const ProductDetails = async ({ params }: Props) => {
           <CarouselNext />
         </Carousel>
 
-        <div>{data.description}</div>
+        <p>{data.description}</p>
         <div>
-          <div>
-            <p> {data.rating} </p>
-            <p> {data.stock} </p>
-            <p> {data.category} </p>
-          </div>
-          <div>
-            <p> {data.brand} </p>
-            <p> {data.discountPercentage} </p>
-            <p> {data.price} </p>
-          </div>
+          <ul>
+            <li>rating: {data.rating}</li>
+            <li>stock: {data.stock}</li>
+            <li>category: {data.category}</li>
+            <li>brand: {data.brand}</li>
+            <li>discountPercentage: {data.discountPercentage}</li>
+            <li>price: {data.price}</li>
+          </ul>
         </div>
       </article>
     </section>
