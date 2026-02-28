@@ -9,13 +9,18 @@ import {
 } from "@/components/ui/carousel";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
+}
+interface Product {
+  title: string;
+  images: Array<string>;
 }
 
 const ProductDetails = async ({ params }: Props) => {
-  const data = await fetch(
-    `https://dummyjson.com/products/${(await params).id}`,
-  ).then((res) => res.json());
+  const { id } = await params;
+  const url = `https://dummyjson.com/products/${id}`;
+  /* console.log(params instanceof Promise) */
+  const data: Product = await fetch(url).then((res) => res.json());
 
   return (
     <section className=" w-4/5 h-screen mx-auto ">
@@ -24,7 +29,7 @@ const ProductDetails = async ({ params }: Props) => {
 
         <Carousel>
           <CarouselContent>
-            {data.images.map((current: string, i: number) => (
+            {data.images.map((current, i) => (
               <CarouselItem key={i}>
                 <Image
                   src={current}
