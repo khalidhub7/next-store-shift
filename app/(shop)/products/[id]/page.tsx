@@ -33,9 +33,17 @@ const ProductDetails = async ({ params }: Props) => {
 
         <Carousel>
           <CarouselContent>
-            <CarouselItem>...</CarouselItem>
-            <CarouselItem>...</CarouselItem>
-            <CarouselItem>...</CarouselItem>
+            {images.map((src, i) => (
+              <CarouselItem key={i}>
+                <Image
+                  src={src}
+                  alt="product image"
+                  width={600}
+                  height={600}
+                  className="w-full object-cover"
+                />
+              </CarouselItem>
+            ))}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
