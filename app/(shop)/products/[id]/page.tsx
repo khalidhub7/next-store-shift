@@ -22,25 +22,17 @@ const ProductDetails = async ({ params }: Props) => {
       <article className="">
         <h3> {data.title} </h3>
 
-        {/* should replace with chadcn carousel like */}
-        <Image
-          src={data.thumbnail}
-          height={200}
-          width={200}
-          alt={data.title}
-          sizes="(max-width: 768px) 100vw, 300px"
-        />
-
         <Carousel>
           <CarouselContent>
-            {images.map((src, i) => (
+            {data.images.map((current: string, i: number) => (
               <CarouselItem key={i}>
                 <Image
-                  src={src}
-                  alt="product image"
-                  width={600}
-                  height={600}
-                  className="w-full object-cover"
+                  src={current}
+                  alt={data.title}
+                  width={200}
+                  height={200}
+                  className=" object-cover"
+                  sizes="(max-width: 768px) 100vw, 300px"
                 />
               </CarouselItem>
             ))}
