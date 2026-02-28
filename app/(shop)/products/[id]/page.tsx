@@ -35,20 +35,23 @@ const ProductDetails = async ({ params }: Props) => {
   return (
     <section className="w-4/5 h-screen mx-auto p-8">
       <article className="grid grid-cols-1 md:grid-cols-2">
-        <h1 className="col-span-2 text-fuchsia-500 font-bold p-5 flex items-center justify-center">
-          {" "}
-          {data.title}{" "}
+        <h1 className="md:col-span-2 text-fuchsia-500 font-bold p-5 flex items-center justify-center">
+          {data.title}
         </h1>
 
-        <Carousel className="w-3/5 md:w-1/5 mx-auto md:mx-1 p-5 flex items-center justify-center">
+        {/* tomorrow
+        ask gpt guess the w and h of image
+        to deep understand
+        */}
+        <Carousel className="md:w-1/5 mx-auto md:mx-1 p-5 flex items-center justify-center">
           <CarouselContent className="">
             {data.images.map((current, i) => (
-              <CarouselItem key={i} className="">
+              <CarouselItem key={i} className="bg-amber-200">
                 <Image
                   src={current}
                   alt={data.title}
-                  width={200}
-                  height={200}
+                  width={300}
+                  height={300}
                   className="object-cover mx-auto"
                   sizes="(max-width: 768px) 100vw, 300px"
                 />
