@@ -33,20 +33,23 @@ const ProductDetails = async ({ params }: Props) => {
   const data: Product = await fetch(url).then((res) => res.json());
 
   return (
-    <section className=" w-4/5 h-screen mx-auto ">
-      <article className="">
-        <h1> {data.title} </h1>
+    <section className="w-4/5 h-screen mx-auto p-8">
+      <article className="grid grid-cols-1 md:grid-cols-2">
+        <h1 className="col-span-2 text-fuchsia-500 font-bold p-5 flex items-center justify-center">
+          {" "}
+          {data.title}{" "}
+        </h1>
 
-        <Carousel>
-          <CarouselContent>
+        <Carousel className="w-3/5 md:w-1/5 mx-auto md:mx-1 p-5 flex items-center justify-center">
+          <CarouselContent className="">
             {data.images.map((current, i) => (
-              <CarouselItem key={i}>
+              <CarouselItem key={i} className="">
                 <Image
                   src={current}
                   alt={data.title}
                   width={200}
                   height={200}
-                  className=" object-cover"
+                  className="object-cover mx-auto"
                   sizes="(max-width: 768px) 100vw, 300px"
                 />
               </CarouselItem>
@@ -56,9 +59,9 @@ const ProductDetails = async ({ params }: Props) => {
           <CarouselNext />
         </Carousel>
 
-        <p>{data.description}</p>
-        <div>
-          <ul>
+        <p className="text-sm text-gray-600 p-5">{data.description}</p>
+        <div className="p-5 border-8 border-t-transparent border-r-transparent border-b-transparent">
+          <ul className="flex flex-col justify-center items-center">
             <li>rating: {data.rating}</li>
             <li>stock: {data.stock}</li>
             <li>category: {data.category}</li>
