@@ -1,4 +1,13 @@
 import Image from "next/image";
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
 interface Props {
   params: { id: string };
 }
@@ -12,7 +21,7 @@ const ProductDetails = async ({ params }: Props) => {
     <section className=" w-4/5 h-screen mx-auto ">
       <article className="">
         <h3> {data.title} </h3>
-        
+
         {/* should replace with chadcn carousel like */}
         <Image
           src={data.thumbnail}
@@ -21,6 +30,16 @@ const ProductDetails = async ({ params }: Props) => {
           alt={data.title}
           sizes="(max-width: 768px) 100vw, 300px"
         />
+
+        <Carousel>
+          <CarouselContent>
+            <CarouselItem>...</CarouselItem>
+            <CarouselItem>...</CarouselItem>
+            <CarouselItem>...</CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
 
         <div>{data.description}</div>
         <div>
