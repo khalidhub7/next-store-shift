@@ -39,14 +39,10 @@ const ProductDetails = async ({ params }: Props) => {
           {data.title}
         </h1>
 
-        {/* tomorrow
-        ask gpt guess the w and h of image
-        to deep understand
-        */}
-        <Carousel className="md:w-1/5 mx-auto md:mx-1 p-5 flex items-center justify-center">
+        <Carousel className=" flex items-center justify-center">
           <CarouselContent className="">
             {data.images.map((current, i) => (
-              <CarouselItem key={i} className="bg-amber-200">
+              <CarouselItem key={i} className="">
                 <Image
                   src={current}
                   alt={data.title}
@@ -63,14 +59,14 @@ const ProductDetails = async ({ params }: Props) => {
         </Carousel>
 
         <p className="text-sm text-gray-600 p-5">{data.description}</p>
-        <div className="p-5 border-8 border-t-transparent border-r-transparent border-b-transparent">
-          <ul className="flex flex-col justify-center items-center">
-            <li>rating: {data.rating}</li>
-            <li>stock: {data.stock}</li>
-            <li>category: {data.category}</li>
-            <li>brand: {data.brand}</li>
-            <li>discountPercentage: {data.discountPercentage}</li>
-            <li>price: {data.price}</li>
+        <div className="md:col-span-2 p-5 border-4 border-t-transparent border-b-transparent shadow">
+          <ul className="flex flex-col md:flex-row items-center md:justify-around">
+            <li>rating : {data.rating}</li>
+            <li>stock : {data.stock}</li>
+            <li>category : {data.category}</li>
+            <li>brand : {data.brand}</li>
+            <li>discountPercentage : {data.discountPercentage}</li>
+            <li>price : {data.price}</li>
           </ul>
         </div>
       </article>
