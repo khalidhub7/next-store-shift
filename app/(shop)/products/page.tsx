@@ -8,15 +8,12 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const Products = async () => {
   // add n to make it realistic
-  let data;
+
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
   const url = `https://dummyjson.com/products?limit=${n}`;
-  const res = await fetch(url);
-  if (res.ok) {
-    data = await res.json();
-  } else {
-    notFound();
-  }
+  const data = await fetch(url)
+    .then((res) => res.json())
+    .catch(() => ({ products: [] }));
 
   // always differentiate HTTP errors from network errors
 
