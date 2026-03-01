@@ -13,7 +13,7 @@ const Products = async () => {
   const url = `https://dummyjson.com/products?limit=${n}`;
   const res = await fetch(url);
   if (res.ok) {
-    data = res.json();
+    data = await res.json();
   } else {
     notFound();
   }

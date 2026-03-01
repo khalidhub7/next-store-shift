@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 import {
   Carousel,
@@ -24,11 +25,18 @@ interface Product {
 }
 
 const ProductDetails = async ({ params }: Props) => {
+  let data: Product;
   const { id } = await params;
   const url = `https://dummyjson.com/products/${id}`;
   /* console.log(params instanceof Promise) */
 
-  const data: Product = await fetch(url).then((res) => res.json());
+  const res = await fetch(url);
+
+  if (res.ok) {
+    data = await res.json();
+  } else {
+    notFound();
+  }
 
   return (
     <section className="w-4/5 h-screen mx-auto p-8">
