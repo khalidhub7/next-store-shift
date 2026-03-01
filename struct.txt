@@ -8,6 +8,9 @@ app/
 │   └── page.tsx
 ├── (shop)
 │   └── products
+│       ├── [id]
+│       │   ├── not-found.tsx
+│       │   └── page.tsx
 │       ├── loading.tsx
 │       └── page.tsx
 ├── Header.tsx
@@ -16,4 +19,4 @@ app/
 ├── layout.tsx
 └── not-found.tsx
 
-6 directories, 10 files
+7 directories, 12 files

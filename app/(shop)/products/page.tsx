@@ -20,7 +20,7 @@ const Products = async () => {
   return (
     <section className="max-w-3xl mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
       <header>
-        <h2 className="text-fuchsia-600 font-bold">Products</h2>
+        <h1 className="text-fuchsia-600 font-bold">Products</h1>
       </header>
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
         {data.products.map((p: any) => (
@@ -30,7 +30,7 @@ const Products = async () => {
           >
             <article>
               <div className="flex items-center justify-between">
-                <h3> {p.title} </h3>
+                <h2> {p.title} </h2>
                 <span>${p.price}</span>
               </div>
               <div className="">
@@ -39,7 +39,8 @@ const Products = async () => {
                     src={p.thumbnail}
                     alt={p.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 300px" /* If screen ≤ 768px → image is 100vw (full width) */
+                    /* If screen ≤ 768px → image is 100vw (full width) */
+                    sizes="(max-width: 768px) 100vw, 300px"
                   />
                 </AspectRatio>
               </div>
