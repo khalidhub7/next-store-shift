@@ -1,4 +1,5 @@
 /* global error */
+// app/not-found.tsx
 
 const NotFound = () => (
   <div className="p-24 text-center text-fuchsia-500 ">

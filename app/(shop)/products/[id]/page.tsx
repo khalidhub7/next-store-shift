@@ -8,8 +8,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-/* types should define in other file hmm */
-
 interface Props {
   params: Promise<{ id: string }>;
 }
