@@ -4,51 +4,33 @@ import styles from "./Header.module.css";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
+const links = [
+  { href: "/", label: "home" },
+  { href: "/login", label: "sign(in/up)" },
+  { href: "/about", label: "about" },
+  { href: "/products", label: "products" },
+];
+
 const ClientNav = () => {
   const currentPath = usePathname();
   return (
     <nav className="">
       <ul className="flex w-3/4 justify-end gap-4">
-        <li>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className={currentPath === "/" ? styles.active : undefined}
-          >
-            <Link href="/">home</Link>
-          </Button>
-        </li>
-        <li>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className={currentPath === "/login" ? styles.active : undefined}
-          >
-            <Link href="/login">sign(in/up)</Link>
-          </Button>
-        </li>
-        <li>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className={currentPath === "/about" ? styles.active : undefined}
-          >
-            <Link href="/about">about</Link>
-          </Button>
-        </li>
-        <li>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className={currentPath === "/products" ? styles.active : undefined}
-          >
-            <Link href="/products">products</Link>
-          </Button>
-        </li>
+        {links.map(({ href, label }) => {
+          const isActive = currentPath === href;
+
+          return (
+            <li key={href}>
+              <Button
+                asChild
+                variant="outline"
+                className={isActive ? styles.active : ""}
+              >
+                <Link href={href}>{label}</Link>
+              </Button>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
