@@ -1,5 +1,5 @@
 import "./globals.css";
-import Header from "./Header";
+import Header from "./components/Header";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (

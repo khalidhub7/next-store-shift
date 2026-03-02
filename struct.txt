@@ -13,10 +13,13 @@ app/
 │       │   └── page.tsx
 │       ├── loading.tsx
 │       └── page.tsx
-├── Header.tsx
+├── components
+│   ├── Header.module.css
+│   └── Header.tsx
 ├── error.tsx
 ├── globals.css
 ├── layout.tsx
-└── not-found.tsx
+├── not-found.tsx
+└── struct.txt
 
-7 directories, 12 files
+8 directories, 14 files
