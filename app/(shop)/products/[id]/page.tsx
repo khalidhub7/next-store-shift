@@ -8,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { stringify } from "node:querystring";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -37,6 +38,8 @@ const ProductDetails = async ({ params }: Props) => {
   } else {
     notFound();
   }
+
+  // console.log(`*** ${JSON.stringify(data)} ***`);
 
   return (
     <section className="w-4/5 h-screen mx-auto p-8">
