@@ -15,12 +15,11 @@ app/
 │       └── page.tsx
 ├── components
 │   ├── Header.module.css
-│   └── Header.tsx
+│   ├── Header.tsx
+│   └── clientNav.tsx
 ├── error.tsx
 ├── globals.css
 ├── layout.tsx
-├── not-found.tsx
-└── struct.txt
+└── not-found.tsx
 
 8 directories, 14 files
-

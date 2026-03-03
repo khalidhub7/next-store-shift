@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 
 const links = [
   { href: "/", label: "home" },
-  { href: "/login", label: "sign(in/up)" },
-  { href: "/about", label: "about" },
   { href: "/products", label: "products" },
+  { href: "/about", label: "about" },
+  { href: "/login", label: "sign(in/up)" },
 ];
 
 const ClientNav = () => {
