@@ -80,4 +80,5 @@ const ProductDetails = async ({ params }: Props) => {
   );
 };
 
+export const revalidate = 60;
 export default ProductDetails;
