@@ -17,7 +17,7 @@ const ClientNav = () => {
     <nav className="">
       <ul className="flex w-3/4 justify-end gap-4">
         {links.map(({ href, label }) => {
-          const isActive = currentPath === href;
+          const isActive = currentPath.startsWith(href);
 
           return (
             <li key={href}>
