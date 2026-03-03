@@ -28,7 +28,7 @@ interface Product {
 const ProductDetails = async ({ params }: Props) => {
   const { id } = await params;
   const url = `https://dummyjson.com/products/${id}`;
-  /* console.log(params instanceof Promise) */
+  // console.log(params instanceof Promise)
 
   const res = await fetch(url);
   res.ok ? undefined : notFound();
