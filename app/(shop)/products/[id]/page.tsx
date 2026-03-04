@@ -8,7 +8,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { stringify } from "node:querystring";
 
 interface Props {
   params: Promise<{ id: string }>;
