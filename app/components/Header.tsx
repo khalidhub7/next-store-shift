@@ -1,4 +1,4 @@
-import ClientNav from "./clientNav";
+import ClientNav from "./ClientNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => (
