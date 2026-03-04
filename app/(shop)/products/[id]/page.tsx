@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Product } from "@/types/Product.ts"
 
 import {
   Carousel,
@@ -12,17 +13,7 @@ import {
 interface Props {
   params: Promise<{ id: string }>;
 }
-interface Product {
-  title: string;
-  stock: number;
-  brand: string;
-  price: number;
-  rating: number;
-  category: string;
-  description: string;
-  images: Array<string>;
-  discountPercentage: number;
-}
+
 
 const ProductDetails = async ({ params }: Props) => {
   const { id } = await params;
