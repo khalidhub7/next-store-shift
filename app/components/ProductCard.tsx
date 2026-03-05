@@ -10,9 +10,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ p }: ProductCardProps) => {
   return (
-    <li
-      className="border rounded shadow p-4 flex flex-col gap-4 w-sm md:w-full"
-    >
+    <li className="border rounded shadow p-4 flex flex-col gap-4 w-sm md:w-full">
       <article>
         <div className="flex items-center justify-between">
           <h2> {p.title} </h2>
