@@ -11,7 +11,6 @@ interface ProductCardProps {
 const ProductCard = ({ p }: ProductCardProps) => {
   return (
     <li
-      key={p.id}
       className="border rounded shadow p-4 flex flex-col gap-4 w-sm md:w-full"
     >
       <article>

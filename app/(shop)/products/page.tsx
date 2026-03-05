@@ -1,3 +1,5 @@
+import { Product } from "@/types/product";
+import ProductCard from "@/app/components/ProductCard";
 // hint: Uses parallel fetch if more than one dataset
 
 const Products = async () => {
@@ -17,8 +19,8 @@ const Products = async () => {
         <h1 className="text-fuchsia-600 font-bold">Products</h1>
       </header>
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
-        {data.products.map((p: any) => (
-          <div></div>
+        {data.products.map((p: Product) => (
+          <ProductCard p={p} key={p.id}/>
         ))}
       </ul>
     </section>
