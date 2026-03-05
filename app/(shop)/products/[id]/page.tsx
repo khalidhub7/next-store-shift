@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Product } from "@/types/Product.ts"
+import { Product } from "@/types/product";
 
 import {
   Carousel,
@@ -10,12 +10,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-interface Props {
+interface ProductDetailsProps {
   params: Promise<{ id: string }>;
 }
 
-
-const ProductDetails = async ({ params }: Props) => {
+const ProductDetails = async ({ params }: ProductDetailsProps) => {
   const { id } = await params;
   const url = `https://dummyjson.com/products/${id}`;
   // console.log(params instanceof Promise)
