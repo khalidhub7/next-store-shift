@@ -13,3 +13,4 @@ types should define in other file hmm
 
 ask: for example how to scale struct.txt
 
+Tailwind has 3 layers:  base → components → utilities
