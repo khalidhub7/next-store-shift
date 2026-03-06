@@ -47,12 +47,12 @@ const Products = async () => {
 
       <Dialog>
         <DialogTrigger>
-          <Button>
+          <Button variant="ghost" size="icon-lg" className="p-1" >
             <Image
-              src="https://www.flaticon.com/fr/icones-gratuites/chariot"
+              src="https://img.icons8.com/?size=100&id=8384&format=png&color=000000"
               alt="basket"
-              width={200}
-              height={200}
+              width={50}
+              height={50}
             ></Image>
           </Button>
         </DialogTrigger>
