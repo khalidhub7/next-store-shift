@@ -46,7 +46,7 @@ const Products = async () => {
       {/* cart dialog */}
 
       <Dialog>
-        <DialogTrigger>
+        <DialogTrigger asChild>
           <Button
             variant="ghost"
             size="icon-lg"

@@ -14,3 +14,6 @@ types should define in other file hmm
 ask: for example how to scale struct.txt
 
 Tailwind has 3 layers:  base → components → utilities
+
+
+next mission: see best project build by next js and get inspire

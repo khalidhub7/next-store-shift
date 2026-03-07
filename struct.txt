@@ -13,6 +13,8 @@ app/
 │       │   └── page.tsx
 │       ├── loading.tsx
 │       └── page.tsx
+├── actions
+│   └── cart.ts
 ├── components
 │   ├── ClientNav.tsx
 │   ├── Header.module.css
@@ -23,4 +25,4 @@ app/
 ├── layout.tsx
 └── not-found.tsx
 
-8 directories, 15 files
+9 directories, 16 files
