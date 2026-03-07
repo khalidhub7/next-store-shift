@@ -10,17 +10,12 @@ interface CartItem {
   qty: number;
 }
 
-// interface Cart {}
-
-/*  todo:
-read and understand what happen 
-then handle appCookies agent with best practices
-*/
-
-const reloadCart = async (): Array<CartItem> => {
+const reloadCart = async () => {
+  // return the appCookies + cart
   const appCookies = await cookies();
-  const cart = appCookies.get("cart");
-  return cart ? JSON.parse(cart.value) : [];
+  const request = appCookies.get("cart")
+  const cart = request ? JSON.parse(request.value) : []
+  return {cart, appCookies}
 };
 
 const addToCart = (product: Product) => {
