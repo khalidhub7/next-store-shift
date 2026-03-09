@@ -46,9 +46,11 @@ const addToCart = async (product: Product) => {
 
     appCookies.set("cart", JSON.stringify(newCart), {
       httpOnly: false,
-      path: "/products",
+      path: "/",
       maxAge: undefined,
     });
+
+    // in real production should update db here
   };
 
   return appendToQueue(task);
