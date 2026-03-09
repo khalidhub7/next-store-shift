@@ -70,7 +70,7 @@ const decreaseQty = async (product: Product) => {
 
     const newCart = cart
       .map((item: CartItem) =>
-        item.id === product.id ? { ...item, qty: item.qty - 1 } : item
+        item.id === product.id ? { ...item, qty: item.qty - 1 } : item,
       )
       .filter((item: CartItem) => item.qty > 0);
 
@@ -105,7 +105,7 @@ const updateQty = async (product: Product, qty: number) => {
     const { appCookies, cart } = await reloadCart();
 
     const newCart = cart.map((item: CartItem) =>
-      item.id === product.id ? { ...item, qty } : item
+      item.id === product.id ? { ...item, qty } : item,
     );
 
     appCookies.set("cart", JSON.stringify(newCart), {
