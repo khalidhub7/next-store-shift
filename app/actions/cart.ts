@@ -64,4 +64,60 @@ const addToCart = async (product: Product) => {
   return appendToQueue(task);
 };
 
+const decreaseQty = async (productId: number) => {
+  const task = async () => {
+    const { appCookies, cart } = await reloadCart();
+
+    const newCart = cart
+      .map((item: CartItem) =>
+        item.id === productId ? { ...item, qty: item.qty - 1 } : item,
+      )
+      .filter((item: CartItem) => item.qty > 0);
+
+    appCookies.set("cart", JSON.stringify(newCart), {
+      httpOnly: false,
+      path: "/",
+      maxAge: undefined,
+    });
+  };
+
+  return appendToQueue(task);
+};
+
+const removeFromCart = async (productId: number) => {
+  const task = async () => {
+    const { appCookies, cart } = await reloadCart();
+
+    const newCart = cart.filter((item: CartItem) => item.id !== productId);
+
+    appCookies.set("cart", JSON.stringify(newCart), {
+      httpOnly: false,
+      path: "/",
+      maxAge: undefined,
+    });
+  };
+
+  return appendToQueue(task);
+};
+
+const updateQty = async (productId: number, qty: number) => {
+  const task = async () => {
+    const { appCookies, cart } = await reloadCart();
+
+    const newCart = cart.map((item: CartItem) =>
+      item.id === productId ? { ...item, qty } : item,
+    );
+
+    appCookies.set("cart", JSON.stringify(newCart), {
+      httpOnly: false,
+      path: "/",
+      maxAge: undefined,
+    });
+  };
+
+  return appendToQueue(task);
+};
+
+export { decreaseQty, removeFromCart, updateQty };
+
 export { addToCart };
