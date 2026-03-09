@@ -16,6 +16,7 @@ app/
 ├── actions
 │   └── cart.ts
 ├── components
+│   ├── CartDialog.tsx
 │   ├── ClientNav.tsx
 │   ├── Header.module.css
 │   ├── Header.tsx
@@ -25,4 +26,4 @@ app/
 ├── layout.tsx
 └── not-found.tsx
 
-9 directories, 16 files
+9 directories, 17 files
