@@ -46,7 +46,7 @@ const addToCart = async (product: Product) => {
 
     appCookies.set("cart", JSON.stringify(newCart), {
       httpOnly: false,
-      path: "/",
+      path: "/products",
       maxAge: undefined,
     });
   };
