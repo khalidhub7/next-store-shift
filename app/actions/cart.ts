@@ -118,6 +118,4 @@ const updateQty = async (productId: number, qty: number) => {
   return appendToQueue(task);
 };
 
-export { decreaseQty, removeFromCart, updateQty };
-
-export { addToCart };
+export { addToCart, decreaseQty, removeFromCart, updateQty };
