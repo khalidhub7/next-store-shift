@@ -1,4 +1,5 @@
 import { Product } from "@/types/product";
+import CartDialog from "@/app/components/CartDialog";
 import ProductCard from "@/app/components/ProductCard";
 // hint: Uses parallel fetch if more than one dataset
 
@@ -15,6 +16,7 @@ const Products = async () => {
 
   return (
     <section className="mx-auto mt-10 p-6 rounded-lg shadow-md text-center flex flex-col gap-8">
+      <CartDialog />
       <header>
         <h1 className="text-fuchsia-600 font-bold">Products</h1>
       </header>
