@@ -7,8 +7,8 @@ import { addToCart } from "@/app/actions/cart";
 
 const AddToCartButton = ({ product }: { product: Product }) => {
   const handleAdd = async () => {
-    const res = await addToCart(product);
-    res?.success ? toast("Product added successfully.") : undefined;
+    await addToCart(product);
+    toast.success("Product added successfully.", { position: "top-center" });
   };
 
   return (
