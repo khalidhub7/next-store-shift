@@ -1,6 +1,7 @@
 import "./globals.css";
 import Header from "./components/Header";
 import { Roboto } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -17,6 +18,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <footer className="flex h-14 border border-gray-200 items-center justify-center relative bottom-0 w-full mt-10">
           <p>learn next js</p>
         </footer>
+        <Toaster />
       </body>
     </html>
   );
