@@ -10,6 +10,7 @@
 
 "use server";
 
+import { toast } from "sonner";
 import { cookies } from "next/headers";
 import { Product } from "@/types/product";
 
@@ -19,14 +20,14 @@ interface CartItem {
   price: number;
   qty: number;
 }
-type Task = () => Promise<void>;
+type Task = () => Promise<any>;
 
 // help to avoid race conditions
 let resolveActionsQueue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
   resolveActionsQueue = resolveActionsQueue
     .then(() => task())
-    .catch(() => undefined);
+    .catch(() => ({}));
   return resolveActionsQueue;
 };
 
@@ -59,6 +60,8 @@ const addToCart = async (product: Product) => {
       path: "/",
       maxAge: undefined,
     });
+
+    return { success: true };
   };
 
   return appendToQueue(task);
