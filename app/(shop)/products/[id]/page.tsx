@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Product } from "@/types/product";
+import { addToCart } from "@/app/actions/cart";
 
 import {
   Carousel,
@@ -56,12 +57,14 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
 
         {/* actions */}
         <div className="bg-rose-50 p-2 rounded-2xl md:order-1 md:col-span-2">
-          <Button
-            variant="destructive"
-            className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
-          >
-            add to cart
-          </Button>
+          <form action={addToCart.bind(null, data)}>
+            <Button
+              variant="destructive"
+              className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
+            >
+              add to cart
+            </Button>
+          </form>
         </div>
 
         <p className="text-sm text-gray-600 p-5">{data.description}</p>
