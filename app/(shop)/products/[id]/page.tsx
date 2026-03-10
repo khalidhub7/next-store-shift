@@ -9,6 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
 
 interface ProductDetailsProps {
   params: Promise<{ id: string }>;
@@ -53,8 +54,13 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
           <CarouselNext />
         </Carousel>
 
+        {/* actions */}
+        <div className="bg-fuchsia-50 p-2 rounded-2xl md:order-1 md:col-span-2">
+          <Button variant="destructive">add to cart</Button>
+        </div>
+
         <p className="text-sm text-gray-600 p-5">{data.description}</p>
-        <div className="md:col-span-2 p-5 border-4 border-t-transparent border-b-transparent shadow">
+        <div className="md:order-2 md:col-span-2 p-5 border-4 border-t-transparent border-b-transparent shadow">
           <ul className="flex flex-col md:flex-row items-center md:justify-around">
             <li>rating : {data.rating}</li>
             <li>stock : {data.stock}</li>
