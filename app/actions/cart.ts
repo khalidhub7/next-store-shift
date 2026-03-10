@@ -20,7 +20,7 @@ interface CartItem {
   price: number;
   qty: number;
 }
-type Task = () => Promise<void | { success: boolean }>;
+type Task = () => Promise<void>;
 
 // help to avoid race conditions
 let resolveActionsQueue =
