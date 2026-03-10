@@ -55,8 +55,13 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
         </Carousel>
 
         {/* actions */}
-        <div className="bg-fuchsia-50 p-2 rounded-2xl md:order-1 md:col-span-2">
-          <Button variant="destructive">add to cart</Button>
+        <div className="bg-rose-50 p-2 rounded-2xl md:order-1 md:col-span-2">
+          <Button
+            variant="destructive"
+            className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
+          >
+            add to cart
+          </Button>
         </div>
 
         <p className="text-sm text-gray-600 p-5">{data.description}</p>
