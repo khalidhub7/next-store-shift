@@ -23,7 +23,7 @@ interface CartItem {
 type Task = () => Promise<void | { success: boolean }>;
 
 // help to avoid race conditions
-let resolveActionsQueue: Promise<void | { success: boolean }> =
+let resolveActionsQueue =
   Promise.resolve();
 const appendToQueue = async (task: Task) => {
   resolveActionsQueue = resolveActionsQueue
@@ -61,8 +61,6 @@ const addToCart = async (product: Product) => {
       path: "/",
       maxAge: undefined,
     });
-
-    return { success: true };
   };
 
   return appendToQueue(task);
