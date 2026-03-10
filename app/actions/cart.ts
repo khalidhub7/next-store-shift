@@ -9,10 +9,9 @@
     */
 
 "use server";
-
-import { toast } from "sonner";
 import { cookies } from "next/headers";
 import { Product } from "@/types/product";
+import { revalidatePath } from "next/cache";
 
 interface CartItem {
   id: number;
@@ -60,6 +59,8 @@ const addToCart = async (product: Product) => {
       path: "/",
       maxAge: undefined,
     });
+
+    revalidatePath("/products");
   };
 
   return appendToQueue(task);
