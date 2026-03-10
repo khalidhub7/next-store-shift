@@ -20,14 +20,14 @@ interface CartItem {
   price: number;
   qty: number;
 }
-type Task = () => Promise<any>;
+type Task = () => Promise<void | { success: boolean }>;
 
 // help to avoid race conditions
-let resolveActionsQueue = Promise.resolve();
+let resolveActionsQueue: Promise<void | { success: boolean }> = Promise.resolve();
 const appendToQueue = async (task: Task) => {
   resolveActionsQueue = resolveActionsQueue
     .then(() => task())
-    .catch(() => ({}));
+    .catch(() => undefined);
   return resolveActionsQueue;
 };
 
