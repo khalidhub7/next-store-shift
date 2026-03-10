@@ -23,7 +23,8 @@ interface CartItem {
 type Task = () => Promise<void | { success: boolean }>;
 
 // help to avoid race conditions
-let resolveActionsQueue: Promise<void | { success: boolean }> = Promise.resolve();
+let resolveActionsQueue: Promise<void | { success: boolean }> =
+  Promise.resolve();
 const appendToQueue = async (task: Task) => {
   resolveActionsQueue = resolveActionsQueue
     .then(() => task())
