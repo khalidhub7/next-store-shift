@@ -62,7 +62,7 @@ const decreaseQty = async (productId: string) => {
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty - 1 } : item,
       )
-      .filter((item: CartItem) => item.qty >= 0);
+      .filter((item: CartItem) => item.qty = 0);
 
     appCookies.set("cart", JSON.stringify(newCart), {
       httpOnly: false,

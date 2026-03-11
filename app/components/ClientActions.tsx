@@ -50,13 +50,15 @@ const ClientAddToCart = ({
 const ClientDecreaseQty = ({ productId }: { productId: string }) => {
   const handleDecreaseQty = async () => {
     await decreaseQty(productId);
-    toast.success("Product added successfully.", { position: "top-center" });
+    toast.success("Product Decrease successfully.", {
+      position: "bottom-right",
+    });
   };
 
   return (
     <DropdownMenuItem onClick={handleDecreaseQty}>
       <Minus className="mr-2" />
-      Decrease
+      dec
     </DropdownMenuItem>
   );
 };
