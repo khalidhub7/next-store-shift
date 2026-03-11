@@ -47,7 +47,7 @@ const addToCart = async (productId: string) => {
       path: "/",
       maxAge: undefined,
     });
-
+    // usualy isr refresh every 1h so that is renew it immediately
     revalidatePath("/products");
   };
 
