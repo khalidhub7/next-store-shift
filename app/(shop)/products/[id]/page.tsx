@@ -2,7 +2,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Product } from "@/types/product";
 import { addToCart } from "@/app/actions/cart";
-import AddToCartButton from "@/app/components/ClientActions";
+import { ClientAddToCart } from "@/app/components/ClientActions";
+import { fetchProductById } from "@/lib/fetchProduct";
 
 import {
   Carousel,
@@ -11,7 +12,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
 
 interface ProductDetailsProps {
   params: Promise<{ id: string }>;
@@ -19,30 +19,24 @@ interface ProductDetailsProps {
 
 const ProductDetails = async ({ params }: ProductDetailsProps) => {
   const { id } = await params;
-  const url = `https://dummyjson.com/products/${id}`;
-  // console.log(params instanceof Promise)
+  const product = await fetchProductById(id)
 
-  const res = await fetch(url);
-  res.ok ? undefined : notFound();
-
-  const data: Product = await res.json();
-
-  // console.log(`*** ${JSON.stringify(data)} ***`);
+  // console.log(`*** ${JSON.stringify(product)} ***`);
 
   return (
     <section className="w-4/5 h-screen mx-auto p-8">
       <article className="grid grid-cols-1 md:grid-cols-2">
         <h1 className="md:col-span-2 text-fuchsia-500 font-bold p-5 flex items-center justify-center">
-          {data.title}
+          {product.title}
         </h1>
 
         <Carousel className=" flex items-center justify-center">
           <CarouselContent className="">
-            {data.images.map((current, i) => (
+            {product.images.map((current, i) => (
               <CarouselItem key={i} className="">
                 <Image
                   src={current}
-                  alt={data.title}
+                  alt={product.title}
                   width={300}
                   height={300}
                   className="object-cover mx-auto"
@@ -58,20 +52,20 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
 
         {/* actions */}
         <div className="bg-rose-50 p-2 rounded-2xl md:order-1 md:col-span-2">
-          <form action={addToCart.bind(null, data)}>
-            <AddToCartButton product={data} />
+          <form action={addToCart.bind(null, product)}>
+            <ClientAddToCart product={product} />
           </form>
         </div>
 
-        <p className="text-sm text-gray-600 p-5">{data.description}</p>
+        <p className="text-sm text-gray-600 p-5">{product.description}</p>
         <div className="md:order-2 md:col-span-2 p-5 border-4 border-t-transparent border-b-transparent shadow">
           <ul className="flex flex-col md:flex-row items-center md:justify-around">
-            <li>rating : {data.rating}</li>
-            <li>stock : {data.stock}</li>
-            <li>category : {data.category}</li>
-            <li>brand : {data.brand}</li>
-            <li>discountPercentage : {data.discountPercentage}</li>
-            <li>price : {data.price}</li>
+            <li>rating : {product.rating}</li>
+            <li>stock : {product.stock}</li>
+            <li>category : {product.category}</li>
+            <li>brand : {product.brand}</li>
+            <li>discountPercentage : {product.discountPercentage}</li>
+            <li>price : {product.price}</li>
           </ul>
         </div>
       </article>
