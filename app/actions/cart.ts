@@ -52,8 +52,9 @@ const addToCart = async (product: Product) => {
   return appendToQueue(task);
 };
 
-const decreaseQty = async (product: Product) => {
+const decreaseQty = async (productId: number) => {
   const task = async () => {
+    
     const { appCookies, cart } = await reloadCart();
 
     const newCart = cart

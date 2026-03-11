@@ -27,6 +27,7 @@ import { MoreHorizontalIcon, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import reloadCart from "@/lib/reloadCart";
 import { CartItem } from "@/types/product";
+import { ClientDecreaseQty } from "./ClientActions";
 
 const CartDialog = async () => {
   const { cart } = await reloadCart();
@@ -89,10 +90,8 @@ const CartDialog = async () => {
                         Increase
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem>
-                        <Minus className="mr-2" />
-                        Decrease
-                      </DropdownMenuItem>
+                      <ClientDecreaseQty product={data} />
+
                       <DropdownMenuSeparator />
                       <DropdownMenuItem variant="destructive">
                         Delete

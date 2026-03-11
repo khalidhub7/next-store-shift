@@ -5,9 +5,17 @@
 import { toast } from "sonner";
 import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
-import { addToCart } from "@/app/actions/cart";
+import {
+  addToCart,
+  decreaseQty,
+  removeFromCart,
+  updateQty,
+} from "@/app/actions/cart";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Plus, Minus } from "lucide-react";
 
-// products/:id actions
+// shared action between products/:id and cartDialog
+// used to add product or increase qty
 const ClientAddToCart = ({ product }: { product: Product }) => {
   const handleAdd = async () => {
     await addToCart(product);
@@ -25,8 +33,22 @@ const ClientAddToCart = ({ product }: { product: Product }) => {
   );
 };
 
-// cart dialog actions
+// cartDialog actions
 
+const ClientDecreaseQty = ({ product }: { product: Product }) => {
+  const handleDecreaseQty = async () => {
+    await decreaseQty(product);
+    toast.success("Product Decrease successfully.", {
+      position: "bottom-right",
+    });
+  };
 
+  return (
+    <DropdownMenuItem onClick={handleDecreaseQty}>
+      <Minus className="mr-2" />
+      Decrease
+    </DropdownMenuItem>
+  );
+};
 
-export { ClientAddToCart }
+export { ClientAddToCart, ClientDecreaseQty };
