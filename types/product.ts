@@ -13,7 +13,7 @@ interface Product {
 }
 
 interface CartItem {
-  id: number;
+  id: string;
   title: string;
   price: number;
   qty: number;

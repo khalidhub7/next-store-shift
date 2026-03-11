@@ -12,6 +12,7 @@
 import reloadCart from "@/lib/reloadCart";
 import { Product, CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
+import { fetchProductById } from "@/lib/fetchProduct";
 
 type Task = () => Promise<void>;
 
@@ -24,19 +25,20 @@ const appendToQueue = async (task: Task) => {
   return resolveActionsQueue;
 };
 
-const addToCart = async (product: Product) => {
+const addToCart = async (productId: string) => {
   const task = async () => {
     let newCart: Array<CartItem>;
     const { appCookies, cart } = await reloadCart();
-    const isExist = cart.find((i: CartItem) => i.id === product.id);
+    const foundProduct = cart.find((i: CartItem) => i.id === productId);
 
-    if (isExist) {
+    if (foundProduct) {
       newCart = cart.map((p: CartItem) => {
-        const { id, title, price, qty } = isExist;
-        return p.id === id ? { id, title, price, qty: qty + 1 } : p;
+        return p.id === productId
+          ? { ...foundProduct, qty: foundProduct.qty + 1 }
+          : p;
       });
     } else {
-      const { id, title, price } = product;
+      const { id, title, price } = await fetchProductById(productId);
       newCart = [...cart, { id, title, price, qty: 1 }];
     }
 
@@ -54,7 +56,6 @@ const addToCart = async (product: Product) => {
 
 const decreaseQty = async (productId: number) => {
   const task = async () => {
-    
     const { appCookies, cart } = await reloadCart();
 
     const newCart = cart
