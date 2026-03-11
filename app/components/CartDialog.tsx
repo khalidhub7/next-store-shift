@@ -1,10 +1,10 @@
 import {
+  DialogHeader,
+  DialogTrigger,
   Dialog,
+  DialogTitle,
   DialogContent,
   DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
@@ -23,15 +23,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MoreHorizontalIcon } from "lucide-react";
+import { MoreHorizontalIcon, Plus, Minus } from "lucide-react";
 import Image from "next/image";
+import reloadCart from "@/lib/reloadCart";
+import { CartItem } from "@/types/product";
 
-const CartDialog = () => {
+const CartDialog = async () => {
+  const { cart } = await reloadCart();
+
+  // console.log(JSON.stringify(cart))
   return (
     /* cart dialog */
     <Dialog>
       <DialogTrigger asChild>
         <Button
+          aria-label="Open cart"
           variant="ghost"
           size="icon-lg"
           className="p-1 fixed right-3 top-14"
@@ -56,76 +62,46 @@ const CartDialog = () => {
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>Price</TableHead>
+              <TableHead>Quantity</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">Wireless Mouse</TableCell>
-              <TableCell>$29.99</TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="size-8">
-                      <MoreHorizontalIcon />
-                      <span className="sr-only">Open menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">Mechanical Keyboard</TableCell>
-              <TableCell>$129.99</TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="size-8">
-                      <MoreHorizontalIcon />
-                      <span className="sr-only">Open menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">USB-C Hub</TableCell>
-              <TableCell>$49.99</TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="size-8">
-                      <MoreHorizontalIcon />
-                      <span className="sr-only">Open menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
+            {cart.map((item: CartItem) => (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.title}</TableCell>
+                <TableCell>{item.price}</TableCell>
+                <TableCell>{item.qty}</TableCell>
+
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="size-8">
+                        <MoreHorizontalIcon />
+                        <span className="sr-only">Open menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        <Plus className="mr-2" />
+                        Increase
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem>
+                        <Minus className="mr-2" />
+                        Decrease
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="destructive">
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </DialogContent>

@@ -9,16 +9,10 @@
     */
 
 "use server";
-import { cookies } from "next/headers";
-import { Product } from "@/types/product";
+import reloadCart from "@/lib/reloadCart";
+import { Product, CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
 
-interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  qty: number;
-}
 type Task = () => Promise<void>;
 
 // help to avoid race conditions
@@ -28,14 +22,6 @@ const appendToQueue = async (task: Task) => {
     .then(() => task())
     .catch(() => undefined);
   return resolveActionsQueue;
-};
-
-const reloadCart = async () => {
-  // return the appCookies + cart
-  const appCookies = await cookies();
-  const request = appCookies.get("cart");
-  const cart = request ? JSON.parse(request.value) : [];
-  return { cart, appCookies };
 };
 
 const addToCart = async (product: Product) => {

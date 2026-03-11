@@ -12,4 +12,11 @@ interface Product {
   discountPercentage: number;
 }
 
-export type { Product };
+interface CartItem {
+  id: number;
+  title: string;
+  price: number;
+  qty: number;
+}
+
+export type { Product, CartItem };

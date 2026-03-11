@@ -2,7 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Product } from "@/types/product";
 import { addToCart } from "@/app/actions/cart";
-import AddToCartButton from "@/app/components/ClientAddToCartButton";
+import AddToCartButton from "@/app/components/ClientActions";
 
 import {
   Carousel,
