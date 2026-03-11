@@ -16,13 +16,21 @@ import { Plus, Minus } from "lucide-react";
 
 // shared action between products/:id and cartDialog
 // used to add product or increase qty
-const ClientAddToCart = ({ product }: { product: Product }) => {
+type CompType = "products" | "cart";
+
+const ClientAddToCart = ({
+  productId,
+  compType = "products",
+}: {
+  productId: string;
+  compType: CompType;
+}) => {
   const handleAdd = async () => {
-    await addToCart(product);
+    await addToCart(productId);
     toast.success("Product added successfully.", { position: "top-center" });
   };
 
-  return (
+  return compType === "products" ? (
     <Button
       variant="destructive"
       className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
@@ -30,17 +38,19 @@ const ClientAddToCart = ({ product }: { product: Product }) => {
     >
       add to cart
     </Button>
+  ) : (
+    <DropdownMenuItem onClick={handleAdd}>
+      <Plus className="mr-2" />
+      inc
+    </DropdownMenuItem>
   );
 };
 
-// cartDialog actions
-
-const ClientDecreaseQty = ({ product }: { product: Product }) => {
+// cartDialog dropdown actions
+const ClientDecreaseQty = ({ productId }: { productId: string }) => {
   const handleDecreaseQty = async () => {
-    await decreaseQty(product);
-    toast.success("Product Decrease successfully.", {
-      position: "bottom-right",
-    });
+    await decreaseQty(productId);
+    toast.success("Product added successfully.", { position: "top-center" });
   };
 
   return (

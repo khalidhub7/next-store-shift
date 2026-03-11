@@ -19,7 +19,7 @@ interface ProductDetailsProps {
 
 const ProductDetails = async ({ params }: ProductDetailsProps) => {
   const { id } = await params;
-  const product = await fetchProductById(id)
+  const product = await fetchProductById(id);
 
   // console.log(`*** ${JSON.stringify(product)} ***`);
 
@@ -52,7 +52,7 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
 
         {/* actions */}
         <div className="bg-rose-50 p-2 rounded-2xl md:order-1 md:col-span-2">
-          <form action={addToCart.bind(null, product)}>
+          <form action={addToCart.bind(null, id)}>
             <ClientAddToCart product={product} />
           </form>
         </div>
