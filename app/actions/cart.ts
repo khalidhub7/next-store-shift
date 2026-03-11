@@ -54,48 +54,50 @@ const addToCart = async (productId: string) => {
   return appendToQueue(task);
 };
 
-const decreaseQty = async (productId: number) => {
+const decreaseQty = async (productId: string) => {
   const task = async () => {
     const { appCookies, cart } = await reloadCart();
 
     const newCart = cart
       .map((item: CartItem) =>
-        item.id === product.id ? { ...item, qty: item.qty - 1 } : item,
+        item.id === productId ? { ...item, qty: item.qty - 1 } : item,
       )
-      .filter((item: CartItem) => item.qty > 0);
+      .filter((item: CartItem) => item.qty >= 0);
 
     appCookies.set("cart", JSON.stringify(newCart), {
       httpOnly: false,
       path: "/",
       maxAge: undefined,
     });
+    revalidatePath("/products");
   };
 
   return appendToQueue(task);
 };
 
-const removeFromCart = async (product: Product) => {
+const removeFromCart = async (productId: string) => {
   const task = async () => {
     const { appCookies, cart } = await reloadCart();
 
-    const newCart = cart.filter((item: CartItem) => item.id !== product.id);
+    const newCart = cart.filter((item: CartItem) => item.id !== productId);
 
     appCookies.set("cart", JSON.stringify(newCart), {
       httpOnly: false,
       path: "/",
       maxAge: undefined,
     });
+    revalidatePath("/products");
   };
 
   return appendToQueue(task);
 };
 
-const updateQty = async (product: Product, qty: number) => {
+const updateQty = async (productId: string, qty: number) => {
   const task = async () => {
     const { appCookies, cart } = await reloadCart();
 
     const newCart = cart.map((item: CartItem) =>
-      item.id === product.id ? { ...item, qty } : item,
+      item.id === productId ? { ...item, qty } : item,
     );
 
     appCookies.set("cart", JSON.stringify(newCart), {
@@ -103,6 +105,7 @@ const updateQty = async (product: Product, qty: number) => {
       path: "/",
       maxAge: undefined,
     });
+    revalidatePath("/products");
   };
 
   return appendToQueue(task);
