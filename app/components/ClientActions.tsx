@@ -63,4 +63,19 @@ const ClientDecreaseQty = ({ productId }: { productId: string }) => {
   );
 };
 
-export { ClientAddToCart, ClientDecreaseQty };
+const ClientRemoveFromCart = ({ productId }: { productId: string }) => {
+  const handleRemoveFromCart = async () => {
+    await removeFromCart(productId);
+    toast.success("Product removed successfully.", {
+      position: "bottom-right",
+    });
+  };
+
+  return (
+    <DropdownMenuItem variant="destructive" onClick={handleRemoveFromCart}>
+      Delete
+    </DropdownMenuItem>
+  );
+};
+
+export { ClientAddToCart, ClientDecreaseQty, ClientRemoveFromCart };

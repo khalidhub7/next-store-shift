@@ -33,9 +33,7 @@ const addToCart = async (productId: string) => {
 
     if (foundProduct) {
       newCart = cart.map((p: CartItem) => {
-        return p.id === productId
-          ? { ...foundProduct, qty: foundProduct.qty + 1 }
-          : p;
+        return p.id === productId ? { ...p, qty: p.qty + 1 } : p;
       });
     } else {
       const { id, title, price } = await fetchProductById(productId);
@@ -62,7 +60,7 @@ const decreaseQty = async (productId: string) => {
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty - 1 } : item,
       )
-      .filter((item: CartItem) => item.qty = 0);
+      .filter((item: CartItem) => (item.qty = 0));
 
     appCookies.set("cart", JSON.stringify(newCart), {
       httpOnly: false,
