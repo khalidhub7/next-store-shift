@@ -42,8 +42,7 @@ const ClientAddToCart = ({
     </Button>
   ) : (
     <DropdownMenuItem onClick={handleAdd}>
-      <Plus className="mr-2" />
-      inc
+      <Plus className="mr-2" /> inc
     </DropdownMenuItem>
   );
 };

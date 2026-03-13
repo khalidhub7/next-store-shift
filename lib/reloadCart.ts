@@ -1,5 +1,3 @@
-
-
 import { cookies } from "next/headers";
 
 const reloadCart = async () => {
@@ -9,4 +7,4 @@ const reloadCart = async () => {
   return { cart, appCookies };
 };
 
-export default reloadCart
+export default reloadCart;
