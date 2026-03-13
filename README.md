@@ -15,5 +15,8 @@ ask: for example how to scale struct.txt
 
 Tailwind has 3 layers:  base → components → utilities
 
+add debounce and batching in cart actions
+already learn zustand apply for (cart)
+
 
 next mission: see best project build by next js and get inspire

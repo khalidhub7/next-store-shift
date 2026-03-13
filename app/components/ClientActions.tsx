@@ -3,7 +3,6 @@
 "use client";
 
 import { toast } from "sonner";
-import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import {
   addToCart,
@@ -13,6 +12,9 @@ import {
 } from "@/app/actions/cart";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Plus, Minus } from "lucide-react";
+import { TableCell } from "@/components/ui/table";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 // shared action between products/:id and cartDialog
 // used to add product or increase qty
@@ -78,4 +80,31 @@ const ClientRemoveFromCart = ({ productId }: { productId: string }) => {
   );
 };
 
-export { ClientAddToCart, ClientDecreaseQty, ClientRemoveFromCart };
+type ClientUpdateQtyProps = {
+  productId: string;
+  qty: number;
+};
+
+const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
+  const [newQty, setNewQty] = useState(qty);
+
+  const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    await updateQty(productId, Number(e.target.value));
+    toast.success("Product qty updated successfully.", {
+      position: "bottom-right",
+    });
+  };
+
+  return (
+    <TableCell>
+      <Input type="number" value={qty} onChange={handleUpdateQty}></Input>
+    </TableCell>
+  );
+};
+
+export {
+  ClientAddToCart,
+  ClientDecreaseQty,
+  ClientRemoveFromCart,
+  ClientUpdateQty,
+};
