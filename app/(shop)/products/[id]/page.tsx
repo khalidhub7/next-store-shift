@@ -41,7 +41,6 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
                   height={300}
                   className="object-cover mx-auto"
                   sizes="(max-width: 768px) 100vw, 300px"
-                  priority
                 />
               </CarouselItem>
             ))}
