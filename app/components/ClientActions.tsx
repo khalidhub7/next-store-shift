@@ -88,7 +88,9 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   const [newQty, setNewQty] = useState(qty);
 
   const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    await updateQty(productId, Number(e.target.value));
+    const newValue = Number(e.target.value);
+    setNewQty(newValue); // update UI immediately
+    await updateQty(productId, newValue);
     toast.success("Product qty updated successfully.", {
       position: "bottom-right",
     });
