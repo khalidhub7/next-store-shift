@@ -96,7 +96,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 
   return (
     <TableCell>
-      <Input type="number" value={qty} onChange={handleUpdateQty}></Input>
+      <Input type="number" value={newQty} onChange={handleUpdateQty}></Input>
     </TableCell>
   );
 };

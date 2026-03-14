@@ -10,7 +10,7 @@
 
 "use server";
 import reloadCart from "@/lib/reloadCart";
-import { Product, CartItem } from "@/types/product";
+import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
 import { fetchProductById } from "@/lib/fetchProduct";
 
@@ -46,7 +46,7 @@ const addToCart = async (productId: string) => {
       maxAge: undefined,
     });
     // usualy isr refresh every 1h so that is renew it immediately
-    revalidatePath("/products");
+    revalidatePath("/", "layout");
   };
 
   return appendToQueue(task);
@@ -67,7 +67,7 @@ const decreaseQty = async (productId: string) => {
       path: "/",
       maxAge: undefined,
     });
-    revalidatePath("/products");
+    revalidatePath("/", "layout");
   };
 
   return appendToQueue(task);
@@ -84,7 +84,7 @@ const removeFromCart = async (productId: string) => {
       path: "/",
       maxAge: undefined,
     });
-    revalidatePath("/products");
+    revalidatePath("/", "layout");
   };
 
   return appendToQueue(task);
@@ -103,7 +103,7 @@ const updateQty = async (productId: string, qty: number) => {
       path: "/",
       maxAge: undefined,
     });
-    revalidatePath("/products");
+    revalidatePath("/", "layout");
   };
 
   return appendToQueue(task);
