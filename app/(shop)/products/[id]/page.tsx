@@ -52,9 +52,8 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
 
         {/* actions */}
         <div className="bg-rose-50 p-2 rounded-2xl md:order-1 md:col-span-2">
-          <form action={addToCart.bind(null, id)}>
-            <ClientAddToCart productId={id} compType="products" />
-          </form>
+          {/* ithink form should used here */}
+          <ClientAddToCart productId={id} compType="products" />
         </div>
 
         <p className="text-sm text-gray-600 p-5">{product.description}</p>
