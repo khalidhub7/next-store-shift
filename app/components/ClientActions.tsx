@@ -13,7 +13,7 @@ import {
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Plus, Minus } from "lucide-react";
 import { TableCell } from "@/components/ui/table";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 
 // shared action between products/:id and cartDialog
@@ -85,15 +85,26 @@ type ClientUpdateQtyProps = {
 };
 
 const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
+  const oldValue = useRef(qty);
   const [newQty, setNewQty] = useState(qty);
 
   const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(e.target.value);
     setNewQty(newValue); // update UI immediately
-    await updateQty(productId, newValue);
-    toast.success("Product qty updated successfully.", {
-      position: "bottom-right",
-    });
+
+    await updateQty(productId, newValue)
+      .then(() => {
+        toast.success("Qty updated", {
+          position: "bottom-right",
+        });
+        oldValue.current = newValue;
+      })
+      .catch(async () => {
+        toast.success("Qty Update failed", {
+          position: "bottom-right",
+        });
+        await updateQty(productId, Number(oldValue));
+      });
   };
 
   return (
