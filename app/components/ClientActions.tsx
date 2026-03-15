@@ -15,7 +15,6 @@ import { Plus, Minus } from "lucide-react";
 import { TableCell } from "@/components/ui/table";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { revalidatePath } from "next/cache";
 
 // shared action between products/:id and cartDialog
 // used to add product or increase qty
