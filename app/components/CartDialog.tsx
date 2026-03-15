@@ -41,8 +41,7 @@ const CartDialog = async () => {
           <DialogDescription>Easily manage your cart.</DialogDescription>
         </DialogHeader>
 
-        </ClientCartTable>
-        
+        <ClientCartTable cart={cart} />
       </DialogContent>
     </Dialog>
   );

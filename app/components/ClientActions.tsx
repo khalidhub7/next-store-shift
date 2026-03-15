@@ -172,10 +172,4 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     </Table>
   );
 };
-export {
-  ClientAddToCart,
-  ClientDecreaseQty,
-  ClientRemoveFromCart,
-  ClientUpdateQty,
-  ClientCartTable,
-};
+export { ClientAddToCart, ClientCartTable };
