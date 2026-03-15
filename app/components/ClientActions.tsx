@@ -105,7 +105,6 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
           position: "bottom-right",
         });
         await updateQty(productId, oldValue.current);
-        revalidatePath("layout");
       });
   };
 

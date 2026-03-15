@@ -1,10 +1,14 @@
 import { cookies } from "next/headers";
 
 const reloadCart = async () => {
-  const appCookies = await cookies();
-  const request = appCookies.get("cart");
-  const cart = request ? JSON.parse(request.value) : [];
-  return { cart, appCookies };
+  try {
+    const appCookies = await cookies();
+    const cartCookie = appCookies.get("cart");
+    const cart = cartCookie ? JSON.parse(cartCookie.value) : [];
+    return { cart, appCookies };
+  } catch (_) {
+    throw new Error("failed to reload cart");
+  }
 };
 
 export default reloadCart;

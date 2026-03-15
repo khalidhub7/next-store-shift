@@ -13,7 +13,6 @@ import reloadCart from "@/lib/reloadCart";
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
 import { fetchProductById } from "@/lib/fetchProduct";
-import Error from "next/error";
 
 type Task = () => Promise<void>;
 
@@ -106,7 +105,9 @@ const updateQty = async (productId: string, qty: number) => {
         });
         revalidatePath("/", "layout");
       })
-      .catch(() => {});
+      .catch(() => {
+        revalidatePath("/", "layout");
+      });
   };
 
   return appendToQueue(task);
