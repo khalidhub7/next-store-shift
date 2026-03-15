@@ -8,31 +8,9 @@ import {
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { MoreHorizontalIcon, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import reloadCart from "@/lib/reloadCart";
-import { CartItem } from "@/types/product";
-import {
-  ClientAddToCart,
-  ClientDecreaseQty,
-  ClientRemoveFromCart,
-  ClientUpdateQty,
-} from "./ClientActions";
+import { ClientCartTable } from "./ClientActions";
 
 const CartDialog = async () => {
   const { cart } = await reloadCart();
@@ -63,45 +41,8 @@ const CartDialog = async () => {
           <DialogDescription>Easily manage your cart.</DialogDescription>
         </DialogHeader>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {cart.map((item: CartItem) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.title}</TableCell>
-                <TableCell>{item.price}</TableCell>
-                <ClientUpdateQty productId={item.id} qty={item.qty} />
-
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="size-8">
-                        <MoreHorizontalIcon />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-
-                    <DropdownMenuContent align="end">
-                      <ClientAddToCart compType="cart" productId={item.id} />
-                      <ClientDecreaseQty productId={item.id} />
-
-                      <DropdownMenuSeparator />
-                      <ClientRemoveFromCart productId={item.id} />
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        </ClientCartTable>
+        
       </DialogContent>
     </Dialog>
   );

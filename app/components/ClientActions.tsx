@@ -10,11 +10,26 @@ import {
   removeFromCart,
   updateQty,
 } from "@/app/actions/cart";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Plus, Minus } from "lucide-react";
-import { TableCell } from "@/components/ui/table";
+import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { CartItem } from "@/types/product";
 
 // shared action between products/:id and cartDialog
 // used to add product or increase qty
@@ -114,9 +129,53 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   );
 };
 
+const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Product</TableHead>
+          <TableHead>Price</TableHead>
+          <TableHead>Quantity</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {cart.map((item: CartItem) => (
+          <TableRow key={item.id}>
+            <TableCell className="font-medium">{item.title}</TableCell>
+            <TableCell>{item.price}</TableCell>
+            <ClientUpdateQty productId={item.id} qty={item.qty} />
+
+            <TableCell className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="size-8">
+                    <MoreHorizontalIcon />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end">
+                  <ClientAddToCart compType="cart" productId={item.id} />
+                  <ClientDecreaseQty productId={item.id} />
+
+                  <DropdownMenuSeparator />
+                  <ClientRemoveFromCart productId={item.id} />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
 export {
   ClientAddToCart,
   ClientDecreaseQty,
   ClientRemoveFromCart,
   ClientUpdateQty,
+  ClientCartTable,
 };
