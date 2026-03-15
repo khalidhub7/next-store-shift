@@ -15,6 +15,7 @@ import { Plus, Minus } from "lucide-react";
 import { TableCell } from "@/components/ui/table";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { revalidatePath } from "next/cache";
 
 // shared action between products/:id and cartDialog
 // used to add product or increase qty
@@ -100,10 +101,11 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
         oldValue.current = newValue;
       })
       .catch(async () => {
-        toast.success("Qty Update failed", {
+        toast.error("Qty Update failed", {
           position: "bottom-right",
         });
-        await updateQty(productId, Number(oldValue));
+        await updateQty(productId, oldValue.current);
+        revalidatePath("layout");
       });
   };
 

@@ -13,6 +13,7 @@ import reloadCart from "@/lib/reloadCart";
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
 import { fetchProductById } from "@/lib/fetchProduct";
+import Error from "next/error";
 
 type Task = () => Promise<void>;
 
@@ -60,7 +61,7 @@ const decreaseQty = async (productId: string) => {
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty - 1 } : item,
       )
-      .filter((item: CartItem) => (item.qty > 0));
+      .filter((item: CartItem) => item.qty > 0);
 
     appCookies.set("cart", JSON.stringify(newCart), {
       httpOnly: false,
@@ -92,18 +93,20 @@ const removeFromCart = async (productId: string) => {
 
 const updateQty = async (productId: string, qty: number) => {
   const task = async () => {
-    const { appCookies, cart } = await reloadCart();
+    await reloadCart()
+      .then(({ appCookies, cart }) => {
+        const newCart = cart.map((item: CartItem) =>
+          item.id === productId ? { ...item, qty } : item,
+        );
 
-    const newCart = cart.map((item: CartItem) =>
-      item.id === productId ? { ...item, qty } : item,
-    );
-
-    appCookies.set("cart", JSON.stringify(newCart), {
-      httpOnly: false,
-      path: "/",
-      maxAge: undefined,
-    });
-    revalidatePath("/", "layout");
+        appCookies.set("cart", JSON.stringify(newCart), {
+          httpOnly: false,
+          path: "/",
+          maxAge: undefined,
+        });
+        revalidatePath("/", "layout");
+      })
+      .catch(() => {});
   };
 
   return appendToQueue(task);
