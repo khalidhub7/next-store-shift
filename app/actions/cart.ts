@@ -46,7 +46,7 @@ const addToCart = async (productId: string) => {
       maxAge: undefined,
     });
     // usualy isr refresh every 1h so that is renew it immediately
-    revalidatePath("/", "layout");
+    revalidatePath("/products", "layout");
   };
 
   return appendToQueue(task);
@@ -67,7 +67,7 @@ const decreaseQty = async (productId: string) => {
       path: "/",
       maxAge: undefined,
     });
-    revalidatePath("/", "layout");
+    revalidatePath("/products", "layout");
   };
 
   return appendToQueue(task);
@@ -84,7 +84,7 @@ const removeFromCart = async (productId: string) => {
       path: "/",
       maxAge: undefined,
     });
-    revalidatePath("/", "layout");
+    revalidatePath("/products", "layout");
   };
 
   return appendToQueue(task);
@@ -103,10 +103,10 @@ const updateQty = async (productId: string, qty: number) => {
           path: "/",
           maxAge: undefined,
         });
-        revalidatePath("/", "layout");
+        revalidatePath("/products", "layout");
       })
       .catch(() => {
-        revalidatePath("/", "layout");
+        revalidatePath("/products", "layout");
       });
   };
 
