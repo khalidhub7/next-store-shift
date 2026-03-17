@@ -93,10 +93,20 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 };
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
-  const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
+  const [optimisticCart, setOptimisticCart] = useOptimistic(
+    cart,
+    (state, updater) => updater(state),
+  );
 
   const handleIncrease = async (productId: string) => {
+    // client update
+    const updater = () =>
+      optimisticCart.map((p) => {
+        p.id === productId ? { ...p, qty: p.qty + 1 } : p;
+      });
+
     toast.success("Product added successfully.", { position: "top-center" });
+    // server update
     await increaseQty(productId);
   };
   const handleDecrease = async (productId: string) => {
