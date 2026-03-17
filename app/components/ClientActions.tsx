@@ -9,6 +9,7 @@ import {
   decreaseQty,
   removeFromCart,
   updateQty,
+  increaseQty,
 } from "@/app/actions/cart";
 import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
 import { useOptimistic, useRef, useState } from "react";
@@ -125,9 +126,9 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
 
-  const handleIncrease = async (productId: string, by: number) => {
+  const handleIncrease = async (productId: string) => {
     toast.success("Product added successfully.", { position: "top-center" });
-    await addToCart(productId);
+    await increaseQty(productId);
   };
   const handleDecrease = async (productId: string) => {
     toast.success("Product Decrease successfully.", {
