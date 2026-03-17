@@ -105,7 +105,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
     await decreaseQty(productId);
   };
-  const handleRemove = async () => {
+  const handleRemove = async (productId: string) => {
     setOptimisticCart((prev) => {
       cart.filter((item: CartItem) => item.id !== productId);
     });
