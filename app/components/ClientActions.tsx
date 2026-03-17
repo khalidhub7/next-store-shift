@@ -98,14 +98,14 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     (state, updater) => updater(state),
   );
 
-  const handleIncrease = async (productId: string) => {
+  const handleIncrease = async (productId) => {
     // client update
-    const updater = () =>
-      optimisticCart.map((p) => {
-        p.id === productId ? { ...p, qty: p.qty + 1 } : p;
-      });
-
-    toast.success("Product added successfully.", { position: "top-center" });
+    setOptimisticCart((state) =>
+      state.map((p) => (p.id === productId ? { ...p, qty: p.qty + 1 } : p)),
+    );
+    toast.success("Product added successfully.", {
+      position: "top-center",
+    });
     // server update
     await increaseQty(productId);
   };
