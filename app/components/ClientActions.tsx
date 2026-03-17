@@ -62,21 +62,6 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 };
 
 // cartDialog dropdown actions
-const ClientDecreaseQty = ({ productId }: { productId: string }) => {
-  const handleDecreaseQty = async () => {
-    await decreaseQty(productId);
-    toast.success("Product Decrease successfully.", {
-      position: "bottom-right",
-    });
-  };
-
-  return (
-    <DropdownMenuItem onClick={handleDecreaseQty}>
-      <Minus className="mr-2" />
-      dec
-    </DropdownMenuItem>
-  );
-};
 
 const ClientRemoveFromCart = ({ productId }: { productId: string }) => {
   const handleRemoveFromCart = async () => {
@@ -153,7 +138,13 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
           <TableRow key={item.id}>
             <TableCell className="font-medium">{item.title}</TableCell>
             <TableCell>{item.price}</TableCell>
-            <ClientUpdateQty productId={item.id} qty={item.qty} />
+            <TableCell>
+              <Input
+                type="number"
+                value={newQty}
+                onChange={handleUpdateQty}
+              ></Input>
+            </TableCell>
 
             <TableCell className="text-right">
               <DropdownMenu>
@@ -170,7 +161,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
                     <Plus className="mr-2" /> inc
                   </DropdownMenuItem>
                   {/* dec */}
-                  <ClientDecreaseQty productId={item.id} />
+                  <DropdownMenuItem onClick={() => handleDecrease(item.id)}>
+                    <Minus className="mr-2" />
+                    dec
+                  </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
                   {/* rm */}
