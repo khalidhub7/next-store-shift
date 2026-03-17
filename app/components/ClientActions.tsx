@@ -34,7 +34,6 @@ import { CartItem } from "@/types/product";
 
 // shared action between products/:id and cartDialog
 // used to add product or increase qty
-type CompType = "products" | "cart";
 
 type ClientUpdateQtyProps = {
   productId: string;
@@ -62,21 +61,6 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 };
 
 // cartDialog dropdown actions
-
-const ClientRemoveFromCart = ({ productId }: { productId: string }) => {
-  const handleRemoveFromCart = async () => {
-    await removeFromCart(productId);
-    toast.success("Product removed successfully.", {
-      position: "bottom-right",
-    });
-  };
-
-  return (
-    <DropdownMenuItem variant="destructive" onClick={handleRemoveFromCart}>
-      Delete
-    </DropdownMenuItem>
-  );
-};
 
 const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   const oldValue = useRef(qty);
@@ -121,6 +105,12 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
     await decreaseQty(productId);
   };
+  const handleRemove = async () => {
+    await removeFromCart(productId);
+    toast.success("Product removed successfully.", {
+      position: "bottom-right",
+    });
+  };
 
   return (
     <Table>
@@ -138,13 +128,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
           <TableRow key={item.id}>
             <TableCell className="font-medium">{item.title}</TableCell>
             <TableCell>{item.price}</TableCell>
-            <TableCell>
-              <Input
-                type="number"
-                value={newQty}
-                onChange={handleUpdateQty}
-              ></Input>
-            </TableCell>
+            <ClientUpdateQty productId={item.id} qty={item.qty} />
 
             <TableCell className="text-right">
               <DropdownMenu>
@@ -168,7 +152,12 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
                   <DropdownMenuSeparator />
                   {/* rm */}
-                  <ClientRemoveFromCart productId={item.id} />
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => handleRemove()}
+                  >
+                    Delete
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
