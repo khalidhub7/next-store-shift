@@ -11,7 +11,7 @@ import {
   updateQty,
 } from "@/app/actions/cart";
 import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useOptimistic, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -35,19 +35,21 @@ import { CartItem } from "@/types/product";
 // used to add product or increase qty
 type CompType = "products" | "cart";
 
-const ClientAddToCart = ({
-  productId,
-  compType = "products",
-}: {
+type ClientUpdateQtyProps = {
   productId: string;
-  compType: CompType;
-}) => {
+  qty: number;
+};
+type ClientAddToCartProps = {
+  productId: string;
+};
+
+const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
   const handleAdd = async () => {
     await addToCart(productId);
     toast.success("Product added successfully.", { position: "top-center" });
   };
 
-  return compType === "products" ? (
+  return (
     <Button
       variant="destructive"
       className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
@@ -55,10 +57,6 @@ const ClientAddToCart = ({
     >
       add to cart
     </Button>
-  ) : (
-    <DropdownMenuItem onClick={handleAdd}>
-      <Plus className="mr-2" /> inc
-    </DropdownMenuItem>
   );
 };
 
@@ -94,11 +92,6 @@ const ClientRemoveFromCart = ({ productId }: { productId: string }) => {
   );
 };
 
-type ClientUpdateQtyProps = {
-  productId: string;
-  qty: number;
-};
-
 const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   const oldValue = useRef(qty);
   const [newQty, setNewQty] = useState(qty);
@@ -130,6 +123,19 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 };
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
+  const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
+
+  const handleIncrease = async (productId: string, by: number) => {
+    toast.success("Product added successfully.", { position: "top-center" });
+    await addToCart(productId);
+  };
+  const handleDecrease = async (productId: string) => {
+    toast.success("Product Decrease successfully.", {
+      position: "bottom-right",
+    });
+    await decreaseQty(productId);
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -158,10 +164,15 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-                  <ClientAddToCart compType="cart" productId={item.id} />
+                  {/* inc */}
+                  <DropdownMenuItem onClick={() => handleIncrease(item.id)}>
+                    <Plus className="mr-2" /> inc
+                  </DropdownMenuItem>
+                  {/* dec */}
                   <ClientDecreaseQty productId={item.id} />
 
                   <DropdownMenuSeparator />
+                  {/* rm */}
                   <ClientRemoveFromCart productId={item.id} />
                 </DropdownMenuContent>
               </DropdownMenu>

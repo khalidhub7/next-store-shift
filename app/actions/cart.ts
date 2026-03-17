@@ -52,6 +52,25 @@ const addToCart = async (productId: string) => {
   return appendToQueue(task);
 };
 
+const increaseQty = async (productId: string) => {
+  const task = async () => {
+    const { appCookies, cart } = await reloadCart();
+
+    const newCart = cart.map((item: CartItem) =>
+      item.id === productId ? { ...item, qty: item.qty + 1 } : item,
+    );
+
+    appCookies.set("cart", JSON.stringify(newCart), {
+      httpOnly: false,
+      path: "/",
+      maxAge: undefined,
+    });
+    revalidatePath("/products", "layout");
+  };
+
+  return appendToQueue(task);
+};
+
 const decreaseQty = async (productId: string) => {
   const task = async () => {
     const { appCookies, cart } = await reloadCart();
@@ -92,25 +111,23 @@ const removeFromCart = async (productId: string) => {
 
 const updateQty = async (productId: string, qty: number) => {
   const task = async () => {
-    await reloadCart()
-      .then(({ appCookies, cart }) => {
-        const newCart = cart.map((item: CartItem) =>
-          item.id === productId ? { ...item, qty } : item,
-        );
+    try {
+      const { appCookies, cart } = await reloadCart();
+      const newCart = cart.map((item: CartItem) =>
+        item.id === productId ? { ...item, qty } : item,
+      );
 
-        appCookies.set("cart", JSON.stringify(newCart), {
-          httpOnly: false,
-          path: "/",
-          maxAge: undefined,
-        });
-        revalidatePath("/products", "layout");
-      })
-      .catch(() => {
-        revalidatePath("/products", "layout");
+      appCookies.set("cart", JSON.stringify(newCart), {
+        httpOnly: false,
+        path: "/",
+        maxAge: undefined,
       });
+      revalidatePath("/products", "layout");
+    } catch {
+      revalidatePath("/products", "layout");
+    }
   };
-
   return appendToQueue(task);
 };
 
-export { addToCart, decreaseQty, removeFromCart, updateQty };
+export { addToCart, decreaseQty, removeFromCart, updateQty, increaseQty };
