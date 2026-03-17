@@ -14,6 +14,14 @@ import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
 import { fetchProductById } from "@/lib/fetchProduct";
 
+import {
+  addToCartLogic,
+  increaseQtyLogic,
+  decreaseQtyLogic,
+  removeFromCartLogic,
+  updateQtyLogic,
+} from "@/lib/cartUtils";
+
 type Task = () => Promise<void>;
 
 // help to avoid race conditions

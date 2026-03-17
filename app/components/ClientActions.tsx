@@ -106,10 +106,13 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     await decreaseQty(productId);
   };
   const handleRemove = async () => {
-    await removeFromCart(productId);
+    setOptimisticCart((prev) => {
+      cart.filter((item: CartItem) => item.id !== productId);
+    });
     toast.success("Product removed successfully.", {
       position: "bottom-right",
     });
+    await removeFromCart(productId);
   };
 
   return (
