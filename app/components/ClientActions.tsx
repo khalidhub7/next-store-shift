@@ -36,6 +36,7 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 
   return (
     <Button
+      type="button"
       variant="destructive"
       className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
       onClick={handleAdd}
