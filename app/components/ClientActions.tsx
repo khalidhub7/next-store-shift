@@ -1,36 +1,21 @@
 // client actions allow toast
 
 "use client";
-
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  addToCart,
-  decreaseQty,
-  removeFromCart,
-  updateQty,
-  increaseQty,
-} from "@/app/actions/cart";
-import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
-import { useOptimistic, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { CartItem } from "@/types/product";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useOptimistic, useRef, useState } from "react";
+import { addToCart, decreaseQty } from "@/app/actions/cart";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Table, TableBody, TableCell } from "@/components/ui/table";
+import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { removeFromCart, updateQty, increaseQty } from "@/app/actions/cart";
 
 // shared action between products/:id and cartDialog
 // used to add product or increase qty
@@ -66,29 +51,27 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   const oldValue = useRef(qty);
   const [newQty, setNewQty] = useState(qty);
 
-  const handleUpdateQty = async (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-  const prev = newQty;
-  const value = Number(e.target.value);
+  const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const prev = newQty;
+    const value = Number(e.target.value);
 
-  setNewQty(value);
+    setNewQty(value);
 
-  const id = toast.loading("Updating quantity...", {
-    position: "top-center",
-  });
+    const id = toast.loading("Updating quantity...", {
+      position: "top-center",
+    });
 
-  const options = { id, position: "top-center" } as const;
+    const options = { id, position: "top-center" } as const;
 
-  try {
-    await updateQty(productId, value);
-    toast.success("Quantity updated", options);
-    oldValue.current = value;
-  } catch {
-    setNewQty(prev);
-    toast.error("Couldn't update quantity", options);
-  }
-};
+    try {
+      await updateQty(productId, value);
+      toast.success("Quantity updated", options);
+      oldValue.current = value;
+    } catch {
+      setNewQty(prev);
+      toast.error("Couldn't update quantity", options);
+    }
+  };
 
   return (
     <TableCell>
