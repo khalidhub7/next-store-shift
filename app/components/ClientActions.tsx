@@ -40,7 +40,7 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
         id,
         position: "top-center",
       });
-    } catch (error) {
+    } catch {
       toast.error("Failed to add item", {
         id,
         position: "top-center",

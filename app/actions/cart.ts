@@ -1,12 +1,12 @@
 // in real production should update db here
 // and cookies should store just cartId
 /*
-    Client → addToCart(productId)
-    Server → read cartId cookie
-    Server → fetch cart from DB
-    Server → update cart
-    Server → save cart
-    */
+Client → addToCart(productId)
+Server → read cartId cookie
+Server → fetch cart from DB
+Server → update cart
+Server → save cart
+*/
 
 "use server";
 import reloadCart from "@/lib/reloadCart";
