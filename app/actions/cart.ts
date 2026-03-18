@@ -21,7 +21,6 @@ let resolveActionsQueue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
   resolveActionsQueue = resolveActionsQueue
     .then(() => task())
-    .catch(() => undefined);
   return resolveActionsQueue;
 };
 
@@ -112,6 +111,7 @@ const removeFromCart = async (productId: string) => {
 const updateQty = async (productId: string, qty: number) => {
   const task = async () => {
     try {
+      throw new Error("test error"); // force fail for testing
       const { appCookies, cart } = await reloadCart();
       const newCart = cart.map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,
@@ -123,8 +123,9 @@ const updateQty = async (productId: string, qty: number) => {
         maxAge: undefined,
       });
       revalidatePath("/products", "layout");
-    } catch {
+    } catch (err) {
       revalidatePath("/products", "layout");
+      throw err
     }
   };
   return appendToQueue(task);

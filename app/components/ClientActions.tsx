@@ -58,7 +58,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
     setNewQty(value);
 
     const id = toast.loading("Updating quantity...", {
-      position: "top-center",
+      position: "top-center"
     });
 
     const options = { id, position: "top-center" } as const;
@@ -75,7 +75,12 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 
   return (
     <TableCell>
-      <Input type="number" value={newQty} onChange={handleUpdateQty}></Input>
+      <Input
+        type="number"
+        value={newQty}
+        onBlur={handleUpdateQty}
+        onChange={(e) => setNewQty(Number(e.target.value))}
+      ></Input>
     </TableCell>
   );
 };
