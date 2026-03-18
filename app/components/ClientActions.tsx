@@ -58,7 +58,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
     setNewQty(value);
 
     const id = toast.loading("Updating quantity...", {
-      position: "top-center"
+      position: "top-center",
     });
 
     const options = { id, position: "top-center" } as const;

@@ -19,9 +19,9 @@ type Task = () => Promise<void>;
 // help to avoid race conditions
 let resolveActionsQueue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
-  resolveActionsQueue = resolveActionsQueue
-    .then(() => task())
-  return resolveActionsQueue;
+  const result = resolveActionsQueue.then(() => task()); // run task after queue
+  resolveActionsQueue = result.catch(() => {}); // queue never dies
+  return result; // caller gets the real error
 };
 
 const addToCart = async (productId: string) => {
@@ -111,7 +111,7 @@ const removeFromCart = async (productId: string) => {
 const updateQty = async (productId: string, qty: number) => {
   const task = async () => {
     try {
-      throw new Error("test error"); // force fail for testing
+      // throw new Error("test error"); // force fail for testing
       const { appCookies, cart } = await reloadCart();
       const newCart = cart.map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,
@@ -125,7 +125,7 @@ const updateQty = async (productId: string, qty: number) => {
       revalidatePath("/products", "layout");
     } catch (err) {
       revalidatePath("/products", "layout");
-      throw err
+      throw err;
     }
   };
   return appendToQueue(task);
