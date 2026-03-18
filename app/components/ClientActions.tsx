@@ -66,24 +66,29 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   const oldValue = useRef(qty);
   const [newQty, setNewQty] = useState(qty);
 
-  const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = Number(e.target.value);
-    setNewQty(newValue); // update UI immediately
+  const handleUpdateQty = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const prev = newQty;
+  const value = Number(e.target.value);
 
-    await updateQty(productId, newValue)
-      .then(() => {
-        toast.success("Qty updated", {
-          position: "bottom-right",
-        });
-        oldValue.current = newValue;
-      })
-      .catch(async () => {
-        toast.error("Qty Update failed", {
-          position: "bottom-right",
-        });
-        await updateQty(productId, oldValue.current);
-      });
-  };
+  setNewQty(value);
+
+  const id = toast.loading("Updating quantity...", {
+    position: "top-center",
+  });
+
+  const options = { id, position: "top-center" } as const;
+
+  try {
+    await updateQty(productId, value);
+    toast.success("Quantity updated", options);
+    oldValue.current = value;
+  } catch {
+    setNewQty(prev);
+    toast.error("Couldn't update quantity", options);
+  }
+};
 
   return (
     <TableCell>
