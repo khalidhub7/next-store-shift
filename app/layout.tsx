@@ -18,7 +18,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <footer className="flex h-14 border border-gray-200 items-center justify-center relative bottom-0 w-full mt-10">
           <p>learn next js</p>
         </footer>
-        <Toaster />
+        <Toaster richColors />
       </body>
     </html>
   );

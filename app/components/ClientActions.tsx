@@ -30,8 +30,22 @@ type ClientAddToCartProps = {
 
 const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
   const handleAdd = async () => {
-    await addToCart(productId);
-    toast.success("Product added successfully.", { position: "top-center" });
+    const id = toast.loading("Adding to cart ... ", {
+      position: "top-center",
+    });
+
+    try {
+      await addToCart(productId);
+      toast.success("Added to cart", {
+        id,
+        position: "top-center",
+      });
+    } catch (error) {
+      toast.error("Failed to add item", {
+        id,
+        position: "top-center",
+      });
+    }
   };
 
   return (
@@ -58,7 +72,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 
     setNewQty(value);
 
-    const id = toast.loading("Updating quantity...", {
+    const id = toast.loading("Saving ... ", {
       position: "top-center",
     });
 
@@ -70,7 +84,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
       oldValue.current = value;
     } catch {
       setNewQty(prev);
-      toast.error("Couldn't update quantity", options);
+      toast.error("Update failed", options);
     }
   };
 
@@ -94,7 +108,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     setOptimisticCart((state) =>
       state.map((p) => (p.id === productId ? { ...p, qty: p.qty + 1 } : p)),
     );
-    const id = toast.loading("Increasing quantity...", {
+    const id = toast.loading("Updating ... ", {
       position: "top-center",
       duration: 300,
     });
@@ -102,10 +116,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
     try {
       await increaseQty(productId);
-      toast.success("Quantity increased", options);
+      toast.success("+1 added", options);
     } catch {
       setOptimisticCart(prev);
-      toast.error("Couldn't increase quantity", options);
+      toast.error("Couldn't increase", options);
     }
   };
 
@@ -116,7 +130,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
       state.map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p)),
     );
 
-    const id = toast.loading("Decreasing quantity...", {
+    const id = toast.loading("Updating ... ", {
       position: "top-center",
       duration: 300,
     });
@@ -125,10 +139,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
     try {
       await decreaseQty(productId);
-      toast.success("Quantity decreased", options);
+      toast.success("-1 removed", options);
     } catch {
       setOptimisticCart(prev);
-      toast.error("Couldn't decrease quantity", options);
+      toast.error("Couldn't decrease", options);
     }
   };
 
@@ -137,7 +151,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
     setOptimisticCart((state) => state.filter((item) => item.id !== productId));
 
-    const id = toast.loading("Removing item...", {
+    const id = toast.loading("Removing ... ", {
       position: "top-center",
       duration: 300,
     });
