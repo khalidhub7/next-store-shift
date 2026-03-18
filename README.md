@@ -20,3 +20,8 @@ already learn zustand apply for (cart)
 
 
 next mission: see best project build by next js and get inspire
+
+
+- what is debounce, throttling
+
+test all visually (eyes), the tests if time 

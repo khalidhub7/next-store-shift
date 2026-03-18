@@ -1,5 +1,3 @@
-// client actions allow toast
-
 "use client";
 import { toast } from "sonner";
 import { CartItem } from "@/types/product";
@@ -17,34 +15,25 @@ import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { removeFromCart, updateQty, increaseQty } from "@/app/actions/cart";
 
-// shared action between products/:id and cartDialog
-// used to add product or increase qty
+// client actions > add toast
 
-type ClientUpdateQtyProps = {
-  productId: string;
-  qty: number;
-};
-type ClientAddToCartProps = {
-  productId: string;
-};
+type ClientAddToCartProps = { productId: string };
+type ClientUpdateQtyProps = { productId: string; qty: number };
 
 const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
+  const [onAction, setOnAction] = useState(false);
+
   const handleAdd = async () => {
+    setOnAction(true);
     const id = toast.loading("Adding to cart ... ", {
       position: "top-center",
     });
-
+    const options = { id, position: "top-center" } as const;
     try {
       await addToCart(productId);
-      toast.success("Added to cart", {
-        id,
-        position: "top-center",
-      });
+      toast.success("Added to cart", options);
     } catch {
-      toast.error("Failed to add item", {
-        id,
-        position: "top-center",
-      });
+      toast.error("Failed to add item", options);
     }
   };
 
