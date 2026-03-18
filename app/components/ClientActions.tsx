@@ -93,36 +93,70 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 };
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
-  const [optimisticCart, setOptimisticCart] = useOptimistic(
-    cart,
-    (state, updater) => updater(state),
-  );
+  const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
 
-  const handleIncrease = async (productId) => {
-    // client update
+  const handleIncrease = async (productId: string) => {
+    const prev = optimisticCart;
     setOptimisticCart((state) =>
       state.map((p) => (p.id === productId ? { ...p, qty: p.qty + 1 } : p)),
     );
-    toast.success("Product added successfully.", {
+    const id = toast.loading("Increasing quantity...", {
       position: "top-center",
+      duration: 300,
     });
-    // server update
-    await increaseQty(productId);
+    const options = { id, position: "top-center", duration: 300 } as const;
+
+    try {
+      await increaseQty(productId);
+      toast.success("Quantity increased", options);
+    } catch {
+      setOptimisticCart(prev);
+      toast.error("Couldn't increase quantity", options);
+    }
   };
+
   const handleDecrease = async (productId: string) => {
-    toast.success("Product Decrease successfully.", {
-      position: "bottom-right",
+    const prev = optimisticCart;
+
+    setOptimisticCart((state) =>
+      state.map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p)),
+    );
+
+    const id = toast.loading("Decreasing quantity...", {
+      position: "top-center",
+      duration: 300,
     });
-    await decreaseQty(productId);
+
+    const options = { id, position: "top-center", duration: 300 } as const;
+
+    try {
+      await decreaseQty(productId);
+      toast.success("Quantity decreased", options);
+    } catch {
+      setOptimisticCart(prev);
+      toast.error("Couldn't decrease quantity", options);
+    }
   };
+
   const handleRemove = async (productId: string) => {
-    setOptimisticCart((prev) => {
-      cart.filter((item: CartItem) => item.id !== productId);
+    const prev = optimisticCart;
+
+    setOptimisticCart((state) => state.filter((item) => item.id !== productId));
+
+    const id = toast.loading("Removing item...", {
+      position: "top-center",
+      duration: 300,
     });
-    toast.success("Product removed successfully.", {
-      position: "bottom-right",
-    });
-    await removeFromCart(productId);
+
+    const options = { id, position: "top-center", duration: 300 } as const;
+
+    try {
+      await removeFromCart(productId);
+      toast.success("Item removed", options);
+    } catch {
+      setOptimisticCart(prev);
+      toast.error("Couldn't remove item", options);
+    }
   };
 
   return (
@@ -167,7 +201,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
                   {/* rm */}
                   <DropdownMenuItem
                     variant="destructive"
-                    onClick={() => handleRemove()}
+                    onClick={() => handleRemove(item.id)}
                   >
                     Delete
                   </DropdownMenuItem>
