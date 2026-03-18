@@ -159,7 +159,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
       </TableHeader>
 
       <TableBody>
-        {cart.map((item: CartItem) => (
+        {optimisticCart.map((item: CartItem) => (
           <TableRow key={item.id}>
             <TableCell className="font-medium">{item.title}</TableCell>
             <TableCell>{item.price}</TableCell>
