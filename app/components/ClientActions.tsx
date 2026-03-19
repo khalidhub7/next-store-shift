@@ -1,6 +1,5 @@
 "use client";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { CartItem } from "@/types/product";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,20 +29,17 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
       position: "top-center",
     });
     const options = { id, position: "top-center" } as const;
-    try {
-      await addToCart(productId);
-      toast.success("Added to cart", options);
-      setOnAction(false);
-    } catch {
-      toast.error("Failed to add item", options);
-      setOnAction(false);
-    }
+
+    await addToCart(productId)
+      .then(() => toast.success("Added to cart", options))
+      .catch(() => toast.error("Failed to add item", options))
+      .finally(() => setOnAction(false));
   };
 
   return (
     <Button
       type="button"
-      variant={onAction ? "destructive" : "default"}
+      variant={onAction ? "default" : "destructive"}
       disabled={onAction}
       className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
       onClick={handleAdd}
