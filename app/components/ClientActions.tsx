@@ -112,7 +112,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
   };
 
-  const handleDecrease = async (productId: string) => {
+  const handleDecrease = (productId: string) => {
     startTransition(async () => {
       setOptimisticCart((state) =>
         state.map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p)),
