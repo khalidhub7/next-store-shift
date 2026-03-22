@@ -132,7 +132,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   };
 
   const handleRemove = async (productId: string) => {
-    const prev = optimisticCart;
+    /* const prev = optimisticCart;
 
     setOptimisticCart((state) => state.filter((item) => item.id !== productId));
 
@@ -149,7 +149,12 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     } catch {
       setOptimisticCart(prev);
       toast.error("Couldn't remove item", options);
-    }
+    } */
+
+    startTransition( async () => {
+
+    })
+
   };
 
   return (
