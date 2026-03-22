@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { CartItem } from "@/types/product";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useOptimistic, useRef, useState } from "react";
 import { addToCart, decreaseQty } from "@/app/actions/cart";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
@@ -12,6 +11,7 @@ import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell } from "@/components/ui/table";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { useTransition, useOptimistic, useRef, useState } from "react";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { removeFromCart, updateQty, increaseQty } from "@/app/actions/cart";
 
@@ -91,48 +91,44 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
+  const [_, startTransition] = useTransition();
 
-  const handleIncrease = async (productId: string) => {
-    const prev = optimisticCart;
-    setOptimisticCart((state) =>
-      state.map((p) => (p.id === productId ? { ...p, qty: p.qty + 1 } : p)),
-    );
-    const id = toast.loading("Updating ... ", {
-      position: "top-center",
-      duration: 300,
+  const handleIncrease = (productId: string) => {
+    startTransition(async () => {
+      // update ui immediately with fake data
+      setOptimisticCart((state) =>
+        state.map((p) => (p.id === productId ? { ...p, qty: p.qty + 1 } : p)),
+      );
+
+      const id = toast.loading("Updating ... ", {
+        position: "top-center",
+        duration: 300,
+      });
+      const options = { id, position: "top-center", duration: 300 } as const;
+
+      await increaseQty(productId)
+        .then(() => toast.success("+1 added", options))
+        .catch(() => toast.error("Couldn't increase", options));
     });
-    const options = { id, position: "top-center", duration: 300 } as const;
-
-    try {
-      await increaseQty(productId);
-      toast.success("+1 added", options);
-    } catch {
-      setOptimisticCart(prev);
-      toast.error("Couldn't increase", options);
-    }
   };
 
   const handleDecrease = async (productId: string) => {
-    const prev = optimisticCart;
+    startTransition(async () => {
+      setOptimisticCart((state) =>
+        state.map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p)),
+      );
 
-    setOptimisticCart((state) =>
-      state.map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p)),
-    );
+      const id = toast.loading("Updating ... ", {
+        position: "top-center",
+        duration: 300,
+      });
 
-    const id = toast.loading("Updating ... ", {
-      position: "top-center",
-      duration: 300,
+      const options = { id, position: "top-center", duration: 300 } as const;
+
+      await decreaseQty(productId)
+        .then(() => toast.success("-1 removed", options))
+        .catch(() => toast.error("Couldn't decrease", options));
     });
-
-    const options = { id, position: "top-center", duration: 300 } as const;
-
-    try {
-      await decreaseQty(productId);
-      toast.success("-1 removed", options);
-    } catch {
-      setOptimisticCart(prev);
-      toast.error("Couldn't decrease", options);
-    }
   };
 
   const handleRemove = async (productId: string) => {
