@@ -24,4 +24,5 @@ next mission: see best project build by next js and get inspire
 
 - what is debounce, throttling
 
+dir docker for project
 test all visually (eyes), the tests if time 
