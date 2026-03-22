@@ -89,6 +89,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   );
 };
 
+// rule: use optimistic just when value comes from server props
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const [_, startTransition] = useTransition();
@@ -131,30 +132,23 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
   };
 
-  const handleRemove = async (productId: string) => {
-    /* const prev = optimisticCart;
+  const handleRemove = (productId: string) => {
+    startTransition(async () => {
+      setOptimisticCart((state) =>
+        state.filter((item) => item.id !== productId),
+      );
 
-    setOptimisticCart((state) => state.filter((item) => item.id !== productId));
+      const id = toast.loading("Removing ... ", {
+        position: "top-center",
+        duration: 300,
+      });
 
-    const id = toast.loading("Removing ... ", {
-      position: "top-center",
-      duration: 300,
+      const options = { id, position: "top-center", duration: 300 } as const;
+
+      await removeFromCart(productId)
+        .then(() => toast.success("Item removed", options))
+        .catch(() => toast.error("Couldn't remove item", options));
     });
-
-    const options = { id, position: "top-center", duration: 300 } as const;
-
-    try {
-      await removeFromCart(productId);
-      toast.success("Item removed", options);
-    } catch {
-      setOptimisticCart(prev);
-      toast.error("Couldn't remove item", options);
-    } */
-
-    startTransition( async () => {
-
-    })
-
   };
 
   return (

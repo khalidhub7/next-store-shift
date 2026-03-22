@@ -29,7 +29,7 @@ const CartDialog = async () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent >
         <DialogHeader>
           <DialogTitle>Cart</DialogTitle>
           <DialogDescription>Easily manage your cart.</DialogDescription>
