@@ -11,8 +11,8 @@ import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell } from "@/components/ui/table";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useTransition, useOptimistic, useRef, useState } from "react";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useTransition, useOptimistic, useEffect, useState } from "react";
 import { removeFromCart, updateQty, increaseQty } from "@/app/actions/cart";
 
 // client actions > add toast
@@ -52,8 +52,11 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 // cartDialog dropdown actions
 
 const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
-  const oldValue = useRef(qty);
   const [newQty, setNewQty] = useState(qty);
+
+  useEffect(() => {
+    setNewQty(qty); // update qty in ui if the inc/dec triggered
+  }, [qty]);
 
   const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const prev = newQty;
@@ -67,14 +70,12 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 
     const options = { id, position: "top-center" } as const;
 
-    try {
-      await updateQty(productId, value);
-      toast.success("Quantity updated", options);
-      oldValue.current = value;
-    } catch {
-      setNewQty(prev);
-      toast.error("Update failed", options);
-    }
+    await updateQty(productId, value)
+      .then(() => toast.success("Quantity updated", options))
+      .catch(() => {
+        toast.error("Update failed", options);
+        setNewQty(prev);
+      });
   };
 
   return (
