@@ -13,7 +13,6 @@ import reloadCart from "@/lib/reloadCart";
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
 import { fetchProductById } from "@/lib/fetchProduct";
-import Error from "next/error";
 
 type Task = () => Promise<void>;
 
@@ -27,6 +26,7 @@ const appendToQueue = async (task: Task) => {
 
 const addToCart = async (productId: string) => {
   const task = async () => {
+    // throw new Error("just for test")
     let newCart: Array<CartItem>;
     const { appCookies, cart } = await reloadCart();
     const foundProduct = cart.find((i: CartItem) => i.id === productId);

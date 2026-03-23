@@ -13,7 +13,9 @@ const fetchProductById = async (id: string) => {
   }
 
   if (!res.ok) notFound();
-  return res.json() as Promise<Product>;
+
+  const product = await res.json() as Product;
+  return {...product, id: String(id)}
 }
 
 export { fetchProductById };
