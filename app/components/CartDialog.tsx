@@ -29,13 +29,15 @@ const CartDialog = async () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent >
+      <DialogContent className="flex flex-col max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle>Cart</DialogTitle>
-          <DialogDescription>Easily manage your cart.</DialogDescription>
+          <DialogTitle className="text-fuchsia-500" >Cart</DialogTitle>
+          <DialogDescription className="text-orange-400" >Easily manage your cart.</DialogDescription>
         </DialogHeader>
 
-        <ClientCartTable cart={cart} />
+        <div className="overflow-y-auto flex-1">
+          <ClientCartTable cart={cart} />
+        </div>
       </DialogContent>
     </Dialog>
   );

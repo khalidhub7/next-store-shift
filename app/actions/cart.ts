@@ -74,6 +74,7 @@ const increaseQty = async (productId: string) => {
 
 const decreaseQty = async (productId: string) => {
   const task = async () => {
+    // throw new Error("just for test")
     const { appCookies, cart } = await reloadCart();
 
     const newCart = cart
@@ -95,6 +96,7 @@ const decreaseQty = async (productId: string) => {
 
 const removeFromCart = async (productId: string) => {
   const task = async () => {
+    // throw new Error("just for test")
     const { appCookies, cart } = await reloadCart();
 
     const newCart = cart.filter((item: CartItem) => item.id !== productId);

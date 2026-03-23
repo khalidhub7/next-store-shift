@@ -52,6 +52,7 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 // cartDialog dropdown actions
 
 const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
+  // qty prop: is always the last server value
   const [newQty, setNewQty] = useState(qty);
 
   useEffect(() => {
@@ -59,7 +60,6 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   }, [qty]);
 
   const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const prev = newQty;
     const value = Number(e.target.value);
 
     setNewQty(value);
@@ -74,7 +74,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
       .then(() => toast.success("Quantity updated", options))
       .catch(() => {
         toast.error("Update failed", options);
-        setNewQty(prev);
+        setNewQty(qty);
       });
   };
 
@@ -95,6 +95,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const [_, startTransition] = useTransition();
 
+  // event handlers
   const handleIncrease = (productId: string) => {
     startTransition(async () => {
       // update ui immediately with fake data
@@ -166,7 +167,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
       <TableBody>
         {optimisticCart.map((item: CartItem) => (
           <TableRow key={item.id}>
-            <TableCell className="font-medium">{item.title}</TableCell>
+            <TableCell className="font-medium text-purple-400">{item.title}</TableCell>
             <TableCell>{item.price}</TableCell>
             <ClientUpdateQty productId={item.id} qty={item.qty} />
 
