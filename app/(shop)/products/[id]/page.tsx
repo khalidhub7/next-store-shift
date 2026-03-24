@@ -1,17 +1,9 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { Product } from "@/types/product";
-import { addToCart } from "@/app/actions/cart";
-import { ClientAddToCart } from "@/app/components/ClientActions";
+import { Carousel } from "@/components/ui/carousel";
 import { fetchProductById } from "@/lib/fetchProduct";
-
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { ClientAddToCart } from "@/app/components/ClientActions";
+import { CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 interface ProductDetailsProps {
   params: Promise<{ id: string }>;

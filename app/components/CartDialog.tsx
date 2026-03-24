@@ -31,8 +31,10 @@ const CartDialog = async () => {
 
       <DialogContent className="flex flex-col max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle className="text-fuchsia-500" >Cart</DialogTitle>
-          <DialogDescription className="text-orange-400" >Easily manage your cart.</DialogDescription>
+          <DialogTitle className="text-fuchsia-500">Cart</DialogTitle>
+          <DialogDescription className="text-orange-400">
+            Easily manage your cart.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="overflow-y-auto flex-1">
