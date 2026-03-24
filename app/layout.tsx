@@ -3,10 +3,7 @@ import Header from "./components/Header";
 import { Roboto } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+const roboto = Roboto({ subsets: ["latin"], weight: ["400", "700"] });
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
