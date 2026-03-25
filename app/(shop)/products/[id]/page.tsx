@@ -16,22 +16,25 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
   // console.log(`*** ${JSON.stringify(product)} ***`);
 
   return (
-    <section className="w-4/5 h-screen mx-auto p-8">
-      <article className="grid grid-cols-1 md:grid-cols-2">
-        <h1 className="md:col-span-2 text-fuchsia-500 font-bold p-5 flex items-center justify-center">
+    <section className="max-w-5xl mx-auto mt-16 px-6 pb-16">
+      <article className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        {/* Title */}
+        <h1 className="md:col-span-2 text-3xl font-bold text-gray-900 text-center">
           {product.title}
         </h1>
 
-        <Carousel className=" flex items-center justify-center">
-          <CarouselContent className="">
+        {/* Carousel */}
+        <Carousel className="flex items-center justify-center">
+          <CarouselContent>
             {product.images.map((current, i) => (
-              <CarouselItem key={i} className="">
+              <CarouselItem key={i}>
                 <Image
                   src={current}
                   alt={product.title}
                   width={300}
                   height={300}
-                  className="object-cover mx-auto"
+                  className="object-cover mx-auto rounded-xl"
                   sizes="(max-width: 768px) 100vw, 300px"
                 />
               </CarouselItem>
@@ -41,23 +44,47 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
           <CarouselNext />
         </Carousel>
 
+        {/* Description */}
+        <p className="text-gray-500 text-base leading-relaxed self-center">
+          {product.description}
+        </p>
+
         {/* actions */}
-        <div className="bg-rose-50 p-2 rounded-2xl md:order-1 md:col-span-2">
+        <div className="md:col-span-2 bg-gray-50 border border-gray-100 p-4 rounded-2xl">
           {/* ithink form should used here */}
           <ClientAddToCart productId={id} />
         </div>
 
-        <p className="text-sm text-gray-600 p-5">{product.description}</p>
-        <div className="md:order-2 md:col-span-2 p-5 border-4 border-t-transparent border-b-transparent shadow">
-          <ul className="flex flex-col md:flex-row items-center md:justify-around">
-            <li>rating : {product.rating}</li>
-            <li>stock : {product.stock}</li>
-            <li>category : {product.category}</li>
-            <li>brand : {product.brand}</li>
-            <li>discountPercentage : {product.discountPercentage}</li>
-            <li>price : {product.price}</li>
+        {/* Stats */}
+        <div className="md:col-span-2 border-y border-gray-100 py-5">
+          <ul className="flex flex-col md:flex-row items-center md:justify-around gap-3 text-sm text-gray-600">
+            <li className="flex flex-col items-center gap-1">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">Rating</span>
+              <span className="font-semibold text-gray-900">{product.rating}</span>
+            </li>
+            <li className="flex flex-col items-center gap-1">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">Stock</span>
+              <span className="font-semibold text-gray-900">{product.stock}</span>
+            </li>
+            <li className="flex flex-col items-center gap-1">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">Category</span>
+              <span className="font-semibold text-gray-900">{product.category}</span>
+            </li>
+            <li className="flex flex-col items-center gap-1">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">Brand</span>
+              <span className="font-semibold text-gray-900">{product.brand}</span>
+            </li>
+            <li className="flex flex-col items-center gap-1">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">Discount</span>
+              <span className="font-semibold text-emerald-600">{product.discountPercentage}%</span>
+            </li>
+            <li className="flex flex-col items-center gap-1">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">Price</span>
+              <span className="font-semibold text-emerald-600">${product.price}</span>
+            </li>
           </ul>
         </div>
+
       </article>
     </section>
   );
