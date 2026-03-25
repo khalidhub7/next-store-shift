@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 
 const Home = () => (
   <section className="max-w-2xl mx-auto mt-24 px-8 py-16 rounded-2xl text-center flex flex-col items-center gap-8">
-    
     <h1 className="text-5xl font-bold tracking-tight text-gray-900 hover:scale-105 transition-transform duration-300">
       GlowEssence
     </h1>
@@ -23,7 +22,6 @@ const Home = () => (
     >
       <Link href="/products">Discover</Link>
     </Button>
-
   </section>
 );
 
