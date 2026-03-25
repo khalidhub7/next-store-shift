@@ -2,12 +2,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const Home = () => (
-  <section className="md:max-w-4/5 mx-auto mt-10 p-12 rounded-lg shadow-md text-center flex flex-col gap-10">
-    <h1 className="text-4xl font-medium text-fuchsia-500 hover:scale-105 transition-transform duration-300">
+  <section className="max-w-2xl mx-auto mt-24 px-8 py-16 rounded-2xl text-center flex flex-col items-center gap-8">
+    
+    <h1 className="text-5xl font-bold tracking-tight text-gray-900 hover:scale-105 transition-transform duration-300">
       GlowEssence
     </h1>
 
-    <p>
+    <p className="text-gray-500 text-lg leading-relaxed">
       Elevate your beauty routine with everyday makeup essentials. From bold
       lipsticks to smooth mascaras and versatile palettes, our products are
       designed for quality, style, and confidence—at prices that fit your
@@ -18,10 +19,11 @@ const Home = () => (
       asChild
       size="lg"
       variant="destructive"
-      className="w-fit hover:opacity-80"
+      className="w-fit px-8 rounded-full font-semibold hover:opacity-80"
     >
-      <Link href="/products">discover</Link>
+      <Link href="/products">Discover</Link>
     </Button>
+
   </section>
 );
 
