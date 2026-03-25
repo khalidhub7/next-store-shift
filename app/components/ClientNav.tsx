@@ -1,7 +1,10 @@
 "use client";
+
 import Link from "next/link";
-import styles from "./Header.module.css";
 import { usePathname } from "next/navigation";
+
+import styles from "./Header.module.css";
+
 import { Button } from "@/components/ui/button";
 
 const links = [
@@ -13,8 +16,9 @@ const links = [
 
 const ClientNav = () => {
   const currentPath = usePathname();
+
   return (
-    <nav className="">
+    <nav>
       <ul className="flex w-3/4 justify-end gap-4">
         {links.map(({ href, label }) => {
           const isActive =

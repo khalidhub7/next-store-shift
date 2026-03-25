@@ -4,13 +4,12 @@ const Loading = () => {
   return (
     <section className="max-w-5xl mx-auto mt-16 px-6 pb-16">
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
         {/* Title */}
         <Skeleton className="h-9 w-1/2 mx-auto md:col-span-2" />
 
         {/* Carousel */}
         <div className="flex items-center justify-center">
-          <Skeleton className="h-[300px] w-[300px] rounded-xl" />
+          <Skeleton className="h-75 w-75 rounded-xl" />
         </div>
 
         {/* Description */}
@@ -36,7 +35,6 @@ const Loading = () => {
             ))}
           </div>
         </div>
-
       </article>
     </section>
   );

@@ -1,34 +1,65 @@
 "use client";
+
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
+
 import { CartItem } from "@/types/product";
-import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
-import { addToCart, decreaseQty } from "@/app/actions/cart";
-import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+
 import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
-import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Table, TableBody, TableCell } from "@/components/ui/table";
-import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useTransition, useOptimistic, useEffect, useState } from "react";
-import { removeFromCart, updateQty, increaseQty } from "@/app/actions/cart";
+
+import {
+  addToCart,
+  decreaseQty,
+  increaseQty,
+  removeFromCart,
+  updateQty,
+} from "@/app/actions/cart";
 
 // client actions > add toast
 
-type ClientAddToCartProps = { productId: string };
-type ClientUpdateQtyProps = { productId: string; qty: number };
+type ClientAddToCartProps = {
+  productId: string;
+};
+
+type ClientUpdateQtyProps = {
+  productId: string;
+  qty: number;
+};
 
 const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
   const [onAction, setOnAction] = useState(false);
 
   const handleAdd = async () => {
     setOnAction(true);
-    const id = toast.loading("Adding to cart ... ", {
+
+    const id = toast.loading("Adding to cart ...", {
       position: "top-center",
     });
-    const options = { id, position: "top-center" } as const;
+
+    const options = {
+      id,
+      position: "top-center",
+    } as const;
 
     await addToCart(productId)
       .then(() => toast.success("Added to cart", options))
@@ -41,8 +72,8 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
       type="button"
       variant={onAction ? "default" : "destructive"}
       disabled={onAction}
-      className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
       onClick={handleAdd}
+      className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
     >
       add to cart
     </Button>
@@ -53,6 +84,7 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 
 const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   // qty prop: is always the last server value
+
   const [newQty, setNewQty] = useState(qty);
 
   useEffect(() => {
@@ -64,11 +96,14 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 
     setNewQty(value);
 
-    const id = toast.loading("Saving ... ", {
+    const id = toast.loading("Saving ...", {
       position: "top-center",
     });
 
-    const options = { id, position: "top-center" } as const;
+    const options = {
+      id,
+      position: "top-center",
+    } as const;
 
     await updateQty(productId, value)
       .then(() => toast.success("Quantity updated", options))
@@ -85,17 +120,20 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
         value={newQty}
         onBlur={handleUpdateQty}
         onChange={(e) => setNewQty(Number(e.target.value))}
-      ></Input>
+      />
     </TableCell>
   );
 };
 
 // rule: use optimistic just when value comes from server props
+
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
-  const [_, startTransition] = useTransition();
+
+  const [, startTransition] = useTransition();
 
   // event handlers
+
   const handleIncrease = (productId: string) => {
     startTransition(async () => {
       // update ui immediately with fake data
@@ -103,11 +141,16 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         state.map((p) => (p.id === productId ? { ...p, qty: p.qty + 1 } : p)),
       );
 
-      const id = toast.loading("Updating ... ", {
+      const id = toast.loading("Updating ...", {
         position: "top-center",
         duration: 300,
       });
-      const options = { id, position: "top-center", duration: 300 } as const;
+
+      const options = {
+        id,
+        position: "top-center",
+        duration: 300,
+      } as const;
 
       await increaseQty(productId)
         .then(() => toast.success("+1 added", options))
@@ -121,12 +164,16 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         state.map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p)),
       );
 
-      const id = toast.loading("Updating ... ", {
+      const id = toast.loading("Updating ...", {
         position: "top-center",
         duration: 300,
       });
 
-      const options = { id, position: "top-center", duration: 300 } as const;
+      const options = {
+        id,
+        position: "top-center",
+        duration: 300,
+      } as const;
 
       await decreaseQty(productId)
         .then(() => toast.success("-1 removed", options))
@@ -140,12 +187,16 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         state.filter((item) => item.id !== productId),
       );
 
-      const id = toast.loading("Removing ... ", {
+      const id = toast.loading("Removing ...", {
         position: "top-center",
         duration: 300,
       });
 
-      const options = { id, position: "top-center", duration: 300 } as const;
+      const options = {
+        id,
+        position: "top-center",
+        duration: 300,
+      } as const;
 
       await removeFromCart(productId)
         .then(() => toast.success("Item removed", options))
@@ -170,7 +221,9 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
             <TableCell className="font-medium text-purple-400">
               {item.title}
             </TableCell>
+
             <TableCell>{item.price}</TableCell>
+
             <ClientUpdateQty productId={item.id} qty={item.qty} />
 
             <TableCell className="text-right">
@@ -185,8 +238,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
                 <DropdownMenuContent align="end">
                   {/* inc */}
                   <DropdownMenuItem onClick={() => handleIncrease(item.id)}>
-                    <Plus className="mr-2" /> inc
+                    <Plus className="mr-2" />
+                    inc
                   </DropdownMenuItem>
+
                   {/* dec */}
                   <DropdownMenuItem onClick={() => handleDecrease(item.id)}>
                     <Minus className="mr-2" />
@@ -194,6 +249,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
+
                   {/* rm */}
                   <DropdownMenuItem
                     variant="destructive"
@@ -210,4 +266,5 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     </Table>
   );
 };
+
 export { ClientAddToCart, ClientCartTable };

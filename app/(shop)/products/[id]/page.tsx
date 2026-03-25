@@ -18,7 +18,6 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
   return (
     <section className="max-w-5xl mx-auto mt-16 px-6 pb-16">
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
         {/* Title */}
         <h1 className="md:col-span-2 text-3xl font-bold text-gray-900 text-center">
           {product.title}
@@ -59,32 +58,55 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
         <div className="md:col-span-2 border-y border-gray-100 py-5">
           <ul className="flex flex-col md:flex-row items-center md:justify-around gap-3 text-sm text-gray-600">
             <li className="flex flex-col items-center gap-1">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">Rating</span>
-              <span className="font-semibold text-gray-900">{product.rating}</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Rating
+              </span>
+              <span className="font-semibold text-gray-900">
+                {product.rating}
+              </span>
             </li>
             <li className="flex flex-col items-center gap-1">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">Stock</span>
-              <span className="font-semibold text-gray-900">{product.stock}</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Stock
+              </span>
+              <span className="font-semibold text-gray-900">
+                {product.stock}
+              </span>
             </li>
             <li className="flex flex-col items-center gap-1">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">Category</span>
-              <span className="font-semibold text-gray-900">{product.category}</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Category
+              </span>
+              <span className="font-semibold text-gray-900">
+                {product.category}
+              </span>
             </li>
             <li className="flex flex-col items-center gap-1">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">Brand</span>
-              <span className="font-semibold text-gray-900">{product.brand}</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Brand
+              </span>
+              <span className="font-semibold text-gray-900">
+                {product.brand}
+              </span>
             </li>
             <li className="flex flex-col items-center gap-1">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">Discount</span>
-              <span className="font-semibold text-emerald-600">{product.discountPercentage}%</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Discount
+              </span>
+              <span className="font-semibold text-emerald-600">
+                {product.discountPercentage}%
+              </span>
             </li>
             <li className="flex flex-col items-center gap-1">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">Price</span>
-              <span className="font-semibold text-emerald-600">${product.price}</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Price
+              </span>
+              <span className="font-semibold text-emerald-600">
+                ${product.price}
+              </span>
             </li>
           </ul>
         </div>
-
       </article>
     </section>
   );

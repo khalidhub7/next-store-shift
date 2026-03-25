@@ -18,21 +18,23 @@ const CartDialog = async () => {
           aria-label="Open cart"
           variant="ghost"
           size="icon-lg"
-          className="p-1 fixed right-3 top-14"
+          className="p-1 fixed right-4 top-16 bg-white shadow-md rounded-full border border-gray-100 hover:shadow-lg transition-shadow duration-300"
         >
           <Image
             src="https://img.icons8.com/?size=100&id=8384&format=png&color=000000"
             alt="basket"
-            width={50}
-            height={50}
-          ></Image>
+            width={40}
+            height={40}
+          />
         </Button>
       </DialogTrigger>
 
       <DialogContent className="flex flex-col max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle className="text-fuchsia-500">Cart</DialogTitle>
-          <DialogDescription className="text-orange-400">
+          <DialogTitle className="text-xl font-bold text-gray-900">
+            Your Cart
+          </DialogTitle>
+          <DialogDescription className="text-gray-500 text-sm">
             Easily manage your cart.
           </DialogDescription>
         </DialogHeader>
