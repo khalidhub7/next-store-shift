@@ -1,45 +1,22 @@
 "use client";
-
-import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
-
 import { CartItem } from "@/types/product";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-
+import { Button } from "@/components/ui/button";
+import { removeFromCart, updateQty } from "../../actions/cart";
 import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
-
-import {
-  addToCart,
-  decreaseQty,
-  increaseQty,
-  removeFromCart,
-  updateQty,
-} from "../../actions/cart";
+import { Table, TableBody, TableCell } from "@/components/ui/table";
+import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
+import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { addToCart, decreaseQty, increaseQty } from "../../actions/cart";
+import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
+import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 // client actions > add toast
 
-type ClientAddToCartProps = {
-  productId: string;
-};
+type ClientAddToCartProps = { productId: string };
 
 type ClientUpdateQtyProps = {
   productId: string;
