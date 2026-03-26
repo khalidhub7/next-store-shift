@@ -1,4 +1,4 @@
-import CartDialog from "@/app/components/CartDialog";
+import CartDialog from "../../components/cart/CartDialog";
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => (
   <>

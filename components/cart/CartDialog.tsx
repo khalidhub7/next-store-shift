@@ -1,7 +1,7 @@
 import Image from "next/image";
 import reloadCart from "@/lib/reloadCart";
 import { Button } from "@/components/ui/button";
-import { ClientCartTable } from "./ClientActions";
+import { ClientCartTable } from "../client-parts/ClientActions";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogDescription } from "@/components/ui/dialog";

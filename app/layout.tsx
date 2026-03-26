@@ -1,5 +1,5 @@
 import "./globals.css";
-import Header from "./components/Header";
+import Header from "../components/layout/Header"
 import { Roboto } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 
