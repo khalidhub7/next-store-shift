@@ -33,7 +33,7 @@ import {
   increaseQty,
   removeFromCart,
   updateQty,
-} from "@/app/actions/cart";
+} from "../../actions/cart";
 
 // client actions > add toast
 
