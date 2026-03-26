@@ -1,5 +1,4 @@
-/* global error */
-// app/not-found.tsx
+/* products/:id err */
 
 const NotFound = () => (
   <section className="max-w-5xl mx-auto mt-16 px-6 pb-16 flex flex-col items-center justify-center gap-4 text-center">
