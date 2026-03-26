@@ -17,8 +17,7 @@ import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 // client actions > add toast
 
 type ClientAddToCartProps = { productId: string };
-
-type ClientUpdateQtyProps = { productId: string; qty: number; };
+type ClientUpdateQtyProps = { productId: string; qty: number };
 
 const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
   const [onAction, setOnAction] = useState(false);
