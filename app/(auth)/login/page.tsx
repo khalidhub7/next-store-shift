@@ -9,19 +9,17 @@ const Auth = async ({ searchParams }: any) => {
 
   return (
     <div className="h-96 flex flex-col items-center justify-center gap-3">
-      {/* Icon */}
+      {/* icon */}
       {isLoggedIn ? (
         <ShieldCheck className="w-10 h-10 text-emerald-500" />
       ) : (
         <ShieldOff className="w-10 h-10 text-rose-400" />
       )}
 
-      {/* Label */}
       <p className="text-sm text-muted-foreground font-mono tracking-widest uppercase">
         Auth Status
       </p>
 
-      {/* Badge */}
       <Badge
         variant={isLoggedIn ? "default" : "destructive"}
         className={cn(
