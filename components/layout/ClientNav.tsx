@@ -17,7 +17,7 @@ const ClientNav = () => {
 
   return (
     <nav>
-      <ul className="flex w-3/4 justify-end gap-4">
+      <ul className="flex w-3/4 justify-end gap-2 items-center">
         {links.map(({ href, label }) => {
           const isActive =
             href === "/" ? currentPath === "/" : currentPath.startsWith(href);
@@ -27,7 +27,11 @@ const ClientNav = () => {
               <Button
                 asChild
                 variant="outline"
-                className={isActive ? styles.active : ""}
+                className={`
+                  text-sm capitalize tracking-wide transition-all duration-200
+                  hover:scale-105
+                  ${isActive ? styles.active : "text-muted-foreground hover:text-foreground"}
+                `}
               >
                 <Link href={href}>{label}</Link>
               </Button>

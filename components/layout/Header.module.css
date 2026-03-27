@@ -1,5 +1,13 @@
 @reference "tailwindcss";
 
 .active {
-  @apply border-3 border-b-blue-500;
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+  font-weight: 600;
+}
+
+.active:hover {
+  background-color: #222;
+  color: #fff;
 }

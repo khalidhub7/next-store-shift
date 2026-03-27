@@ -9,10 +9,10 @@ Server → save cart
 */
 
 "use server";
-import reloadCart from "@/lib/reloadCart";
+import reloadCart from "@/lib/services/reloadCart";
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
-import { fetchProductById } from "@/lib/fetchProduct";
+import { fetchProductById } from "@/lib/services/fetchProduct";
 
 type Task = () => Promise<void>;
 
