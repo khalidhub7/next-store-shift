@@ -5,6 +5,8 @@ const reloadCart = async () => {
     const appCookies = await cookies();
     const cartCookie = appCookies.get("cart");
     const cart = cartCookie ? JSON.parse(cartCookie.value) : [];
+
+    
     return { cart, appCookies };
   } catch (_) {
     throw new Error("failed to reload cart");
@@ -12,3 +14,4 @@ const reloadCart = async () => {
 };
 
 export default reloadCart;
+

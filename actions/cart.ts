@@ -27,6 +27,10 @@ const appendToQueue = async (task: Task) => {
 const addToCart = async (productId: string) => {
   const task = async () => {
     // throw new Error("just for test")
+    // new logic
+
+
+    // old logic
     let newCart: Array<CartItem>;
     const { appCookies, cart } = await reloadCart();
     const foundProduct = cart.find((i: CartItem) => i.id === productId);
