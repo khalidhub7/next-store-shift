@@ -1,15 +1,6 @@
-// in real production should update db here
-// and cookies should store just cartId
-/*
-Client → addToCart(productId)
-Server → read cartId cookie
-Server → fetch cart from DB
-Server → update cart
-Server → save cart
-*/
-
 "use server";
-import reloadCart from "@/lib/services/reloadCart";
+import { getOrCreateCart } from "@/lib/services/getOrCreateCart";
+import { getCartById, updateCart } from "@/lib/db";
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
 import { fetchProductById } from "@/lib/services/fetchProduct";
@@ -27,30 +18,28 @@ const appendToQueue = async (task: Task) => {
 const addToCart = async (productId: string) => {
   const task = async () => {
     // throw new Error("just for test")
-    // new logic
+    try {
+      let newCart: Array<CartItem>;
+      const cartId = await getOrCreateCart(); // from cookie
+      const cart = await getCartById(cartId); // from db
 
+      // update cart in db
+      const productInCart = cart.find((i: CartItem) => i.id === productId);
+      if (productInCart) {
+        newCart = cart.map((p: CartItem) => {
+          return p.id === productId ? { ...p, qty: p.qty + 1 } : p;
+        });
+      } else {
+        const { id, title, price } = await fetchProductById(productId);
+        newCart = [...cart, { id, title, price, qty: 1 }];
+      }
+      await updateCart(cartId, newCart);
 
-    // old logic
-    let newCart: Array<CartItem>;
-    const { appCookies, cart } = await reloadCart();
-    const foundProduct = cart.find((i: CartItem) => i.id === productId);
-
-    if (foundProduct) {
-      newCart = cart.map((p: CartItem) => {
-        return p.id === productId ? { ...p, qty: p.qty + 1 } : p;
-      });
-    } else {
-      const { id, title, price } = await fetchProductById(productId);
-      newCart = [...cart, { id, title, price, qty: 1 }];
+      // usualy isr refresh every 1h, so that is renew ui immediately
+      revalidatePath("/products", "layout");
+    } catch {
+      throw new Error("add to cart failed");
     }
-
-    appCookies.set("cart", JSON.stringify(newCart), {
-      httpOnly: false,
-      path: "/",
-      maxAge: undefined,
-    });
-    // usualy isr refresh every 1h so that is renew it immediately
-    revalidatePath("/products", "layout");
   };
 
   return appendToQueue(task);
@@ -59,18 +48,20 @@ const addToCart = async (productId: string) => {
 const increaseQty = async (productId: string) => {
   const task = async () => {
     // throw new Error("just for test")
-    const { appCookies, cart } = await reloadCart();
 
-    const newCart = cart.map((item: CartItem) =>
-      item.id === productId ? { ...item, qty: item.qty + 1 } : item,
-    );
+    try {
+      let newCart: Array<CartItem>;
+      const cartId = await getOrCreateCart();
+      const cart = await getCartById(cartId);
 
-    appCookies.set("cart", JSON.stringify(newCart), {
-      httpOnly: false,
-      path: "/",
-      maxAge: undefined,
-    });
-    revalidatePath("/products", "layout");
+      newCart = cart.map((item: CartItem) =>
+        item.id === productId ? { ...item, qty: item.qty + 1 } : item,
+      );
+      await updateCart(cartId, newCart); // update db
+      revalidatePath("/products", "layout");
+    } catch {
+      throw new Error("increase qty failed");
+    }
   };
 
   return appendToQueue(task);
@@ -79,20 +70,23 @@ const increaseQty = async (productId: string) => {
 const decreaseQty = async (productId: string) => {
   const task = async () => {
     // throw new Error("just for test")
-    const { appCookies, cart } = await reloadCart();
 
-    const newCart = cart
-      .map((item: CartItem) =>
-        item.id === productId ? { ...item, qty: item.qty - 1 } : item,
-      )
-      .filter((item: CartItem) => item.qty > 0);
+    try {
+      let newCart: Array<CartItem>;
+      const cartId = await getOrCreateCart();
+      const cart = await getCartById(cartId);
 
-    appCookies.set("cart", JSON.stringify(newCart), {
-      httpOnly: false,
-      path: "/",
-      maxAge: undefined,
-    });
-    revalidatePath("/products", "layout");
+      newCart = cart
+        .map((item: CartItem) =>
+          item.id === productId ? { ...item, qty: item.qty - 1 } : item,
+        )
+        .filter((item: CartItem) => item.qty > 0);
+
+      await updateCart(cartId, newCart);
+      revalidatePath("/products", "layout");
+    } catch {
+      throw new Error("decrease qty failed");
+    }
   };
 
   return appendToQueue(task);

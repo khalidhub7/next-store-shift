@@ -16,23 +16,23 @@ import { randomUUID } from "crypto";
 
 const filePath = path.join(process.cwd(), "lib/data/carts.json");
 
-async function getCarts() {
+const getCarts = async () => {
   const data = await fs.readFile(filePath, "utf-8");
   return JSON.parse(data);
-}
+};
 
-async function saveCarts(carts: any[]) {
+const saveCarts = async (carts: any[]) => {
   await fs.writeFile(filePath, JSON.stringify(carts, null, 2));
-}
+};
 
 // get cart
-export async function getCartById(id: string) {
+const getCartById = async (id: string) => {
   const carts = await getCarts();
   return carts.find((c: any) => c.id === id);
-}
+};
 
 // create cart → returns cartId
-export async function createCart(items: any[]) {
+const createCart = async (items: any[]) => {
   const carts = await getCarts();
 
   const newCart = {
@@ -47,10 +47,10 @@ export async function createCart(items: any[]) {
   await saveCarts(carts);
 
   return newCart.id;
-}
+};
 
 // update cart (replace items)
-export async function updateCart(id: string, items: any[]) {
+const updateCart = async (id: string, items: any[]) => {
   const carts = await getCarts();
 
   const newCarts = carts.map((c: any) =>
@@ -64,11 +64,13 @@ export async function updateCart(id: string, items: any[]) {
   );
 
   await saveCarts(newCarts);
-}
+};
 
 // delete cart
-export async function deleteCart(id: string) {
+const deleteCart = async (id: string) => {
   const carts = await getCarts();
   const newCarts = carts.filter((c: any) => c.id !== id);
   await saveCarts(newCarts);
-}
+};
+
+export { createCart, updateCart, deleteCart, getCartById };
