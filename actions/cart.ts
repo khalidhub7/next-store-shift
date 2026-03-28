@@ -20,21 +20,21 @@ const addToCart = async (productId: string) => {
   const task = async () => {
     // throw new Error("just for test")
     try {
-      let newCart: Array<CartItem>;
+      let newCartItems: Array<CartItem>;
       const cartId = await getOrCreateCart(); // from cookie
-      const cart = await getCartById(cartId); // from db
+      const { items: cartItems } = await getCartById(cartId); // from db
 
       // update cart in db
-      const productInCart = cart.find((i: CartItem) => i.id === productId);
+      const productInCart = cartItems.find((i: CartItem) => i.id === productId);
       if (productInCart) {
-        newCart = cart.map((p: CartItem) => {
+        newCartItems = cartItems.map((p: CartItem) => {
           return p.id === productId ? { ...p, qty: p.qty + 1 } : p;
         });
       } else {
         const { id, title, price } = await fetchProductById(productId);
-        newCart = [...cart, { id, title, price, qty: 1 }];
+        newCartItems = [...cartItems, { id, title, price, qty: 1 }];
       }
-      await updateCart(cartId, newCart);
+      await updateCart(cartId, newCartItems);
 
       // usualy isr refresh every 1h, so that is renew ui immediately
       revalidatePath("/products", "layout");
@@ -51,14 +51,14 @@ const increaseQty = async (productId: string) => {
     // throw new Error("just for test")
 
     try {
-      let newCart: Array<CartItem>;
+      let newCartItems: Array<CartItem>;
       const cartId = await getOrCreateCart();
-      const cart = await getCartById(cartId);
+      const { items: cartItems } = await getCartById(cartId);
 
-      newCart = cart.map((item: CartItem) =>
+      newCartItems = cartItems.map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty + 1 } : item,
       );
-      await updateCart(cartId, newCart); // update db
+      await updateCart(cartId, newCartItems); // update db
       revalidatePath("/products", "layout");
     } catch {
       throw new Error("increase qty failed");
@@ -73,17 +73,17 @@ const decreaseQty = async (productId: string) => {
     // throw new Error("just for test")
 
     try {
-      let newCart: Array<CartItem>;
+      let newCartItems: Array<CartItem>;
       const cartId = await getOrCreateCart();
-      const cart = await getCartById(cartId);
+      const { items: cartItems } = await getCartById(cartId);
 
-      newCart = cart
+      newCartItems = cartItems
         .map((item: CartItem) =>
           item.id === productId ? { ...item, qty: item.qty - 1 } : item,
         )
         .filter((item: CartItem) => item.qty > 0);
 
-      await updateCart(cartId, newCart);
+      await updateCart(cartId, newCartItems);
       revalidatePath("/products", "layout");
     } catch {
       throw new Error("decrease qty failed");
@@ -100,9 +100,11 @@ const removeFromCart = async (productId: string) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getOrCreateCart();
-      const cart = await getCartById(cartId);
+      const { items: cartItems } = await getCartById(cartId);
 
-      newCartItems = cart.items.filter((i: CartItem) => i.id !== productId);
+      newCartItems = cartItems.items.filter(
+        (i: CartItem) => i.id !== productId,
+      );
 
       await updateCart(cartId, newCartItems);
 
@@ -119,14 +121,14 @@ const updateQty = async (productId: string, qty: number) => {
   const task = async () => {
     // throw new Error("test error"); // force fail for testing
     try {
-      let newCart: Array<CartItem>;
+      let newCartItems: Array<CartItem>;
       const cartId = await getOrCreateCart();
-      const cart = await getCartById(cartId);
+      const { items: cartItems } = await getCartById(cartId);
 
-      newCart = cart.map((item: CartItem) =>
+      newCartItems = cartItems.map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,
       );
-      await updateCart(productId, newCart);
+      await updateCart(cartId, newCartItems);
 
       revalidatePath("/products", "layout");
     } catch {

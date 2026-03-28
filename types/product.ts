@@ -19,4 +19,12 @@ interface CartItem {
   qty: number;
 }
 
+interface Cart {
+  id: string;
+  userId: string;
+  items: CartItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type { Product, CartItem };
