@@ -1,9 +1,10 @@
 "use server";
-import { getOrCreateCart } from "@/lib/services/getOrCreateCart";
-import { getCartById, updateCart } from "@/lib/db";
+
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
+import { getCartById, updateCart, deleteCart } from "@/lib/db";
 import { fetchProductById } from "@/lib/services/fetchProduct";
+import { getOrCreateCart } from "@/lib/services/getOrCreateCart";
 
 type Task = () => Promise<void>;
 
@@ -95,16 +96,14 @@ const decreaseQty = async (productId: string) => {
 const removeFromCart = async (productId: string) => {
   const task = async () => {
     // throw new Error("just for test")
-    const { appCookies, cart } = await reloadCart();
 
-    const newCart = cart.filter((item: CartItem) => item.id !== productId);
-
-    appCookies.set("cart", JSON.stringify(newCart), {
-      httpOnly: false,
-      path: "/",
-      maxAge: undefined,
-    });
-    revalidatePath("/products", "layout");
+    try {
+      const cartId = await getOrCreateCart();
+      await deleteCart(cartId);
+      revalidatePath("/products", "layout");
+    } catch {
+      throw new Error("remove from cart failed");
+    }
   };
 
   return appendToQueue(task);
@@ -112,22 +111,20 @@ const removeFromCart = async (productId: string) => {
 
 const updateQty = async (productId: string, qty: number) => {
   const task = async () => {
+    // throw new Error("test error"); // force fail for testing
     try {
-      // throw new Error("test error"); // force fail for testing
-      const { appCookies, cart } = await reloadCart();
-      const newCart = cart.map((item: CartItem) =>
+      let newCart: Array<CartItem>;
+      const cartId = await getOrCreateCart();
+      const cart = await getCartById(cartId);
+
+      newCart = cart.map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,
       );
+      await updateCart(productId, newCart);
 
-      appCookies.set("cart", JSON.stringify(newCart), {
-        httpOnly: false,
-        path: "/",
-        maxAge: undefined,
-      });
       revalidatePath("/products", "layout");
-    } catch (err) {
-      revalidatePath("/products", "layout");
-      throw err;
+    } catch {
+      throw new Error("update qty failed");
     }
   };
   return appendToQueue(task);
