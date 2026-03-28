@@ -102,9 +102,7 @@ const removeFromCart = async (productId: string) => {
       const cartId = await getOrCreateCart();
       const { items: cartItems } = await getCartById(cartId);
 
-      newCartItems = cartItems.items.filter(
-        (i: CartItem) => i.id !== productId,
-      );
+      newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
 
       await updateCart(cartId, newCartItems);
 
