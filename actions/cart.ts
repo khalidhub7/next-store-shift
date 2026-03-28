@@ -98,8 +98,14 @@ const removeFromCart = async (productId: string) => {
     // throw new Error("just for test")
 
     try {
+      let newCartItems: Array<CartItem>;
       const cartId = await getOrCreateCart();
-      await deleteCart(cartId);
+      const cart = await getCartById(cartId);
+
+      newCartItems = cart.items.filter((i: CartItem) => i.id !== productId);
+
+      await updateCart(cartId, newCartItems);
+
       revalidatePath("/products", "layout");
     } catch {
       throw new Error("remove from cart failed");
