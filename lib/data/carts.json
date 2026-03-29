@@ -2,8 +2,15 @@
   {
     "id": "1a533886-bfa4-4b99-92e2-a0a777da9559",
     "userId": "unknown",
-    "items": [],
+    "items": [
+      {
+        "id": "79",
+        "title": "Asus Zenbook Pro Dual Screen Laptop",
+        "price": 1799.99,
+        "qty": 5
+      }
+    ],
     "createdAt": "2026-03-29T15:06:20.184Z",
-    "updatedAt": "2026-03-29T17:57:26.051Z"
+    "updatedAt": "2026-03-29T18:37:07.030Z"
   }
 ]
