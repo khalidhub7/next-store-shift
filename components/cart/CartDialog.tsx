@@ -1,13 +1,15 @@
 import Image from "next/image";
-import reloadCart from "@/lib/services/getOrCreateCart";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { ClientCartTable } from "../client-parts/ClientActions";
+import { getCartById } from "@/lib/db";
+import { getOrCreateCart } from "@/lib/services/getOrCreateCart";
 import { DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogDescription } from "@/components/ui/dialog";
 
 const CartDialog = async () => {
-  const { cart } = await reloadCart();
+  const cartId = await getOrCreateCart();
+  const { items: cartItems } =  await getCartById(cartId)
 
   // console.log(JSON.stringify(cart))
   return (
@@ -40,7 +42,7 @@ const CartDialog = async () => {
         </DialogHeader>
 
         <div className="overflow-y-auto flex-1">
-          <ClientCartTable cart={cart} />
+          <ClientCartTable cart={cartItems} />
         </div>
       </DialogContent>
     </Dialog>
