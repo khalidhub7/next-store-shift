@@ -5,9 +5,11 @@ const getOrCreateCart = async () => {
   try {
     const cookieStore = await cookies();
     const cookieCart = cookieStore.get("cart");
+    
 
     if (!cookieCart) {
       const newCartId = await createCart([]);
+      
       cookieStore.set("cart", newCartId, {
         maxAge: 60 * 60 * 24 * 3,
       });

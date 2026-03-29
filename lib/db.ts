@@ -28,11 +28,12 @@ const saveCarts = async (carts: any[]) => {
 // get cart
 const getCartById = async (id: string) => {
   const carts = await getCarts();
-  return carts.find((c: any) => c.id === id);
+  return carts.find((c: any) => c.id === id)
 };
 
 // create cart → returns cartId
 const createCart = async (items: any[]) => {
+  
   const carts = await getCarts();
 
   const newCart = {
@@ -42,6 +43,8 @@ const createCart = async (items: any[]) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
+
+  console.log(newCart)
 
   carts.push(newCart);
   await saveCarts(carts);
