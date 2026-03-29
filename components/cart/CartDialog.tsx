@@ -1,15 +1,17 @@
 import Image from "next/image";
+import { getCartById } from "@/lib/db";
+import { cookies } from "next/headers";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { ClientCartTable } from "../client-parts/ClientActions";
-import { getCartById } from "@/lib/db";
-import { getOrCreateCart } from "@/lib/services/getOrCreateCart";
 import { DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogDescription } from "@/components/ui/dialog";
 
 const CartDialog = async () => {
-  const cartId = await getOrCreateCart();
-  const { items: cartItems } =  await getCartById(cartId)
+  const cookieStore = await cookies()
+  const cartId = cookieStore.get("cart")?.value;
+  const cartItems = cartId ? (await getCartById(cartId)).items : [];
+
 
   // console.log(JSON.stringify(cart))
   return (
