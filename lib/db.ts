@@ -18,7 +18,7 @@ const filePath = path.join(process.cwd(), "lib/data/carts.json");
 
 const getCarts = async () => {
   const data = await fs.readFile(filePath, "utf-8");
-  return JSON.parse(data);
+  return data === "" ? [] : JSON.parse(data);
 };
 
 const saveCarts = async (carts: any[]) => {
@@ -43,8 +43,6 @@ const createCart = async (items: any[]) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
-
-  console.log(newCart)
 
   carts.push(newCart);
   await saveCarts(carts);
