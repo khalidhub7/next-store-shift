@@ -2,9 +2,9 @@
 
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
-import { getCartById, updateCart, deleteCart } from "@/lib/db";
+import { getCartById, updateCart, createCart } from "@/lib/db";
 import { fetchProductById } from "@/lib/services/fetchProduct";
-import { getOrCreateCart } from "@/lib/services/getOrCreateCart";
+import { cookies } from "next/headers";
 
 type Task = () => Promise<void>;
 
@@ -16,12 +16,27 @@ const appendToQueue = async (task: Task) => {
   return result; // caller gets the real error
 };
 
+// shared helper between actions
+
+const getCartId = async () => {
+  const cookieStore = await cookies();
+  const cookieCart = cookieStore.get("cart");
+  let cartId = cookieCart?.value;
+  if (!cartId) {
+    cartId = await createCart([]);
+    cookieStore.set("cart", cartId, {
+      maxAge: 60 * 60 * 24 * 3,
+    });
+  }
+  return cartId;
+};
+
 const addToCart = async (productId: string) => {
   const task = async () => {
     // throw new Error("just for test")
     try {
       let newCartItems: Array<CartItem>;
-      const cartId = await getOrCreateCart(); // from cookie
+      const cartId = await getCartId(); // from cookie
       const { items: cartItems } = await getCartById(cartId); // from db
 
       // update cart in db
@@ -52,7 +67,7 @@ const increaseQty = async (productId: string) => {
 
     try {
       let newCartItems: Array<CartItem>;
-      const cartId = await getOrCreateCart();
+      const cartId = await getCartId();
       const { items: cartItems } = await getCartById(cartId);
 
       newCartItems = cartItems.map((item: CartItem) =>
@@ -74,7 +89,7 @@ const decreaseQty = async (productId: string) => {
 
     try {
       let newCartItems: Array<CartItem>;
-      const cartId = await getOrCreateCart();
+      const cartId = await getCartId();
       const { items: cartItems } = await getCartById(cartId);
 
       newCartItems = cartItems
@@ -99,7 +114,7 @@ const removeFromCart = async (productId: string) => {
 
     try {
       let newCartItems: Array<CartItem>;
-      const cartId = await getOrCreateCart();
+      const cartId = await getCartId();
       const { items: cartItems } = await getCartById(cartId);
 
       newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
@@ -120,7 +135,7 @@ const updateQty = async (productId: string, qty: number) => {
     // throw new Error("test error"); // force fail for testing
     try {
       let newCartItems: Array<CartItem>;
-      const cartId = await getOrCreateCart();
+      const cartId = await getCartId();
       const { items: cartItems } = await getCartById(cartId);
 
       newCartItems = cartItems.map((item: CartItem) =>

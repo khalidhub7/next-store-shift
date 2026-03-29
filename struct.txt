@@ -56,7 +56,7 @@
 │   ├── db.ts
 │   ├── services
 │   │   ├── fetchProduct.ts
-│   │   └── reloadCart.ts
+│   │   └── getOrCreateCart.ts
 │   └── utils.ts
 ├── next-env.d.ts
 ├── next.config.ts
