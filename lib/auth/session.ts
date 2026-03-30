@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 
-const CreateSession = (userId: string) => {
+const CreateSessionObj = (userId: string) => {
   // session
   const createdAt = new Date();
   const session = {
@@ -13,6 +13,10 @@ const CreateSession = (userId: string) => {
       ).toISOString(),
     },
   };
-
   return session;
 };
+
+
+export { CreateSessionObj }
+
+// not complete yet

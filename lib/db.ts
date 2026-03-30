@@ -13,21 +13,33 @@ db.ts → connects to real DB
 import path from "path";
 import { promises as fs } from "fs";
 import { randomUUID } from "crypto";
-const filePath = path.join(process.cwd(), "lib/data/carts.json");
+import { CreateSessionObj } from "./auth/session";
+
+
+const cartsFilePath = path.join(process.cwd(), "lib/data/carts.json");
+const sessionsFilePath = path.join(process.cwd(), "lib/data/sessions.json");
 
 // cart crud helpers
 const getCarts = async () => {
-  const data = await fs.readFile(filePath, "utf-8");
+  const data = await fs.readFile(cartsFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
 const saveCarts = async (carts: any[]) => {
-  await fs.writeFile(filePath, JSON.stringify(carts, null, 2));
+  await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
+};
+// session crud helpers
+const getSessions = async () => {
+  const data = await fs.readFile(sessionsFilePath, "utf-8");
+  return data === "" ? [] : JSON.parse(data);
+};
+const saveSessions = async (sessions: any[]) => {
+  await fs.writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
 };
 
 // cart crud
 const getCartById = async (id: string) => {
   const carts = await getCarts();
-  return carts.find((c: any) => c.id === id)
+  return carts.find((c: any) => c.id === id);
 };
 const createCart = async (items: any[]) => {
   const carts = await getCarts();
@@ -62,7 +74,30 @@ const deleteCart = async (id: string) => {
 };
 
 // session crud
+const getSessionById = async (sessionId: string) => {
+  const sessions = await getSessions();
+  return sessions.find((s: any) => s.sessionId === sessionId);
+};
+const createSession = async (userId: string) => {
+  const sessions = await getSessions();
+  const newSession = CreateSessionObj(userId);
+  sessions.push(newSession);
+  await saveSessions(sessions);
+  return newSession.sessionId;
+};
 
+const deleteSession = async (sessionId: string) => {
+  const sessions = await getSessions();
+  const newSessions = sessions.filter((s: any) => s.sessionId !== sessionId);
+  await saveSessions(newSessions);
+};
 
-
-export { createCart, updateCart, deleteCart, getCartById };
+export {
+  createCart,
+  updateCart,
+  deleteCart,
+  getCartById,
+  createSession,
+  getSessionById,
+  deleteSession,
+};
