@@ -14,7 +14,5 @@ const CreateSession = (userId: string) => {
     },
   };
 
-  // store session reference (cookies)
-
-  // store session in db
+  return session;
 };

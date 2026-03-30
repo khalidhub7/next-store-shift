@@ -49,14 +49,18 @@
 ├── components.json
 ├── eslint.config.mjs
 ├── lib
+│   ├── auth
+│   │   ├── login.ts
+│   │   ├── logout.ts
+│   │   ├── requireUser.ts
+│   │   └── session.ts
 │   ├── data
 │   │   ├── carts.json
 │   │   ├── products.json
 │   │   └── users.json
 │   ├── db.ts
 │   ├── services
-│   │   ├── fetchProduct.ts
-│   │   └── getOrCreateCart.ts
+│   │   └── fetchProduct.ts
 │   └── utils.ts
 ├── next-env.d.ts
 ├── next.config.ts
@@ -70,4 +74,4 @@
 └── types
     └── product.ts
 
-20 directories, 50 files
+21 directories, 53 files
