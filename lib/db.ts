@@ -13,7 +13,6 @@ db.ts → connects to real DB
 import path from "path";
 import { promises as fs } from "fs";
 import { randomUUID } from "crypto";
-import { CreateSessionObj } from "./auth/session";
 
 
 const cartsFilePath = path.join(process.cwd(), "lib/data/carts.json");
@@ -74,19 +73,18 @@ const deleteCart = async (id: string) => {
 };
 
 // session crud
-const getSessionById = async (sessionId: string) => {
+const getSessionByIdInDb = async (sessionId: string) => {
   const sessions = await getSessions();
   return sessions.find((s: any) => s.sessionId === sessionId);
 };
-const createSession = async (userId: string) => {
+const createSessionInDb = async (session: any) => {
   const sessions = await getSessions();
-  const newSession = CreateSessionObj(userId);
-  sessions.push(newSession);
+  sessions.push(session);
   await saveSessions(sessions);
-  return newSession.sessionId;
+  return session.sessionId;
 };
 
-const deleteSession = async (sessionId: string) => {
+const deleteSessionFromDb = async (sessionId: string) => {
   const sessions = await getSessions();
   const newSessions = sessions.filter((s: any) => s.sessionId !== sessionId);
   await saveSessions(newSessions);
@@ -97,7 +95,7 @@ export {
   updateCart,
   deleteCart,
   getCartById,
-  createSession,
-  getSessionById,
-  deleteSession,
+  createSessionInDb,
+  getSessionByIdInDb,
+  deleteSessionFromDb,
 };

@@ -1,6 +1,19 @@
 import { randomUUID } from "crypto";
 
-const CreateSessionObj = (userId: string) => {
+/* 
+auth/* → create object
+db.ts → store
+actions/* → orchestrate
+*/
+
+/* 
+Then in actions
+const session = createSession(userId);
+await createSessionInDb(session);
+cookieStore.set("sessionId", session.sessionId);
+
+*/
+const createSession  = async (userId: string) => {
   // session
   const createdAt = new Date();
   const session = {
@@ -17,6 +30,4 @@ const CreateSessionObj = (userId: string) => {
 };
 
 
-export { CreateSessionObj }
-
-// not complete yet
+export { createSession }
