@@ -17,7 +17,6 @@ const appendToQueue = async (task: Task) => {
 };
 
 // shared helper between actions
-
 const getCartId = async () => {
   const cookieStore = await cookies();
   const cookieCart = cookieStore.get("cart");
@@ -140,7 +139,7 @@ const updateQty = async (productId: string, qty: number) => {
 
       newCartItems = cartItems.map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,
-      );
+      ).filter((item: CartItem) => item.qty > 0);
       await updateCart(cartId, newCartItems);
 
       revalidatePath("/products", "layout");
