@@ -2,7 +2,7 @@
 
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
-import { getCartById, updateCart, createCart } from "@/lib/db";
+import { getCart, updateCart, createCart } from "@/lib/db";
 import { fetchProductById } from "@/lib/services/fetchProduct";
 import { cookies } from "next/headers";
 
@@ -36,7 +36,7 @@ const addToCart = async (productId: string) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId(); // from cookie
-      const { items: cartItems } = await getCartById(cartId); // from db
+      const { items: cartItems } = await getCart(cartId); // from db
 
       // update cart in db
       const productInCart = cartItems.find((i: CartItem) => i.id === productId);
@@ -67,7 +67,7 @@ const increaseQty = async (productId: string) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCartById(cartId);
+      const { items: cartItems } = await getCart(cartId);
 
       newCartItems = cartItems.map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty + 1 } : item,
@@ -89,7 +89,7 @@ const decreaseQty = async (productId: string) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCartById(cartId);
+      const { items: cartItems } = await getCart(cartId);
 
       newCartItems = cartItems
         .map((item: CartItem) =>
@@ -114,7 +114,7 @@ const removeFromCart = async (productId: string) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCartById(cartId);
+      const { items: cartItems } = await getCart(cartId);
 
       newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
 
@@ -135,7 +135,7 @@ const updateQty = async (productId: string, qty: number) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCartById(cartId);
+      const { items: cartItems } = await getCart(cartId);
 
       newCartItems = cartItems.map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,

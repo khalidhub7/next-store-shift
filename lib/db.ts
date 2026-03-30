@@ -36,7 +36,7 @@ const saveSessions = async (sessions: any[]) => {
 };
 
 // cart crud
-const getCartById = async (id: string) => {
+const getCart = async (id: string) => {
   const carts = await getCarts();
   return carts.find((c: any) => c.id === id);
 };
@@ -73,18 +73,18 @@ const deleteCart = async (id: string) => {
 };
 
 // session crud
-const getSessionByIdInDb = async (sessionId: string) => {
+const getSession  = async (sessionId: string) => {
   const sessions = await getSessions();
   return sessions.find((s: any) => s.sessionId === sessionId);
 };
-const createSessionInDb = async (session: any) => {
+const saveSession  = async (session: any) => {
   const sessions = await getSessions();
   sessions.push(session);
   await saveSessions(sessions);
   return session.sessionId;
 };
 
-const deleteSessionFromDb = async (sessionId: string) => {
+const deleteSession  = async (sessionId: string) => {
   const sessions = await getSessions();
   const newSessions = sessions.filter((s: any) => s.sessionId !== sessionId);
   await saveSessions(newSessions);
@@ -94,8 +94,8 @@ export {
   createCart,
   updateCart,
   deleteCart,
-  getCartById,
-  createSessionInDb,
-  getSessionByIdInDb,
-  deleteSessionFromDb,
+  getCart,
+  getSession,
+  saveSession,
+  deleteSession,
 };
