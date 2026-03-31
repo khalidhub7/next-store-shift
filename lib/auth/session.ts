@@ -1,15 +1,17 @@
 import { randomUUID } from "crypto";
 
 /* 
-auth/* → create object
-db.ts → store
-actions/* → orchestrate
-*/
 
+lib/auth/* → create object
+lib/db.ts → store
+actions/* → orchestrate
+
+*/
 /* 
+
 Then in actions
-const session = createSession(userId);
-await createSessionInDb(session);
+const session = createSession(userId); // session logic
+await saveSession(session); // db func
 cookieStore.set("sessionId", session.sessionId);
 
 */
@@ -28,6 +30,16 @@ const createSession  = async (userId: string) => {
   };
   return session;
 };
+const getUserFromSession = async (sessionId: any) => {
+  if (!sessionId) return null;
+  // const session = ...; // get from db
+  // if (!session) return null;
+  // return ...; // get user
+}
+const destroySession = (sessionId: any) => {
+  // to handle later
+  return
+}
 
 
-export { createSession }
+export { createSession, getUserFromSession, destroySession }

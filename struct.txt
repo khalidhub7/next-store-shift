@@ -72,6 +72,7 @@
 ├── struct.txt
 ├── tsconfig.json
 └── types
-    └── product.ts
+    ├── product.ts
+    └── session.ts
 
-21 directories, 53 files
+21 directories, 54 files
