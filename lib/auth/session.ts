@@ -30,11 +30,11 @@ const createSession = async (userId: string) => {
   };
   return session;
 };
-const getUserFromSession = async (sessionId: any) => {
-  if (!sessionId) return null;
-  // const session = ...; // get from db
-  // if (!session) return null;
-  // return ...; // get user
+
+const getUserFromSession = async (session: any) => {
+  if (!session) return null;
+  
+  
 };
 const destroySession = (sessionId: any) => {
   // to handle later
