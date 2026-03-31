@@ -15,18 +15,16 @@ await saveSession(session); // db func
 cookieStore.set("sessionId", session.sessionId);
 
 */
-const createSession = async (userId: string) => {
+const createSession = (userId: string) => {
   // session
   const createdAt = new Date();
   const session = {
     sessionId: randomUUID(),
-    data: {
-      userId,
-      createdAt: createdAt.toISOString(),
-      expiresAt: new Date(
-        createdAt.getTime() + 1000 * 60 * 60 * 24 * 3, // 3 days
-      ).toISOString(),
-    },
+    userId,
+    createdAt: createdAt.toISOString(),
+    expiresAt: new Date(
+      createdAt.getTime() + 1000 * 60 * 60 * 24 * 3, // 3 days
+    ).toISOString(),
   };
   return session;
 };
@@ -36,11 +34,11 @@ const getUserFromSession = (session: any) => {
   return session.data.userId;
 };
 
-
-const destroySession = (sessionId: string) => {
-  return sessionId; // just pass it 👉 Actual delete → in actions using DB
+const destroySession = () => {
+  return
+  // delete should be in db layer only
+  // just pass it 👉 Actual delete → in actions using DB
 };
-
 
 const isSessionValid = (session: any) => {
   if (!session) return false;
