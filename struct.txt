@@ -58,10 +58,14 @@
 │   │   ├── carts.json
 │   │   ├── products.json
 │   │   └── users.json
-│   ├── db.ts
+│   ├── db
+│   │   ├── cart.ts
+│   │   ├── session.ts
+│   │   └── user.ts
 │   ├── services
 │   │   └── fetchProduct.ts
 │   └── utils.ts
+├── middleware.ts
 ├── next-env.d.ts
 ├── next.config.ts
 ├── package-lock.json
@@ -75,4 +79,4 @@
     ├── product.ts
     └── session.ts
 
-21 directories, 54 files
+22 directories, 57 files
