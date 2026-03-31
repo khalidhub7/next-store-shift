@@ -14,9 +14,7 @@ import path from "path";
 import { promises as fs } from "fs";
 import { randomUUID } from "crypto";
 
-
 const cartsFilePath = path.join(process.cwd(), "lib/data/carts.json");
-const sessionsFilePath = path.join(process.cwd(), "lib/data/sessions.json");
 
 // cart crud helpers
 const getCarts = async () => {
@@ -25,14 +23,6 @@ const getCarts = async () => {
 };
 const saveCarts = async (carts: any[]) => {
   await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
-};
-// session crud helpers
-const getSessions = async () => {
-  const data = await fs.readFile(sessionsFilePath, "utf-8");
-  return data === "" ? [] : JSON.parse(data);
-};
-const saveSessions = async (sessions: any[]) => {
-  await fs.writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
 };
 
 // cart crud
@@ -72,30 +62,4 @@ const deleteCart = async (id: string) => {
   await saveCarts(newCarts);
 };
 
-// session crud
-const getSession  = async (sessionId: string) => {
-  const sessions = await getSessions();
-  return sessions.find((s: any) => s.sessionId === sessionId);
-};
-const saveSession  = async (session: any) => {
-  const sessions = await getSessions();
-  sessions.push(session);
-  await saveSessions(sessions);
-  return session.sessionId;
-};
-
-const deleteSession  = async (sessionId: string) => {
-  const sessions = await getSessions();
-  const newSessions = sessions.filter((s: any) => s.sessionId !== sessionId);
-  await saveSessions(newSessions);
-};
-
-export {
-  createCart,
-  updateCart,
-  deleteCart,
-  getCart,
-  getSession,
-  saveSession,
-  deleteSession,
-};
+export { createCart, updateCart, deleteCart, getCart };

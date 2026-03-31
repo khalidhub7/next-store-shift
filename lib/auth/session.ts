@@ -15,7 +15,7 @@ await saveSession(session); // db func
 cookieStore.set("sessionId", session.sessionId);
 
 */
-const createSession  = async (userId: string) => {
+const createSession = async (userId: string) => {
   // session
   const createdAt = new Date();
   const session = {
@@ -35,11 +35,13 @@ const getUserFromSession = async (sessionId: any) => {
   // const session = ...; // get from db
   // if (!session) return null;
   // return ...; // get user
-}
+};
 const destroySession = (sessionId: any) => {
   // to handle later
-  return
-}
+  return;
+};
+const isSessionValid = () => {
+  return;
+};
 
-
-export { createSession, getUserFromSession, destroySession }
+export { createSession, getUserFromSession, destroySession, isSessionValid };

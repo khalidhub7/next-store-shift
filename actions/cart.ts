@@ -2,7 +2,7 @@
 
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
-import { getCart, updateCart, createCart } from "@/lib/db";
+import { getCart, updateCart, createCart } from "@/lib/db/cart";
 import { fetchProductById } from "@/lib/services/fetchProduct";
 import { cookies } from "next/headers";
 

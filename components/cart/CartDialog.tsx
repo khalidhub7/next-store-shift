@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getCartById } from "@/lib/db";
+import { getCartById } from "@/lib/db/cart";
 import { cookies } from "next/headers";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
