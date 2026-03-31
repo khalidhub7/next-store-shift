@@ -31,17 +31,20 @@ const createSession = async (userId: string) => {
   return session;
 };
 
-const getUserFromSession = async (session: any) => {
+const getUserFromSession = (session: any) => {
   if (!session) return null;
-  
-  
+  return session.data.userId;
 };
-const destroySession = (sessionId: any) => {
-  // to handle later
-  return;
+
+
+const destroySession = (sessionId: string) => {
+  return sessionId; // just pass it 👉 Actual delete → in actions using DB
 };
-const isSessionValid = () => {
-  return;
+
+
+const isSessionValid = (session: any) => {
+  if (!session) return false;
+  return new Date(session.data.expiresAt) > new Date();
 };
 
 export { createSession, getUserFromSession, destroySession, isSessionValid };
