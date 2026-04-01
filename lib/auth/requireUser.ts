@@ -1,26 +1,22 @@
-export const requireUser = async () => {
-  // 1. read cookie
-  const cookieStore = await /* cookies() */ null;
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { getSession } from "../db/session";
+
+const requireUser = async () => {
+  const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
 
-  if (!sessionId) {
-    /* redirect("/login") */
-  }
+  if (!sessionId) redirect("/login");
 
-  // 2. get session from DB
-  const session = await /* getSessionById(sessionId) */ null;
+  const session = await getSession(sessionId);
 
-  if (!session) {
-    /* redirect("/login") */
-  }
+  if (!session) redirect("/login");
 
-  // 3. check expiration
-  const isValid = /* isSessionValid(session) */ true;
+  const isExpired = new Date(session.expiresAt) < new Date();
 
-  if (!isValid) {
-    /* redirect("/login") */
-  }
+  if (isExpired) redirect("/login");
 
-  // 4. return userId
-  return session.data.userId;
+  return session.userId;
 };
+
+export { requireUser };
