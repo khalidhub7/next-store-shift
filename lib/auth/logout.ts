@@ -1,15 +1,12 @@
-export const logout = async () => {
-  // 1. read cookie
-  const cookieStore = await /* cookies() */ null;
-  const sessionId = cookieStore.get("sessionId")?.value;
+// helper (business logic)
+// only business logic
 
+import { deleteSession } from "../db/session";
+
+const logout = async (sessionId: string) => {
   if (!sessionId) return;
 
-  // 2. delete session from DB
-  await /* deleteSession(sessionId) */ null;
-
-  // 3. clear cookie
-  cookieStore.delete("sessionId");
-
-  return { success: true };
+  await deleteSession(sessionId); // from db
 };
+
+export { logout };

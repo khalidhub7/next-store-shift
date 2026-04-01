@@ -1,29 +1,41 @@
-export const login = async (email: string, password: string) => {
-  // 1. get user from DB
-  const user = /* getUserByEmail(email) */ null;
+// helper (business logic)
 
+/* 
+get user
+check password
+create session 
+return sessionId
+*/
+
+import bcrypt from "bcrypt";
+import { createSession } from "./session";
+import { saveSession } from "../db/session";
+import { getUserByEmail } from "../db/user";
+
+// helper (i think used just in that file)
+const comparePassword = async (
+  plainPwd: string,
+  hashedPwd: string,
+): Promise<boolean> => {
+  return await bcrypt.compare(plainPwd, hashedPwd);
+};
+
+const login = async (email: string, password: string) => {
+  const user = await getUserByEmail(email);
   if (!user) {
     throw new Error("user not found");
   }
-
-  // 2. check password
-  const isValid = /* comparePassword(password, user.password) */ true;
-
-  if (!isValid) {
+  if (!(await comparePassword(password, user.password))) {
     throw new Error("invalid credentials");
   }
 
-  // 3. create session
-  const session = await /* createSession(user.id) */ null;
+  // create session
+  const session = createSession(user.id);
+  await saveSession(session);
 
-  // 4. save session to DB
-  await /* saveSession(session) */ null;
+  // later in action/* set cookie
 
-  // 5. set cookie
-  const cookieStore = await /* cookies() */ null;
-  cookieStore.set("sessionId", session.sessionId, {
-    // maxAge, httpOnly, etc.
-  });
-
-  return { success: true };
+  return { sessionId: session.sessionId };
 };
+
+export { login };

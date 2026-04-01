@@ -35,7 +35,7 @@ const getUserFromSession = (session: any) => {
 };
 
 const destroySession = () => {
-  return
+  return;
   // delete should be in db layer only
   // just pass it 👉 Actual delete → in actions using DB
 };

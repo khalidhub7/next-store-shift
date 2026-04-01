@@ -1,6 +1,7 @@
 ../app-basics/
 ├── README.md
 ├── actions
+│   ├── auth.ts
 │   └── cart.ts
 ├── app
 │   ├── (auth)
@@ -52,6 +53,7 @@
 │   ├── auth
 │   │   ├── login.ts
 │   │   ├── logout.ts
+│   │   ├── register.ts
 │   │   ├── requireUser.ts
 │   │   └── session.ts
 │   ├── data
@@ -79,4 +81,4 @@
     ├── product.ts
     └── session.ts
 
-22 directories, 57 files
+22 directories, 59 files

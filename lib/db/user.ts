@@ -3,7 +3,7 @@
 
 Now (fake DB)
 data/*.json = source of truth
-db.ts = reads/writes files
+db/* = reads/writes files
 
 Later (real DB)
 DELETE data/ folder
@@ -26,12 +26,18 @@ const saveUsers = async (users: any[]) => {
 };
 
 // user crud
-const getUser = async (id: string) => {
+const getUserById = async (id: string) => {
   const users = await getUsers();
   return users.find((u: any) => u.id === id);
 };
 
+const getUserByEmail = async (email: string) => {
+  const users = await getUsers();
+  return users.find((u: any) => u.email === email);
+};
+
 const createUser = async (userData: any) => {
+  // userData like {email, pswd}
   const users = await getUsers();
   const newUser = {
     id: randomUUID(),
@@ -64,4 +70,4 @@ const deleteUser = async (id: string) => {
   await saveUsers(newUsers);
 };
 
-export { createUser, updateUser, deleteUser, getUser };
+export { createUser, updateUser, deleteUser, getUserById, getUserByEmail };
