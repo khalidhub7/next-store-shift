@@ -1,10 +1,28 @@
-middleware(request)
-  // 1. read cookie "sessionId"
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-  // 2. if route is protected:
-      // if no session → redirect /login
+const middleware = (request: NextRequest) => {
+  const sessionId = request.cookies.get("sessionId")?.value;
+  const { pathname } = request.nextUrl;
 
-  // 3. if logged in and visiting /login:
-      // redirect to /products
+  const isAuthPage = pathname.startsWith("/login");
+  const isProtected = pathname.startsWith("/checkout"); // add more if needed
 
-  // 4. otherwise → allow request
+  // not logged in → block protected routes
+  if (!sessionId && isProtected) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // logged in → block auth pages
+  if (sessionId && isAuthPage) {
+    return NextResponse.redirect(new URL("/products", request.url));
+  }
+
+  return NextResponse.next();
+};
+
+const config = {
+  matcher: [], // empty right now (handle later)
+};
+
+export { middleware, config };
