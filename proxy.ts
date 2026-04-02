@@ -8,12 +8,24 @@ const middleware = async (request: NextRequest) => {
   const protectedPages: Array<string> = []; // add more if later
   const sessionId = request.cookies.get("sessionId")?.value;
 
-  // to ensure 'sessionId' not fake we should do a lookup
+  // not logged in → block protected routes
+  if (!sessionId) {
+    for (const p of protectedPages) {
+      if (pathname.startsWith(p)) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+    }
+  }
+
+  // if 'sessionId' we should ensure that is not fake by lookup
   // best practice is redis (ram) lookup
   // but lets do db (disk) lookup temporarily
 
   if (sessionId) {
     const session = await getSession(sessionId);
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
     if (session) {
       const isValid = isSessionValid(session);
       const isAuthPage =
@@ -23,22 +35,19 @@ const middleware = async (request: NextRequest) => {
         // logged in → block auth pages
         return NextResponse.redirect(new URL("/products", request.url));
       }
-      // not logged in → block protected routes
-      if (!sessionId && isValid) {
-        return NextResponse.redirect(new URL("/login", request.url));
-      }
-      protectedPages.forEach((p) => {
+      // session exist but not valid → block protected routes
+      for (const p of protectedPages) {
         if (!isValid && pathname.startsWith(p)) {
           return NextResponse.redirect(new URL("/login", request.url));
         }
-      });
+      }
     }
   }
   return NextResponse.next();
 };
 
 const config = {
-  matcher: ["/login"], // empty right now (handle later)
+  matcher: ["/login", "/register"], // (handle later)
 };
 
 export { middleware, config };
