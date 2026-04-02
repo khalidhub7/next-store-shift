@@ -5,7 +5,7 @@ const middleware = (request: NextRequest) => {
   const sessionId = request.cookies.get("sessionId")?.value;
   const { pathname } = request.nextUrl;
 
-  const isAuthPage = pathname.startsWith("/login");
+  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/register");
   const isProtected = pathname.startsWith("/checkout"); // add more if needed
 
   // not logged in → block protected routes
@@ -22,7 +22,7 @@ const middleware = (request: NextRequest) => {
 };
 
 const config = {
-  matcher: [], // empty right now (handle later)
+  matcher: ["/login"], // empty right now (handle later)
 };
 
 export { middleware, config };
