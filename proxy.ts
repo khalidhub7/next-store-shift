@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getSession } from "./lib/db/session";
 import type { NextRequest } from "next/server";
 import { isSessionValid } from "./lib/auth/session";
-import { isValidElement } from "react";
 
 const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
