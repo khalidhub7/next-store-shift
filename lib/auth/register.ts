@@ -34,8 +34,6 @@ const register = async (email: string, password: string) => {
   const session = createSession(userId);
   await saveSession(session);
 
-  // later in action/* set cookie
-
   return { sessionId: session.sessionId, userId };
 };
 
