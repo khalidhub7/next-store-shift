@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { getSession } from "./lib/db/session";
 import type { NextRequest } from "next/server";
 import { isSessionValid } from "./lib/auth/session";
+import { isValidElement } from "react";
 
 const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
+  const protectedPages: Array<string> = []; // add more if later
   const sessionId = request.cookies.get("sessionId")?.value;
 
   // to ensure 'sessionId' not fake we should do a lookup
@@ -26,16 +28,13 @@ const middleware = async (request: NextRequest) => {
       if (!sessionId && isValid) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
+      protectedPages.forEach((p) => {
+        if (!isValid && pathname.startsWith(p)) {
+          return NextResponse.redirect(new URL("/login", request.url));
+        }
+      });
     }
   }
-
-  const isProtected = pathname.startsWith("/checkout"); // add more if needed
-
-  // not logged in → block protected routes
-  if (!sessionId && isProtected) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   return NextResponse.next();
 };
 
