@@ -5,7 +5,9 @@
 │   └── cart.ts
 ├── app
 │   ├── (auth)
-│   │   └── login
+│   │   ├── login
+│   │   │   └── page.tsx
+│   │   └── register
 │   │       └── page.tsx
 │   ├── (public)
 │   │   ├── about
@@ -82,4 +84,4 @@
     ├── product.ts
     └── session.ts
 
-22 directories, 60 files
+23 directories, 61 files
