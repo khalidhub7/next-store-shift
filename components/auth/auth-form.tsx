@@ -1,64 +1,62 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { authSchema } from "@/lib/validators/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import {
-  Card, CardContent, CardHeader, CardTitle
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import {
-  Form, FormField, FormItem, FormMessage
-} from "@/components/ui/form"
+type AuthFormProps = {
+  type: "login" | "register";
+  action: (data: FormValues) => Promise<void>;
+};
 
-import { loginSchema, registerSchema } from "@/lib/validators/auth"
-import { z } from "zod"
+type FormValues = z.infer<typeof authSchema>;
 
-type AuthFormProps =
-  | { type: "login" }
-  | { type: "register" }
+const AuthForm = ({ type }: AuthFormProps) => {
+  const [loading, setLoading] = useState(false);
 
-export function AuthForm({ type }: AuthFormProps) {
-  const schema = type === "login" ? loginSchema : registerSchema
+  const form = useForm<FormValues>({
+    resolver: zodResolver(authSchema),
+    defaultValues: {
+      type,
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues:
-      type === "login"
-        ? { email: "", password: "" }
-        : { name: "", email: "", password: "", confirmPassword: "" },
-  })
-
-  const [loading, setLoading] = useState(false)
-
-  async function onSubmit(values: z.infer<typeof schema>) {
+  const onSubmit = async (values: FormValues) => {
     try {
-      setLoading(true)
+      setLoading(true);
 
-      // 👉 replace with your API / server action
-      console.log(values)
-
+      if (values.type === "login") {
+        // 👉 login logic
+        console.log("LOGIN:", values);
+      } else {
+        // 👉 register logic
+        console.log("REGISTER:", values);
+      }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="max-w-sm mx-auto">
       <CardHeader>
-        <CardTitle>
-          {type === "login" ? "Login" : "Create account"}
-        </CardTitle>
+        <CardTitle>{type === "login" ? "Login" : "Create account"}</CardTitle>
       </CardHeader>
 
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Name (register only) */}
             {type === "register" && (
               <FormField
                 control={form.control}
@@ -72,6 +70,7 @@ export function AuthForm({ type }: AuthFormProps) {
               />
             )}
 
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -83,6 +82,7 @@ export function AuthForm({ type }: AuthFormProps) {
               )}
             />
 
+            {/* Password */}
             <FormField
               control={form.control}
               name="password"
@@ -94,6 +94,7 @@ export function AuthForm({ type }: AuthFormProps) {
               )}
             />
 
+            {/* Confirm Password (register only) */}
             {type === "register" && (
               <FormField
                 control={form.control}
@@ -115,12 +116,14 @@ export function AuthForm({ type }: AuthFormProps) {
               {loading
                 ? "Loading..."
                 : type === "login"
-                ? "Sign in"
-                : "Sign up"}
+                  ? "Sign in"
+                  : "Sign up"}
             </Button>
           </form>
         </Form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
+
+export default AuthForm;

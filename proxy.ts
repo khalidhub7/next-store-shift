@@ -24,30 +24,29 @@ const middleware = async (request: NextRequest) => {
   if (sessionId) {
     const session = await getSession(sessionId);
     if (!session) {
+      // fake session
       return NextResponse.redirect(new URL("/login", request.url));
     }
-    if (session) {
-      const isValid = isSessionValid(session);
-      const isAuthPage =
-        pathname.startsWith("/login") || pathname.startsWith("/register");
+    const isValid = isSessionValid(session);
+    const isAuthPage =
+      pathname.startsWith("/login") || pathname.startsWith("/register");
 
-      if (isValid && isAuthPage) {
-        // logged in → block auth pages
-        return NextResponse.redirect(new URL("/products", request.url));
-      }
-      // session exist but not valid → block protected routes
-      for (const p of protectedPages) {
-        if (!isValid && pathname.startsWith(p)) {
-          return NextResponse.redirect(new URL("/login", request.url));
-        }
+    if (isValid && isAuthPage) {
+      // logged in → block auth pages
+      return NextResponse.redirect(new URL("/products", request.url));
+    }
+    // session exist but not valid → block protected routes
+    for (const p of protectedPages) {
+      if (!isValid && pathname.startsWith(p)) {
+        return NextResponse.redirect(new URL("/login", request.url));
       }
     }
   }
   return NextResponse.next();
 };
 
-const config = {
+export const config = {
   matcher: ["/login", "/register"], // (handle later)
 };
 
-export { middleware, config };
+export default middleware;
