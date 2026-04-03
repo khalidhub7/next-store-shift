@@ -7,7 +7,6 @@ import { requireUser } from "@/lib/auth/requireUser";
 import { getCart, updateCart, createCart } from "@/lib/db/cart";
 import { fetchProductById } from "@/lib/services/fetchProduct";
 
-
 type Task = () => Promise<void>;
 
 // help to avoid race conditions
@@ -20,11 +19,12 @@ const appendToQueue = async (task: Task) => {
 
 // shared helper between actions
 const getCartId = async () => {
+  const userId =  await requireUser();
   const cookieStore = await cookies();
   const cookieCart = cookieStore.get("cart");
   let cartId = cookieCart?.value;
   if (!cartId) {
-    cartId = await createCart([]);
+    cartId = await createCart(userId, []);
     cookieStore.set("cart", cartId, {
       maxAge: 60 * 60 * 24 * 3,
     });
@@ -33,7 +33,6 @@ const getCartId = async () => {
 };
 
 const addToCart = async (productId: string) => {
-  await requireUser()
   const task = async () => {
     // throw new Error("just for test")
     try {

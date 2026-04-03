@@ -30,11 +30,11 @@ const getCart = async (id: string) => {
   const carts = await getCarts();
   return carts.find((c: any) => c.id === id);
 };
-const createCart = async (items: any[]) => {
+const createCart = async (userId: string, items: any[]) => {
   const carts = await getCarts();
   const newCart = {
     id: randomUUID(),
-    userId: "unknown",
+    userId,
     items,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -63,3 +63,5 @@ const deleteCart = async (id: string) => {
 };
 
 export { createCart, updateCart, deleteCart, getCart };
+
+
