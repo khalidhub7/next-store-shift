@@ -1,10 +1,12 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
+import { requireUser } from "@/lib/auth/requireUser";
 import { getCart, updateCart, createCart } from "@/lib/db/cart";
 import { fetchProductById } from "@/lib/services/fetchProduct";
-import { cookies } from "next/headers";
+
 
 type Task = () => Promise<void>;
 
@@ -31,6 +33,7 @@ const getCartId = async () => {
 };
 
 const addToCart = async (productId: string) => {
+  await requireUser()
   const task = async () => {
     // throw new Error("just for test")
     try {
@@ -137,9 +140,11 @@ const updateQty = async (productId: string, qty: number) => {
       const cartId = await getCartId();
       const { items: cartItems } = await getCart(cartId);
 
-      newCartItems = cartItems.map((item: CartItem) =>
-        item.id === productId ? { ...item, qty } : item,
-      ).filter((item: CartItem) => item.qty > 0);
+      newCartItems = cartItems
+        .map((item: CartItem) =>
+          item.id === productId ? { ...item, qty } : item,
+        )
+        .filter((item: CartItem) => item.qty > 0);
       await updateCart(cartId, newCartItems);
 
       revalidatePath("/products", "layout");
