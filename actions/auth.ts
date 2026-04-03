@@ -1,3 +1,5 @@
+"use server";
+
 import { cookies } from "next/headers";
 import { login } from "@/lib/auth/login";
 import { logout } from "@/lib/auth/logout";

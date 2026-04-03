@@ -7,17 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authSchema } from "@/lib/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { loginAction, registerAction } from "@/actions/auth";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-type AuthFormProps = {
-  type: "login" | "register";
-  action: (data: FormValues) => Promise<void>;
-};
+type AuthFormProps = { type: "login" | "register" };
 
 type FormValues = z.infer<typeof authSchema>;
 
-const AuthForm = ({ type, action }: AuthFormProps) => {
+const AuthForm = ({ type }: AuthFormProps) => {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<FormValues>({
@@ -34,8 +32,8 @@ const AuthForm = ({ type, action }: AuthFormProps) => {
   const onSubmit = async (values: FormValues) => {
     try {
       setLoading(true);
-
-      await action(values); // call API or server action here
+      // call API or server action here
+      await (type === "login" ? loginAction : registerAction)(values);
     } finally {
       setLoading(false);
     }

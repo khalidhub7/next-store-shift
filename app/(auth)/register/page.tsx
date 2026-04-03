@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const RegisterPage = () => {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <AuthForm type="register" action={registerAction} />
+      <AuthForm type="register"/>
     </div>
   );
 };

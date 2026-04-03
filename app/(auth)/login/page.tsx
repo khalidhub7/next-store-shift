@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const LoginPage = () => {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <AuthForm type="login" action={loginAction} />
+      <AuthForm type="login"/>
     </div>
   );
 }
