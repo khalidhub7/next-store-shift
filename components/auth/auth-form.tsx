@@ -17,7 +17,7 @@ type AuthFormProps = {
 
 type FormValues = z.infer<typeof authSchema>;
 
-const AuthForm = ({ type }: AuthFormProps) => {
+const AuthForm = ({ type, action }: AuthFormProps) => {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<FormValues>({
@@ -35,13 +35,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
     try {
       setLoading(true);
 
-      if (values.type === "login") {
-        // 👉 login logic
-        console.log("LOGIN:", values);
-      } else {
-        // 👉 register logic
-        console.log("REGISTER:", values);
-      }
+      await action(values); // call API or server action here
     } finally {
       setLoading(false);
     }
