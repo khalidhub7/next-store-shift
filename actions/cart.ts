@@ -20,6 +20,7 @@ const appendToQueue = async (task: Task) => {
 // shared helper between actions
 const getCartId = async () => {
   const userId =  await requireUser();
+
   const cookieStore = await cookies();
   const cookieCart = cookieStore.get("cart");
   let cartId = cookieCart?.value;
@@ -38,6 +39,7 @@ const addToCart = async (productId: string) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId(); // from cookie
+
       const { items: cartItems } = await getCart(cartId); // from db
 
       // update cart in db
@@ -54,8 +56,8 @@ const addToCart = async (productId: string) => {
 
       // usualy isr refresh every 1h, so that is renew ui immediately
       revalidatePath("/products", "layout");
-    } catch {
-      throw new Error("add to cart failed");
+    } catch (err: any) {
+      throw new Error(`add to cart failed err: ${err.message}`);
     }
   };
 
