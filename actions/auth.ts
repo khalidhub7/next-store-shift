@@ -2,12 +2,11 @@ import { cookies } from "next/headers";
 import { login } from "@/lib/auth/login";
 import { logout } from "@/lib/auth/logout";
 import { register } from "@/lib/auth/register";
+import { authSchema } from "@/lib/validators/auth";
 
-const loginAction = async (formData: FormData) => {
-  const { email, password } = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
+const loginAction = async (data: unknown) => {
+  const values = authSchema.parse(data); // server validation
+  const { email, password } = values;
   const { sessionId } = await login(email, password);
   if (sessionId) {
     const store = await cookies();
@@ -15,11 +14,9 @@ const loginAction = async (formData: FormData) => {
   }
 };
 
-const registerAction = async (formData: FormData) => {
-  const { email, password } = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
+const registerAction = async (data: unknown) => {
+  const values = authSchema.parse(data);
+  const { email, password } = values;
   const { sessionId, userId } = await register(email, password);
 
   if (sessionId && userId) {
@@ -38,4 +35,4 @@ const logoutAction = async () => {
   }
 };
 
-export { loginAction, registerAction };
+export { loginAction, registerAction, logoutAction };
