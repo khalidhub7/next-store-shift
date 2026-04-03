@@ -1,12 +1,15 @@
-import { AuthForm } from "@/components/auth/auth-form"
+import AuthForm from "@/components/auth/auth-form";
+import { registerAction } from "@/actions/auth";
 
-// ✅ always render fresh (no caching)
-export const dynamic = "force-dynamic"
+// always render fresh (no caching)
+export const dynamic = "force-dynamic";
 
-export default function RegisterPage() {
+const RegisterPage = () => {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <AuthForm type="register" />
+      <AuthForm type="register" action={registerAction} />
     </div>
-  )
-}
+  );
+};
+
+export default RegisterPage;
