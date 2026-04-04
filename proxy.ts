@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getSession } from "./lib/db/session";
 import type { NextRequest } from "next/server";
 import { isSessionValid } from "./lib/auth/session";
+import { cookies } from "next/headers";
+import { deleteSession } from "./lib/db/session";
 
 const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
@@ -28,6 +30,12 @@ const middleware = async (request: NextRequest) => {
       return NextResponse.redirect(new URL("/login", request.url));
     }
     const isValid = isSessionValid(session);
+    if (!isValid) {
+      const cookieStore = await cookies();
+      cookieStore.delete("sessionId");
+      await deleteSession(sessionId);
+    }
+
     const isAuthPage =
       pathname.startsWith("/login") || pathname.startsWith("/register");
 
