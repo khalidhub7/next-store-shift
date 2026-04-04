@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getSession } from "../db/session";
 import { deleteSession } from "../db/session";
 
-
 const requireUser = async () => {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
@@ -17,7 +16,8 @@ const requireUser = async () => {
   const isExpired = new Date(session.expiresAt) < new Date();
 
   if (isExpired) {
-    await deleteSession(sessionId)
+    await deleteSession(sessionId);
+    cookieStore.delete("sessionId");
     redirect("/login");
   }
 
