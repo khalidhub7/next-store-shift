@@ -13,8 +13,8 @@ const cookieOptions: any = {
   httpOnly: true,
   secure: true,
   sameSite: "lax",
-  maxAge: 60 * 60 * 24 * 3
-}
+  maxAge: 60 * 60 * 24 * 3,
+};
 
 // help to avoid race conditions
 let resolveActionsQueue = Promise.resolve();
@@ -26,7 +26,7 @@ const appendToQueue = async (task: Task) => {
 
 // shared helper between actions
 const getCartId = async () => {
-  const userId =  await requireUser();
+  const userId = await requireUser();
 
   const cookieStore = await cookies();
   const cookieCart = cookieStore.get("cart");
@@ -62,9 +62,9 @@ const addToCart = async (productId: string) => {
       // usualy isr refresh every 1h, so that is renew ui immediately
       revalidatePath("/products", "layout");
     } catch (err: any) {
-  if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
-  throw new Error("add to cart failed");
-}
+      if (err?.digest?.includes("NEXT_REDIRECT")) throw err; // allow redirect
+      throw new Error("Failed to add item");
+    }
   };
 
   return appendToQueue(task);
