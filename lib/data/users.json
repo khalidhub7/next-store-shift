@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": "000a5f11-b7e5-41b5-adf4-d07d61c086c3",
+    "email": "test12345@gmail.com",
+    "password": "$2b$10$f.cKyS8UxXUCxjcZydmj/eP/WK2XB1QAFjPUEYFF5jkb21/bcUMO6",
+    "createdAt": "2026-04-04T02:11:55.793Z",
+    "updatedAt": "2026-04-04T02:11:55.794Z"
+  }
+]

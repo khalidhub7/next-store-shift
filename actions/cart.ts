@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { CartItem } from "@/types/product";
 import { revalidatePath } from "next/cache";
+import { getCartByUserId } from "@/lib/db/cart";
 import { requireUser } from "@/lib/auth/requireUser";
 import { getCart, updateCart, createCart } from "@/lib/db/cart";
 import { fetchProductById } from "@/lib/services/fetchProduct";
@@ -26,12 +27,16 @@ const appendToQueue = async (task: Task) => {
 
 // shared helper between actions
 const getCartId = async () => {
-  const userId = await requireUser();
 
-  const cookieStore = await cookies();
-  const cookieCart = cookieStore.get("cart");
-  let cartId = cookieCart?.value;
+  const userId = await requireUser();
+  let cartId
+
+  // get cart by user_id
+  const userCart = await getCartByUserId(userId)
+  cartId = userCart?.cartId;
+
   if (!cartId) {
+    const cookieStore = await cookies()
     cartId = await createCart(userId, []);
     cookieStore.set("cart", cartId, cookieOptions);
   }

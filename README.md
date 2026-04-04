@@ -26,3 +26,7 @@ next mission: see best project build by next js and get inspire
 
 dir docker for project
 test all visually (eyes), the tests if time 
+
+
+Session Auth Best Practices:
+PracticeWhyRedis for session storage⚡ fast lookuphttpOnly cookie🔒 XSS protectionHTTPS only (secure flag)🔒 prevents network theftSession expiry⏰ auto logoutDelete on logout🔒 no dangling sessionsRotate sessionId after login🔒 prevents session fixationRate limit login attempts🔒 prevents brute forceCSRF protection🔒 prevents cross-site attacks

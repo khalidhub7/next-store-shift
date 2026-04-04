@@ -30,6 +30,10 @@ const getCart = async (id: string) => {
   const carts = await getCarts();
   return carts.find((c: any) => c.id === id);
 };
+const getCartByUserId = async (userId: string) => {
+  const carts = await getCarts();
+  return carts.find((c: any) => c.userId === userId) || null;
+};
 const createCart = async (userId: string, items: any[]) => {
   const carts = await getCarts();
   const newCart = {
@@ -62,6 +66,6 @@ const deleteCart = async (id: string) => {
   await saveCarts(newCarts);
 };
 
-export { createCart, updateCart, deleteCart, getCart };
+export { createCart, updateCart, deleteCart, getCart, getCartByUserId };
 
 
