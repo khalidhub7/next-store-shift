@@ -5,23 +5,26 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { authSchema } from "@/lib/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginAction, registerAction } from "@/actions/auth";
+import { LoginData, RegisterData } from "@/lib/validators/auth";
+import { loginSchema, registerSchema } from "@/lib/validators/auth";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type AuthFormProps = { type: "login" | "register" };
 
-type FormValues = z.infer<typeof authSchema>;
-
 const AuthForm = ({ type }: AuthFormProps) => {
   const [loading, setLoading] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(authSchema),
+  const loginForm = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const registerForm = useForm<RegisterData>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
-      type,
       name: "",
       email: "",
       password: "",
@@ -29,11 +32,18 @@ const AuthForm = ({ type }: AuthFormProps) => {
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
+  const form = type === "login" ? loginForm : registerForm;
+
+  const onSubmit = async (values: any) => {
     try {
       setLoading(true);
       // call API or server action here
-      await (type === "login" ? loginAction : registerAction)(values);
+
+      if (type === "login") {
+        await loginAction(values);
+      } else {
+        await registerAction(values);
+      }
     } finally {
       setLoading(false);
     }
