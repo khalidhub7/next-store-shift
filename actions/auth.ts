@@ -7,7 +7,6 @@ import { register } from "@/lib/auth/register";
 import { LoginData, RegisterData } from "@/lib/validators/auth";
 import { registerSchema, loginSchema } from "@/lib/validators/auth";
 
-
 const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   {
     httpOnly: true,
@@ -15,7 +14,6 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 3,
   };
-
 
 const loginAction = async (data: LoginData) => {
   const values = loginSchema.parse(data); // server validation
