@@ -4,17 +4,21 @@ import { cookies } from "next/headers";
 import { login } from "@/lib/auth/login";
 import { logout } from "@/lib/auth/logout";
 import { register } from "@/lib/auth/register";
-import { authSchema } from "@/lib/validators/auth";
+import { LoginData, RegisterData } from "@/lib/validators/auth";
+import { registerSchema, loginSchema } from "@/lib/validators/auth";
 
-const cookieOptions: any = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "lax",
-  maxAge: 60 * 60 * 24 * 3
-}
 
-const loginAction = async (data: unknown) => {
-  const values = authSchema.parse(data); // server validation
+const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
+  {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 3,
+  };
+
+
+const loginAction = async (data: LoginData) => {
+  const values = loginSchema.parse(data); // server validation
   const { email, password } = values;
   const { sessionId } = await login(email, password);
   if (sessionId) {
@@ -23,8 +27,8 @@ const loginAction = async (data: unknown) => {
   }
 };
 
-const registerAction = async (data: unknown) => {
-  const values = authSchema.parse(data);
+const registerAction = async (data: RegisterData) => {
+  const values = registerSchema.parse(data);
   const { email, password } = values;
   const { sessionId, userId } = await register(email, password);
 

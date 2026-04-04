@@ -27,16 +27,15 @@ const appendToQueue = async (task: Task) => {
 
 // shared helper between actions
 const getCartId = async () => {
-
   const userId = await requireUser();
-  let cartId
+  let cartId;
 
   // get cart by user_id
-  const userCart = await getCartByUserId(userId)
+  const userCart = await getCartByUserId(userId);
   cartId = userCart?.cartId;
 
   if (!cartId) {
-    const cookieStore = await cookies()
+    const cookieStore = await cookies();
     cartId = await createCart(userId, []);
     cookieStore.set("cart", cartId, cookieOptions);
   }
