@@ -62,8 +62,9 @@ const addToCart = async (productId: string) => {
       // usualy isr refresh every 1h, so that is renew ui immediately
       revalidatePath("/products", "layout");
     } catch (err: any) {
-      throw new Error(`add to cart failed err: ${err.message}`);
-    }
+  if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
+  throw new Error("add to cart failed");
+}
   };
 
   return appendToQueue(task);
