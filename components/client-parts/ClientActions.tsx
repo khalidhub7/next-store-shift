@@ -36,7 +36,13 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 
     await addToCart(productId)
       .then(() => toast.success("Added to cart", options))
-      .catch(() => toast.error("Failed to add item", options))
+      .catch((err: any) => {
+        if (err?.digest?.includes("NEXT_REDIRECT")) {
+          toast.warning("Please login first", options);
+        } else {
+          toast.error("Failed to add item", options);
+        }
+      })
       .finally(() => setOnAction(false));
   };
 
