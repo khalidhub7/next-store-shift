@@ -27,6 +27,8 @@
 │   ├── layout.tsx
 │   └── not-found.tsx
 ├── components
+│   ├── auth
+│   │   └── auth-form.tsx
 │   ├── cart
 │   │   └── CartDialog.tsx
 │   ├── client-parts
@@ -42,10 +44,13 @@
 │       ├── avatar.tsx
 │       ├── badge.tsx
 │       ├── button.tsx
+│       ├── card.tsx
 │       ├── carousel.tsx
 │       ├── dialog.tsx
 │       ├── dropdown-menu.tsx
+│       ├── form.tsx
 │       ├── input.tsx
+│       ├── label.tsx
 │       ├── skeleton.tsx
 │       ├── sonner.tsx
 │       └── table.tsx
@@ -69,13 +74,15 @@
 │   │   └── user.ts
 │   ├── services
 │   │   └── fetchProduct.ts
-│   └── utils.ts
-├── middleware.ts
+│   ├── utils.ts
+│   └── validators
+│       └── auth.ts
 ├── next-env.d.ts
 ├── next.config.ts
 ├── package-lock.json
 ├── package.json
 ├── postcss.config.mjs
+├── proxy.ts
 ├── public
 │   └── favicon.ico
 ├── struct.txt
@@ -84,4 +91,4 @@
     ├── product.ts
     └── session.ts
 
-23 directories, 61 files
+25 directories, 66 files

@@ -9,6 +9,13 @@ import { fetchProductById } from "@/lib/services/fetchProduct";
 
 type Task = () => Promise<void>;
 
+const cookieOptions: any = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "lax",
+  maxAge: 60 * 60 * 24 * 3
+}
+
 // help to avoid race conditions
 let resolveActionsQueue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
@@ -26,9 +33,7 @@ const getCartId = async () => {
   let cartId = cookieCart?.value;
   if (!cartId) {
     cartId = await createCart(userId, []);
-    cookieStore.set("cart", cartId, {
-      maxAge: 60 * 60 * 24 * 3,
-    });
+    cookieStore.set("cart", cartId, cookieOptions);
   }
   return cartId;
 };

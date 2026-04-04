@@ -31,7 +31,7 @@ const createSession = (userId: string) => {
 
 const getUserFromSession = (session: any) => {
   if (!session) return null;
-  return session.data.userId;
+  return session.userId;
 };
 
 const destroySession = () => {

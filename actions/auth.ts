@@ -6,13 +6,20 @@ import { logout } from "@/lib/auth/logout";
 import { register } from "@/lib/auth/register";
 import { authSchema } from "@/lib/validators/auth";
 
+const cookieOptions: any = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "lax",
+  maxAge: 60 * 60 * 24 * 3
+}
+
 const loginAction = async (data: unknown) => {
   const values = authSchema.parse(data); // server validation
   const { email, password } = values;
   const { sessionId } = await login(email, password);
   if (sessionId) {
     const store = await cookies();
-    store.set("sessionId", sessionId, { httpOnly: true });
+    store.set("sessionId", sessionId, cookieOptions);
   }
 };
 
@@ -23,7 +30,7 @@ const registerAction = async (data: unknown) => {
 
   if (sessionId && userId) {
     const store = await cookies();
-    store.set("sessionId", sessionId, { httpOnly: true });
+    store.set("sessionId", sessionId, cookieOptions);
   }
 };
 
