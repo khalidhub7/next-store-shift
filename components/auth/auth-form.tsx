@@ -1,28 +1,50 @@
 "use client";
 
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginAction, registerAction } from "@/actions/auth";
+import { loginSchema, LoginData } from "@/lib/validators/auth";
+import { registerSchema, RegisterData } from "@/lib/validators/auth";
+
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-type AuthFormProps = {
-  form: any;
-  onSubmit: (values: any) => void;
-  loading: boolean;
-  type: "login" | "register";
-};
+type Props = { type: "login" | "register"};
 
-const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
+const AuthForm = ({ type }: Props) => {
+  const isLogin = type === "login";
+
+  const form = useForm<LoginData | RegisterData>({
+    resolver: zodResolver(isLogin ? loginSchema : registerSchema),
+    defaultValues: isLogin
+      ? { email: "", password: "" }
+      : { name: "", email: "", password: "", confirmPassword: "" },
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (values: any) => {
+    try {
+      setLoading(true);
+      if (isLogin) await loginAction(values as LoginData);
+      else await registerAction(values as RegisterData);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Card className="max-w-sm mx-auto">
       <CardHeader>
-        <CardTitle>{type === "login" ? "Login" : "Create account"}</CardTitle>
+        <CardTitle>{isLogin ? "Login" : "Create account"}</CardTitle>
       </CardHeader>
-
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {type === "register" ? (
+            {!isLogin && (
               <FormField
                 control={form.control}
                 name="name"
@@ -33,8 +55,7 @@ const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
                   </FormItem>
                 )}
               />
-            ) : undefined}
-
+            )}
             <FormField
               control={form.control}
               name="email"
@@ -45,7 +66,6 @@ const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -56,8 +76,7 @@ const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
                 </FormItem>
               )}
             />
-
-            {type === "register" && (
+            {!isLogin && (
               <FormField
                 control={form.control}
                 name="confirmPassword"
@@ -73,13 +92,8 @@ const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
                 )}
               />
             )}
-
             <Button className="w-full" disabled={loading}>
-              {loading
-                ? "Loading..."
-                : type === "login"
-                  ? "Sign in"
-                  : "Sign up"}
+              {loading ? "Loading..." : isLogin ? "Sign in" : "Sign up"}
             </Button>
           </form>
         </Form>

@@ -1,46 +1,12 @@
-"use client";
-
-import { useForm } from "react-hook-form";
 import AuthForm from "@/components/auth/auth-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, RegisterData } from "@/lib/validators/auth";
-import { useState } from "react";
-import { registerAction } from "@/actions/auth";
+import { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "Register" };
 
-const RegisterPage = () => {
-  const form = useForm<RegisterData>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  const onSubmit = async (values: RegisterData) => {
-    try {
-      setLoading(true);
-      await registerAction(values);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <AuthForm
-        type="register"
-        form={form}
-        onSubmit={onSubmit}
-        loading={loading}
-      />
-    </div>
-  );
-};
+const RegisterPage = () => (
+  <div className="flex min-h-screen items-center justify-center p-4">
+    <AuthForm type="register" />
+  </div>
+);
 
 export default RegisterPage;
