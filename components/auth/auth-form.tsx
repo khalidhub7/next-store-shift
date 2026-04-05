@@ -12,7 +12,7 @@ import { registerSchema, RegisterData } from "@/lib/validators/auth";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-type Props = { type: "login" | "register"};
+type Props = { type: "login" | "register" };
 
 const AuthForm = ({ type }: Props) => {
   const isLogin = type === "login";
@@ -22,6 +22,7 @@ const AuthForm = ({ type }: Props) => {
     defaultValues: isLogin
       ? { email: "", password: "" }
       : { name: "", email: "", password: "", confirmPassword: "" },
+    mode: "onChange",
   });
 
   const [loading, setLoading] = useState(false);
