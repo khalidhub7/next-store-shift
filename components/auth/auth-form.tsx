@@ -22,7 +22,7 @@ const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {type === "register" && (
+            {type === "register" ? (
               <FormField
                 control={form.control}
                 name="name"
@@ -33,7 +33,7 @@ const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
                   </FormItem>
                 )}
               />
-            )}
+            ) : undefined}
 
             <FormField
               control={form.control}
