@@ -13,6 +13,7 @@ db.ts → connects to real DB
 import path from "path";
 import { promises as fs } from "fs";
 import { randomUUID } from "crypto";
+import { Cart, CartItem } from "@/types/cart";
 
 const cartsFilePath = path.join(process.cwd(), "lib/data/carts.json");
 
@@ -21,20 +22,21 @@ const getCarts = async () => {
   const data = await fs.readFile(cartsFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
-const saveCarts = async (carts: any[]) => {
+const saveCarts = async (carts: Array<Cart>) => {
   await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
 };
 
 // cart crud
 const getCart = async (id: string) => {
   const carts = await getCarts();
-  return carts.find((c: any) => c.id === id);
+  return carts.find((c: Cart) => c.id === id);
 };
+
 const getCartByUserId = async (userId: string) => {
   const carts = await getCarts();
-  return carts.find((c: any) => c.userId === userId) || null;
+  return carts.find((c: Cart) => c.userId === userId) || null;
 };
-const createCart = async (userId: string, items: any[]) => {
+const createCart = async (userId: string, items: Array<CartItem>) => {
   const carts = await getCarts();
   const newCart = {
     id: randomUUID(),
@@ -47,9 +49,9 @@ const createCart = async (userId: string, items: any[]) => {
   await saveCarts(carts);
   return newCart.id;
 };
-const updateCart = async (id: string, items: any[]) => {
+const updateCart = async (id: string, items: Array<CartItem>) => {
   const carts = await getCarts();
-  const newCarts = carts.map((c: any) =>
+  const newCarts = carts.map((c: Cart) =>
     c.id === id
       ? {
           ...c,
@@ -62,7 +64,7 @@ const updateCart = async (id: string, items: any[]) => {
 };
 const deleteCart = async (id: string) => {
   const carts = await getCarts();
-  const newCarts = carts.filter((c: any) => c.id !== id);
+  const newCarts = carts.filter((c: Cart) => c.id !== id);
   await saveCarts(newCarts);
 };
 

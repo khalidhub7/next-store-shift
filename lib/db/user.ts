@@ -13,6 +13,8 @@ db.ts → connects to real DB
 import path from "path";
 import { promises as fs } from "fs";
 import { randomUUID } from "crypto";
+import { User } from "@/types/user";
+import { RegisterData } from "../validators/auth";
 
 const usersFilePath = path.join(process.cwd(), "lib/data/users.json");
 
@@ -21,22 +23,22 @@ const getUsers = async () => {
   const data = await fs.readFile(usersFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
-const saveUsers = async (users: any[]) => {
+const saveUsers = async (users: Array<User>) => {
   await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
 };
 
 // user crud
 const getUserById = async (id: string) => {
   const users = await getUsers();
-  return users.find((u: any) => u.id === id);
+  return users.find((u: User) => u.id === id);
 };
 
 const getUserByEmail = async (email: string) => {
   const users = await getUsers();
-  return users.find((u: any) => u.email === email);
+  return users.find((u: User) => u.email === email);
 };
 
-const createUser = async (userData: any) => {
+const createUser = async (userData: RegisterData) => {
   // userData like {email, pswd}
   const users = await getUsers();
   const newUser = {
@@ -50,9 +52,9 @@ const createUser = async (userData: any) => {
   return newUser.id;
 };
 
-const updateUser = async (id: string, userData: any) => {
+const updateUser = async (id: string, userData: RegisterData) => {
   const users = await getUsers();
-  const newUsers = users.map((u: any) =>
+  const newUsers = users.map((u: User) =>
     u.id === id
       ? {
           ...u,
@@ -66,7 +68,7 @@ const updateUser = async (id: string, userData: any) => {
 
 const deleteUser = async (id: string) => {
   const users = await getUsers();
-  const newUsers = users.filter((u: any) => u.id !== id);
+  const newUsers = users.filter((u: User) => u.id !== id);
   await saveUsers(newUsers);
 };
 

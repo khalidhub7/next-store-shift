@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { Session } from "@/types/session";
 
 /* 
 
@@ -29,7 +30,7 @@ const createSession = (userId: string) => {
   return session;
 };
 
-const getUserFromSession = (session: any) => {
+const getUserFromSession = (session: Session) => {
   if (!session) return null;
   return session.userId;
 };
@@ -40,7 +41,7 @@ const destroySession = () => {
   // just pass it 👉 Actual delete → in actions using DB
 };
 
-const isSessionValid = (session: any) => {
+const isSessionValid = (session: Session) => {
   if (!session) return false;
   return new Date(session.expiresAt) > new Date();
 };

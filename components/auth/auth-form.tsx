@@ -28,7 +28,7 @@ const AuthForm = ({ type }: Props) => {
 
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: LoginData | RegisterData) => {
     try {
       setLoading(true);
       if (isLogin) await loginAction(values as LoginData);
