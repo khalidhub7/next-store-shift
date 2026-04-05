@@ -1,54 +1,18 @@
 "use client";
 
-import { z } from "zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginAction, registerAction } from "@/actions/auth";
-import { LoginData, RegisterData } from "@/lib/validators/auth";
-import { loginSchema, registerSchema } from "@/lib/validators/auth";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-type AuthFormProps = { type: "login" | "register" };
+type AuthFormProps = {
+  form: any;
+  onSubmit: (values: any) => void;
+  loading: boolean;
+  type: "login" | "register";
+};
 
-const AuthForm = ({ type }: AuthFormProps) => {
-  const [loading, setLoading] = useState(false);
-
-  const loginForm = useForm<LoginData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
-  });
-
-  const registerForm = useForm<RegisterData>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const form = type === "login" ? loginForm : registerForm;
-
-  const onSubmit = async (values: any) => {
-    try {
-      setLoading(true);
-      // call API or server action here
-
-      if (type === "login") {
-        await loginAction(values);
-      } else {
-        await registerAction(values);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const AuthForm = ({ form, onSubmit, loading, type }: AuthFormProps) => {
   return (
     <Card className="max-w-sm mx-auto">
       <CardHeader>
@@ -58,7 +22,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Name (register only) */}
             {type === "register" && (
               <FormField
                 control={form.control}
@@ -72,7 +35,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
               />
             )}
 
-            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -84,7 +46,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
               )}
             />
 
-            {/* Password */}
             <FormField
               control={form.control}
               name="password"
@@ -96,7 +57,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
               )}
             />
 
-            {/* Confirm Password (register only) */}
             {type === "register" && (
               <FormField
                 control={form.control}
