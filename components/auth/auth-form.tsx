@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ const AuthForm = ({ type }: Props) => {
       <CardHeader>
         <CardTitle>{isLogin ? "Login" : "Create account"}</CardTitle>
       </CardHeader>
+
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -94,7 +96,8 @@ const AuthForm = ({ type }: Props) => {
               />
             )}
             <Button className="w-full" disabled={loading}>
-              {loading ? "Loading..." : isLogin ? "Sign in" : "Sign up"}
+              {loading && <Loader2 className="animate-spin" />}
+              {isLogin ? "Sign in" : "Sign up"}
             </Button>
           </form>
         </Form>
