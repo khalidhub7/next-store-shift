@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { CartItem } from "@/types/product";
+import { CartItem } from "@/types/cart";
 import { revalidatePath } from "next/cache";
 import { getCartByUserId } from "@/lib/db/cart";
 import { requireUser } from "@/lib/auth/requireUser";
@@ -10,12 +10,13 @@ import { fetchProductById } from "@/lib/services/fetchProduct";
 
 type Task = () => Promise<void>;
 
-const cookieOptions: any = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "lax",
-  maxAge: 60 * 60 * 24 * 3,
-};
+const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
+  {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 3,
+  };
 
 // help to avoid race conditions
 let resolveActionsQueue = Promise.resolve();
