@@ -8,10 +8,9 @@ import { DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogDescription } from "@/components/ui/dialog";
 
 const CartDialog = async () => {
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
   const cartId = cookieStore.get("cart")?.value;
   const cartItems = cartId ? (await getCart(cartId)).items : [];
-
 
   // console.log(JSON.stringify(cart))
   return (

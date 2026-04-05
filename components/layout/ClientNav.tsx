@@ -9,7 +9,7 @@ const links = [
   { href: "/", label: "home" },
   { href: "/products", label: "products" },
   { href: "/about", label: "about" },
-  { href: "/login", label: "sign(in/up)" },
+  // { href: "/login", label: "sign(in/up)" },
 ];
 
 const ClientNav = () => {

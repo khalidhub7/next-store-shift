@@ -1,6 +1,6 @@
 "use client";
 import { toast } from "sonner";
-import { CartItem } from "@/types/product";
+import { CartItem } from "@/types/cart";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { removeFromCart, updateQty } from "../../actions/cart";

@@ -88,9 +88,9 @@
 ├── struct.txt
 ├── tsconfig.json
 └── types
+    ├── cart.ts
     ├── product.ts
-    └── session.ts
+    ├── session.ts
+    └── user.ts
 
-25 directories, 66 files
-
-
+25 directories, 68 files
