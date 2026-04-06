@@ -22,6 +22,7 @@ const getCarts = async () => {
   const data = await fs.readFile(cartsFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
+
 const saveCarts = async (carts: Array<Cart>) => {
   await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
 };
