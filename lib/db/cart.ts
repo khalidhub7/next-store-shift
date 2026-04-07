@@ -10,12 +10,14 @@ DELETE data/ folder
 db.ts → connects to real DB
 */
 
-import path from "path";
-import { promises as fs } from "fs";
 import { randomUUID } from "crypto";
+import { fileURLToPath } from "url";
+import { promises as fs } from "fs";
 import { Cart, CartItem } from "@/types/cart";
 
-const cartsFilePath = path.join(process.cwd(), "lib/data/carts.json");
+const cartsFilePath = fileURLToPath(
+  new URL("./lib/data/carts.json", import.meta.url),
+);
 
 // cart crud helpers
 const getCarts = async () => {

@@ -10,5 +10,4 @@ const getCarts = async () => {
   return data === "" ? [] : JSON.parse(data);
 };
 
-
 console.log(await getCarts());
