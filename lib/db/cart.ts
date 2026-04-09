@@ -29,7 +29,7 @@ const appendToQueue = async (task: Task) => {
 };
 
 // cart crud helpers
-const getCarts = async () => {
+const getCarts = async (): Promise<Array<Cart>> => {
   try {
     const data = await readFile(cartsFilePath, "utf-8");
     return data === "" ? [] : JSON.parse(data);
@@ -38,7 +38,7 @@ const getCarts = async () => {
   }
 };
 
-const saveCarts = async (carts: Array<Cart>) => {
+const saveCarts = async (carts: Array<Cart>): Promise<void> => {
   try {
     await writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
     return;
@@ -49,7 +49,7 @@ const saveCarts = async (carts: Array<Cart>) => {
 };
 
 // cart crud
-const getCart = async (id: string) => {
+const getCart = async (id: string): Promise<Cart> => {
   const carts = await getCarts();
   return carts.find((c: Cart) => c.id === id);
 };
