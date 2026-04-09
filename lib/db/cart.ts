@@ -49,7 +49,7 @@ const saveCarts = async (carts: Array<Cart>): Promise<void> => {
 };
 
 // cart crud
-const getCart = async (id: string): Promise<Cart> => {
+const getCart = async (id: string): Promise<Cart | undefined> => {
   const carts = await getCarts();
   return carts.find((c: Cart) => c.id === id);
 };
@@ -59,7 +59,10 @@ const getCartByUserId = async (userId: string) => {
   return carts.find((c: Cart) => c.userId === userId) || null;
 };
 
-const createCart = async (userId: string, items: Array<CartItem>) => {
+const createCart = async (
+  userId: string,
+  items: Array<CartItem>,
+): Promise<string> => {
   const task = async () => {
     const carts = await getCarts();
     const newCart = {
@@ -76,7 +79,10 @@ const createCart = async (userId: string, items: Array<CartItem>) => {
   return appendToQueue(task);
 };
 
-const updateCart = async (id: string, items: Array<CartItem>) => {
+const updateCart = async (
+  id: string,
+  items: Array<CartItem>,
+): Promise<void> => {
   const task = async () => {
     const carts = await getCarts();
     const newCarts = carts.map((c: Cart) =>
