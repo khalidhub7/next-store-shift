@@ -19,6 +19,15 @@ const cartsFilePath = fileURLToPath(
   new URL("./lib/data/carts.json", import.meta.url),
 );
 
+// avoid race conditions
+type Task = () => Promise<void>;
+let queue = Promise.resolve();
+const appendToQueue = async (task: Task) => {
+  const result = queue.then(() => task());
+  queue = result.catch(() => {});
+  return result;
+};
+
 // cart crud helpers
 const getCarts = async () => {
   const data = await fs.readFile(cartsFilePath, "utf-8");
@@ -26,7 +35,10 @@ const getCarts = async () => {
 };
 
 const saveCarts = async (carts: Array<Cart>) => {
-  await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
+  const task = async () => {
+    await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
+  };
+  return appendToQueue(task);
 };
 
 // cart crud
@@ -72,5 +84,3 @@ const deleteCart = async (id: string) => {
 };
 
 export { createCart, updateCart, deleteCart, getCart, getCartByUserId };
-
-
