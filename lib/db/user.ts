@@ -86,9 +86,12 @@ const updateUser = async (id: string, userData: RegisterData) => {
 };
 
 const deleteUser = async (id: string) => {
-  const users = await getUsers();
-  const newUsers = users.filter((u: User) => u.id !== id);
-  await saveUsers(newUsers);
+  const task = async () => {
+    const users = await getUsers();
+    const newUsers = users.filter((u: User) => u.id !== id);
+    await saveUsers(newUsers);
+  };
+  return appendToQueue(task);
 };
 
 export { createUser, updateUser, deleteUser, getUserById, getUserByEmail };
