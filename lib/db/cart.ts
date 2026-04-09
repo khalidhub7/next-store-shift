@@ -16,7 +16,7 @@ import { promises as fs } from "fs";
 import { Cart, CartItem } from "@/types/cart";
 
 const cartsFilePath = fileURLToPath(
-  new URL("./lib/data/carts.json", import.meta.url),
+  new URL("../data/carts.json", import.meta.url),
 );
 
 // avoid race conditions
@@ -35,10 +35,7 @@ const getCarts = async () => {
 };
 
 const saveCarts = async (carts: Array<Cart>) => {
-  const task = async () => {
-    await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
-  };
-  return appendToQueue(task);
+  await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
 };
 
 // cart crud
@@ -52,17 +49,9 @@ const getCartByUserId = async (userId: string) => {
   return carts.find((c: Cart) => c.userId === userId) || null;
 };
 const createCart = async (userId: string, items: Array<CartItem>) => {
-  const carts = await getCarts();
-  const newCart = {
-    id: randomUUID(),
-    userId,
-    items,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  carts.push(newCart);
-  await saveCarts(carts);
-  return newCart.id;
+  const task = async () => {
+    
+  }
 };
 const updateCart = async (id: string, items: Array<CartItem>) => {
   const carts = await getCarts();
