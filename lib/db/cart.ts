@@ -9,12 +9,14 @@ Later (real DB)
 DELETE data/ folder
 db.ts → connects to real DB
 */
-
+import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
 import { Cart, CartItem } from "@/types/cart";
 import { readFile, writeFile } from "fs/promises";
 
-const cartsFilePath = new URL("../data/carts.json", import.meta.url);
+const cartsFilePath = fileURLToPath(
+  new URL("../data/carts.json", import.meta.url),
+);
 
 // avoid race conditions
 type Task = () => Promise<any>;
