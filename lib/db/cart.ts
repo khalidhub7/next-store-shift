@@ -30,12 +30,22 @@ const appendToQueue = async (task: Task) => {
 
 // cart crud helpers
 const getCarts = async () => {
-  const data = await readFile(cartsFilePath, "utf-8");
-  return data === "" ? [] : JSON.parse(data);
+  try {
+    const data = await readFile(cartsFilePath, "utf-8");
+    return data === "" ? [] : JSON.parse(data);
+  } catch {
+    return [];
+  }
 };
 
 const saveCarts = async (carts: Array<Cart>) => {
-  await writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
+  try {
+    await writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
+    return;
+  } catch (err) {
+    console.log("Failed to write to carts.json");
+    throw err;
+  }
 };
 
 // cart crud

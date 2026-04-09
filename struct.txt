@@ -86,6 +86,7 @@
 ├── public
 │   └── favicon.ico
 ├── struct.txt
+├── test.js
 ├── tsconfig.json
 └── types
     ├── cart.ts
@@ -93,4 +94,4 @@
     ├── session.ts
     └── user.ts
 
-25 directories, 68 files
+25 directories, 69 files
