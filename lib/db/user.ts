@@ -10,21 +10,33 @@ DELETE data/ folder
 db.ts → connects to real DB
 */
 
-import path from "path";
-import { promises as fs } from "fs";
 import { randomUUID } from "crypto";
 import { User } from "@/types/user";
 import { RegisterData } from "../validators/auth";
 
-const usersFilePath = path.join(process.cwd(), "lib/data/users.json");
+import { fileURLToPath } from "url";
+import { readFile, writeFile } from "fs/promises";
+
+const usersFilePath = fileURLToPath(
+  new URL("../data/users.json", import.meta.url),
+);
+
+type Task = () => Promise<any>;
+
+let queue = Promise.resolve();
+const appendToQueue = async (task: Task) => {
+  const result = queue.then(() => task());
+  queue = result.catch(() => {});
+  return result;
+};
 
 // user crud helpers
 const getUsers = async () => {
-  const data = await fs.readFile(usersFilePath, "utf-8");
+  const data = await readFile(usersFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
 const saveUsers = async (users: Array<User>) => {
-  await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
+  await writeFile(usersFilePath, JSON.stringify(users, null, 2));
 };
 
 // user crud
@@ -40,30 +52,37 @@ const getUserByEmail = async (email: string) => {
 
 const createUser = async (userData: RegisterData) => {
   // userData like {email, pswd}
-  const users = await getUsers();
-  const newUser = {
-    id: randomUUID(),
-    ...userData,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+  const task = async () => {
+    const users = await getUsers();
+    const newUser = {
+      id: randomUUID(),
+      ...userData,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    users.push(newUser);
+    await saveUsers(users);
+    return newUser.id;
   };
-  users.push(newUser);
-  await saveUsers(users);
-  return newUser.id;
+
+  return appendToQueue(task);
 };
 
 const updateUser = async (id: string, userData: RegisterData) => {
-  const users = await getUsers();
-  const newUsers = users.map((u: User) =>
-    u.id === id
-      ? {
-          ...u,
-          ...userData,
-          updatedAt: new Date().toISOString(),
-        }
-      : u,
-  );
-  await saveUsers(newUsers);
+  const task = async () => {
+    const users = await getUsers();
+    const newUsers = users.map((u: User) =>
+      u.id === id
+        ? {
+            ...u,
+            ...userData,
+            updatedAt: new Date().toISOString(),
+          }
+        : u,
+    );
+    await saveUsers(newUsers);
+  };
+  return appendToQueue(task);
 };
 
 const deleteUser = async (id: string) => {

@@ -15,7 +15,7 @@ import { Session } from "@/types/session";
 import { readFile, writeFile } from "fs/promises";
 
 const sessionsFilePath = fileURLToPath(
-  new URL("../data/carts.json", import.meta.url),
+  new URL("../data/sessions.json", import.meta.url),
 );
 
 type Task = () => Promise<any>;
