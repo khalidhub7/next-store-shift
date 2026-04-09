@@ -85,9 +85,13 @@ const updateCart = async (id: string, items: Array<CartItem>) => {
   return appendToQueue(task);
 };
 const deleteCart = async (id: string) => {
-  const carts = await getCarts();
-  const newCarts = carts.filter((c: Cart) => c.id !== id);
-  await saveCarts(newCarts);
+  const task = async () => {
+    const carts = await getCarts();
+    const newCarts = carts.filter((c: Cart) => c.id !== id);
+    await saveCarts(newCarts);
+  };
+
+  return appendToQueue(task);
 };
 
 export { createCart, updateCart, deleteCart, getCart, getCartByUserId };
