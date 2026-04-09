@@ -10,19 +10,30 @@ DELETE data/ folder
 db.ts → connects to real DB
 */
 
-import path from "path";
-import { promises as fs } from "fs";
+import { fileURLToPath } from "url";
 import { Session } from "@/types/session";
+import { readFile, writeFile } from "fs/promises";
 
-const sessionsFilePath = path.join(process.cwd(), "lib/data/sessions.json");
+const sessionsFilePath = fileURLToPath(
+  new URL("../data/carts.json", import.meta.url),
+);
+
+type Task = () => Promise<any>;
+
+let queue = Promise.resolve();
+const appendToQueue = async (task: Task) => {
+  const result = queue.then(() => task());
+  queue = result.catch(() => {});
+  return result;
+};
 
 // session crud helpers
 const getSessions = async () => {
-  const data = await fs.readFile(sessionsFilePath, "utf-8");
+  const data = await readFile(sessionsFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
 const saveSessions = async (sessions: Array<Session>) => {
-  await fs.writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
+  await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
 };
 
 // session crud
@@ -31,16 +42,25 @@ const getSession = async (sessionId: string) => {
   return sessions.find((s: Session) => s.sessionId === sessionId);
 };
 const saveSession = async (session: Session) => {
-  const sessions = await getSessions();
-  sessions.push(session);
-  await saveSessions(sessions);
-  return session.sessionId;
+  const task = async () => {
+    const sessions = await getSessions();
+    sessions.push(session);
+    await saveSessions(sessions);
+    return session.sessionId;
+  };
+
+  return appendToQueue(task);
 };
 
 const deleteSession = async (sessionId: string) => {
-  const sessions = await getSessions();
-  const newSessions = sessions.filter((s: Session) => s.sessionId !== sessionId);
-  await saveSessions(newSessions);
+  const task = async () => {
+    const sessions = await getSessions();
+    const newSessions = sessions.filter(
+      (s: Session) => s.sessionId !== sessionId,
+    );
+    await saveSessions(newSessions);
+  };
+  return appendToQueue(task);
 };
 
 export { getSession, saveSession, deleteSession };
