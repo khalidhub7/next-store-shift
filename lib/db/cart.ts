@@ -20,7 +20,7 @@ const cartsFilePath = fileURLToPath(
 );
 
 // avoid race conditions
-type Task<> = () => Promise<any>;
+type Task = () => Promise<any>;
 
 let queue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
@@ -68,17 +68,21 @@ const createCart = async (userId: string, items: Array<CartItem>) => {
 };
 
 const updateCart = async (id: string, items: Array<CartItem>) => {
-  const carts = await getCarts();
-  const newCarts = carts.map((c: Cart) =>
-    c.id === id
-      ? {
-          ...c,
-          items,
-          updatedAt: new Date().toISOString(),
-        }
-      : c,
-  );
-  await saveCarts(newCarts);
+  const task = async () => {
+    const carts = await getCarts();
+    const newCarts = carts.map((c: Cart) =>
+      c.id === id
+        ? {
+            ...c,
+            items,
+            updatedAt: new Date().toISOString(),
+          }
+        : c,
+    );
+    await saveCarts(newCarts);
+  };
+
+  return appendToQueue(task);
 };
 const deleteCart = async (id: string) => {
   const carts = await getCarts();
