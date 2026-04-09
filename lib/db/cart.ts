@@ -12,8 +12,8 @@ db.ts → connects to real DB
 
 import { randomUUID } from "crypto";
 import { fileURLToPath } from "url";
-import { promises as fs } from "fs";
 import { Cart, CartItem } from "@/types/cart";
+import { readFile, writeFile } from "fs/promises";
 
 const cartsFilePath = fileURLToPath(
   new URL("../data/carts.json", import.meta.url),
@@ -31,12 +31,12 @@ const appendToQueue = async (task: Task) => {
 
 // cart crud helpers
 const getCarts = async () => {
-  const data = await fs.readFile(cartsFilePath, "utf-8");
+  const data = await readFile(cartsFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
 
 const saveCarts = async (carts: Array<Cart>) => {
-  await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
+  await writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
 };
 
 // cart crud
