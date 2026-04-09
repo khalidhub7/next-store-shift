@@ -11,13 +11,10 @@ db.ts → connects to real DB
 */
 
 import { randomUUID } from "crypto";
-import { fileURLToPath } from "url";
 import { Cart, CartItem } from "@/types/cart";
 import { readFile, writeFile } from "fs/promises";
 
-const cartsFilePath = fileURLToPath(
-  new URL("../data/carts.json", import.meta.url),
-);
+const cartsFilePath = new URL("../data/carts.json", import.meta.url);
 
 // avoid race conditions
 type Task = () => Promise<any>;

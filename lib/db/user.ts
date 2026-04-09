@@ -17,9 +17,7 @@ import { RegisterData } from "../validators/auth";
 import { fileURLToPath } from "url";
 import { readFile, writeFile } from "fs/promises";
 
-const usersFilePath = fileURLToPath(
-  new URL("../data/users.json", import.meta.url),
-);
+const usersFilePath = new URL("../data/users.json", import.meta.url);
 
 type Task = () => Promise<any>;
 

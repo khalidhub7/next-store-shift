@@ -10,13 +10,10 @@ DELETE data/ folder
 db.ts → connects to real DB
 */
 
-import { fileURLToPath } from "url";
 import { Session } from "@/types/session";
 import { readFile, writeFile } from "fs/promises";
 
-const sessionsFilePath = fileURLToPath(
-  new URL("../data/sessions.json", import.meta.url),
-);
+const sessionsFilePath = new URL("../data/sessions.json", import.meta.url);
 
 type Task = () => Promise<any>;
 
