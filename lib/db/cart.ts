@@ -20,7 +20,8 @@ const cartsFilePath = fileURLToPath(
 );
 
 // avoid race conditions
-type Task<T> = () => Promise<T>;
+type Task<> = () => Promise<any>;
+
 let queue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
   const result = queue.then(() => task());
