@@ -21,9 +21,12 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
 // help to avoid race conditions
 let resolveActionsQueue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
-  const result = resolveActionsQueue.then(() => task()); // run task after queue
-  resolveActionsQueue = result.catch(() => {}); // queue never dies
-  return result; // caller gets the real error
+  // run task after queue
+  const result = resolveActionsQueue.then(() => task());
+  // queue never dies
+  resolveActionsQueue = result.catch(() => {});
+  // caller gets the real error
+  return result;
 };
 
 // shared helper between actions
