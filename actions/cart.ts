@@ -30,20 +30,16 @@ const appendToQueue = async (task: Task) => {
 const getCartId = async () => {
   const userId = await requireUser();
   let cartId;
-  
+
   // get cart by user_id
   const userCart = await getCartByUserId(userId);
   if (!userCart) {
-    
-  }
-  cartId = userCart?.cartId;
-
-  if (!cartId) {
     const cookieStore = await cookies();
     cartId = await createCart(userId, []);
     cookieStore.set("cart", cartId, cookieOptions);
+    return cartId;
   }
-  return cartId;
+  return userCart.id;
 };
 
 const addToCart = async (productId: string) => {
