@@ -84,10 +84,12 @@ const updateCart = async (
   items: Array<CartItem>,
 ): Promise<void> => {
   const task = async () => {
-    let error;
-    let success:
-    
+
     const carts = await getCarts();
+
+    const check = carts.find((p => p.id === id))
+    if (!check) { throw  }
+
     const newCarts = carts.map((c: Cart) =>
       c.id === id
         ? {
