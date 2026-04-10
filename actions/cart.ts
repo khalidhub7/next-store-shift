@@ -30,9 +30,12 @@ const appendToQueue = async (task: Task) => {
 const getCartId = async () => {
   const userId = await requireUser();
   let cartId;
-
+  
   // get cart by user_id
   const userCart = await getCartByUserId(userId);
+  if (!userCart) {
+    
+  }
   cartId = userCart?.cartId;
 
   if (!cartId) {
@@ -50,7 +53,10 @@ const addToCart = async (productId: string) => {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId(); // from cookie
 
-      const { items: cartItems } = await getCart(cartId); // from db
+      const cart = await getCart(cartId);
+      if (!cart) throw new Error("Cart not found");
+
+      const { items: cartItems } = cart;
 
       // update cart in db
       const productInCart = cartItems.find((i: CartItem) => i.id === productId);
