@@ -140,12 +140,16 @@ const decreaseQty = async (productId: string) => {
 
 const removeFromCart = async (productId: string) => {
   const task = async () => {
-    // throw new Error("just for test")
+    // throw new Error("test error")
 
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCart(cartId);
+      const cart = await getCart(cartId);
+
+      if (!cart) throw new Error("Cart not found");
+
+      const { items: cartItems } = cart;
 
       newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
 
@@ -166,7 +170,11 @@ const updateQty = async (productId: string, qty: number) => {
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCart(cartId);
+
+      const cart = await getCart(cartId);
+      if (!cart) throw new Error("Cart not found");
+
+      const { items: cartItems } = cart;
 
       newCartItems = cartItems
         .map((item: CartItem) =>
