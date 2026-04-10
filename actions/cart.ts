@@ -46,9 +46,10 @@ const getCartId = async () => {
 
 const addToCart = async (productId: string) => {
   const task = async () => {
-    // throw new Error("just for test")
+    // throw new Error("test error")
     try {
       let newCartItems: Array<CartItem>;
+
       const cartId = await getCartId(); // from cookie
 
       const cart = await getCart(cartId);
