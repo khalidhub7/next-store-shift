@@ -50,9 +50,9 @@ const addToCart = async (productId: string) => {
     try {
       let newCartItems: Array<CartItem>;
 
-      const cartId = await getCartId(); // from cookie
-
+      const cartId = await getCartId();
       const cart = await getCart(cartId);
+
       if (!cart) throw new Error("Cart not found");
 
       const { items: cartItems } = cart;
