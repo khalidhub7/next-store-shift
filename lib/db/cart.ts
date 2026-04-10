@@ -86,10 +86,6 @@ const updateCart = async (
   const task = async () => {
 
     const carts = await getCarts();
-
-    const check = carts.find((p => p.id === id))
-    if (!check) { throw  }
-
     const newCarts = carts.map((c: Cart) =>
       c.id === id
         ? {
