@@ -59,6 +59,7 @@ const addToCart = async (productId: string) => {
 
       // update cart in db
       const productInCart = cartItems.find((i: CartItem) => i.id === productId);
+
       if (productInCart) {
         newCartItems = cartItems.map((p: CartItem) => {
           return p.id === productId ? { ...p, qty: p.qty + 1 } : p;
@@ -67,6 +68,7 @@ const addToCart = async (productId: string) => {
         const { id, title, price } = await fetchProductById(productId);
         newCartItems = [...cartItems, { id, title, price, qty: 1 }];
       }
+
       await updateCart(cartId, newCartItems);
 
       // usualy isr refresh every 1h, so that is renew ui immediately
@@ -82,16 +84,21 @@ const addToCart = async (productId: string) => {
 
 const increaseQty = async (productId: string) => {
   const task = async () => {
-    // throw new Error("just for test")
+    // throw new Error("test error")
 
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCart(cartId);
+      const cart = await getCart(cartId);
+
+      if (!cart) throw new Error("Cart not found");
+
+      const { items: cartItems } = cart;
 
       newCartItems = cartItems.map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty + 1 } : item,
       );
+
       await updateCart(cartId, newCartItems); // update db
       revalidatePath("/products", "layout");
     } catch {
@@ -104,12 +111,16 @@ const increaseQty = async (productId: string) => {
 
 const decreaseQty = async (productId: string) => {
   const task = async () => {
-    // throw new Error("just for test")
+    // throw new Error("test error")
 
     try {
       let newCartItems: Array<CartItem>;
       const cartId = await getCartId();
-      const { items: cartItems } = await getCart(cartId);
+      const cart = await getCart(cartId);
+
+      if (!cart) throw new Error("Cart not found");
+
+      const { items: cartItems } = cart;
 
       newCartItems = cartItems
         .map((item: CartItem) =>
