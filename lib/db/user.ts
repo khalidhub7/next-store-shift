@@ -32,12 +32,21 @@ const appendToQueue = async (task: Task) => {
 
 // user crud helpers
 const getUsers = async (): Promise<Array<User>> => {
-  const data = await readFile(usersFilePath, "utf-8");
-  return data === "" ? [] : JSON.parse(data);
+  try {
+    const data = await readFile(usersFilePath, "utf-8");
+    return data === "" ? [] : JSON.parse(data);
+  } catch (error) {
+    return [];
+  }
 };
 
 const saveUsers = async (users: Array<User>): Promise<void> => {
-  await writeFile(usersFilePath, JSON.stringify(users, null, 2));
+  try {
+    await writeFile(usersFilePath, JSON.stringify(users, null, 2));
+  } catch (err) {
+    console.log("Failed to write to users.json");
+    throw err;
+  }
 };
 
 // user crud
@@ -71,8 +80,8 @@ const createUser = async (userData: RegisterData): Promise<string> => {
 
 const updateUser = async (
   id: string,
-  userData: RegisterData,
-): Promise<undefined> => {
+  userData: Partial<User>,
+): Promise<void> => {
   const task = async () => {
     const users = await getUsers();
     const newUsers = users.map((u: User) =>
@@ -89,7 +98,7 @@ const updateUser = async (
   return appendToQueue(task);
 };
 
-const deleteUser = async (id: string): Promise<undefined> => {
+const deleteUser = async (id: string): Promise<void> => {
   const task = async () => {
     const users = await getUsers();
     const newUsers = users.filter((u: User) => u.id !== id);
