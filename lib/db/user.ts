@@ -14,12 +14,12 @@ import { randomUUID } from "crypto";
 import { User } from "@/types/user";
 import { RegisterData } from "../validators/auth";
 
-import { fileURLToPath } from "url";
+import path from "path";
 import { readFile, writeFile } from "fs/promises";
 
-const usersFilePath = fileURLToPath(
-  new URL("../data/users.json", import.meta.url),
-);
+const usersFilePath = path.join(process.cwd(), "lib", "data", "users.json");
+
+console.log(usersFilePath);
 
 type Task = () => Promise<any>;
 

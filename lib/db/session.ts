@@ -9,12 +9,15 @@ Later (real DB)
 DELETE data/ folder
 db.ts → connects to real DB
 */
-import { fileURLToPath } from "url";
+import path from "path";
 import { Session } from "@/types/session";
 import { readFile, writeFile } from "fs/promises";
 
-const sessionsFilePath = fileURLToPath(
-  new URL("../data/sessions.json", import.meta.url),
+const sessionsFilePath = path.join(
+  process.cwd(),
+  "lib",
+  "data",
+  "sessions.json",
 );
 
 type Task = () => Promise<any>;
