@@ -27,9 +27,13 @@ const appendToQueue = async (task: Task) => {
 };
 
 // session crud helpers
-const getSessions = async () => {
-  const data = await readFile(sessionsFilePath, "utf-8");
-  return data === "" ? [] : JSON.parse(data);
+const getSessions = async (): Promise<Array<Session>> => {
+  try {
+    const data = await readFile(sessionsFilePath, "utf-8");
+    return data === "" ? [] : JSON.parse(data);
+  } catch {
+    return [];
+  }
 };
 const saveSessions = async (sessions: Array<Session>) => {
   await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
