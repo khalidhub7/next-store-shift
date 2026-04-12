@@ -35,7 +35,8 @@ const getUsers = async (): Promise<Array<User>> => {
   const data = await readFile(usersFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
-const saveUsers = async (users: Array<User>) => {
+
+const saveUsers = async (users: Array<User>): Promise<void> => {
   await writeFile(usersFilePath, JSON.stringify(users, null, 2));
 };
 
