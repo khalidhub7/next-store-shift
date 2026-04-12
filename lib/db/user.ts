@@ -31,7 +31,7 @@ const appendToQueue = async (task: Task) => {
 };
 
 // user crud helpers
-const getUsers = async () => {
+const getUsers = async (): Promise<Array<User>> => {
   const data = await readFile(usersFilePath, "utf-8");
   return data === "" ? [] : JSON.parse(data);
 };
@@ -40,17 +40,17 @@ const saveUsers = async (users: Array<User>) => {
 };
 
 // user crud
-const getUserById = async (id: string) => {
+const getUserById = async (id: string): Promise<User | undefined> => {
   const users = await getUsers();
   return users.find((u: User) => u.id === id);
 };
 
-const getUserByEmail = async (email: string) => {
+const getUserByEmail = async (email: string): Promise<User | undefined> => {
   const users = await getUsers();
   return users.find((u: User) => u.email === email);
 };
 
-const createUser = async (userData: RegisterData) => {
+const createUser = async (userData: RegisterData): Promise<string> => {
   // userData like {email, pswd}
   const task = async () => {
     const users = await getUsers();
@@ -68,7 +68,10 @@ const createUser = async (userData: RegisterData) => {
   return appendToQueue(task);
 };
 
-const updateUser = async (id: string, userData: RegisterData) => {
+const updateUser = async (
+  id: string,
+  userData: RegisterData,
+): Promise<undefined> => {
   const task = async () => {
     const users = await getUsers();
     const newUsers = users.map((u: User) =>
@@ -85,7 +88,7 @@ const updateUser = async (id: string, userData: RegisterData) => {
   return appendToQueue(task);
 };
 
-const deleteUser = async (id: string) => {
+const deleteUser = async (id: string): Promise<undefined> => {
   const task = async () => {
     const users = await getUsers();
     const newUsers = users.filter((u: User) => u.id !== id);

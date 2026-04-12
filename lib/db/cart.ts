@@ -84,7 +84,6 @@ const updateCart = async (
   items: Array<CartItem>,
 ): Promise<void> => {
   const task = async () => {
-
     const carts = await getCarts();
     const newCarts = carts.map((c: Cart) =>
       c.id === id
