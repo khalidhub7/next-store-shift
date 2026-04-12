@@ -24,12 +24,12 @@ const register = async (email: string, password: string, name: string) => {
   }
 
   const hashedPassword = await hashPassword(password);
-
-  const userId = await createUser({
+  const userData = {
     email,
     password: hashedPassword,
     name,
-  });
+  };
+  const userId = await createUser(userData);
 
   // create session
   const session = createSession(userId);
