@@ -27,8 +27,13 @@ const loginAction = async (data: LoginData) => {
 
 const registerAction = async (data: RegisterData) => {
   const values = registerSchema.parse(data);
-  const { email, password, name } = values;
-  const { sessionId, userId } = await register(email, password, name);
+  const { email, password, name, confirmPassword } = values;
+  const { sessionId, userId } = await register(
+    email,
+    password,
+    name,
+    confirmPassword,
+  );
 
   if (sessionId && userId) {
     const store = await cookies();
