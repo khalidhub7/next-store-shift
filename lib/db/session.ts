@@ -35,7 +35,7 @@ const getSessions = async (): Promise<Array<Session>> => {
     return [];
   }
 };
-const saveSessions = async (sessions: Array<Session>) => {
+const saveSessions = async (sessions: Array<Session>): Promise<void> => {
   try {
     await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
   } catch (err) {
@@ -45,11 +45,11 @@ const saveSessions = async (sessions: Array<Session>) => {
 };
 
 // session crud
-const getSession = async (sessionId: string) => {
+const getSession = async (sessionId: string): Promise<Session | undefined> => {
   const sessions = await getSessions();
   return sessions.find((s: Session) => s.sessionId === sessionId);
 };
-const saveSession = async (session: Session) => {
+const saveSession = async (session: Session): Promise<string> => {
   const task = async () => {
     const sessions = await getSessions();
     sessions.push(session);
@@ -60,7 +60,7 @@ const saveSession = async (session: Session) => {
   return appendToQueue(task);
 };
 
-const deleteSession = async (sessionId: string) => {
+const deleteSession = async (sessionId: string): Promise<void> => {
   const task = async () => {
     const sessions = await getSessions();
     const newSessions = sessions.filter(
