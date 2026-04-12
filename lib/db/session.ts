@@ -36,7 +36,12 @@ const getSessions = async (): Promise<Array<Session>> => {
   }
 };
 const saveSessions = async (sessions: Array<Session>) => {
-  await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
+  try {
+    await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
+  } catch (err) {
+    console.log("Failed to write to sessions.json");
+    throw err;
+  }
 };
 
 // session crud
