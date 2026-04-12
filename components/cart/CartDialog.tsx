@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { getCart } from "@/lib/db/cart";
 import { cookies } from "next/headers";
+import { CartItem } from "@/types/cart";
+import { getCart } from "@/lib/db/cart";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { ClientCartTable } from "../client-parts/ClientActions";
@@ -10,7 +11,15 @@ import { DialogContent, DialogDescription } from "@/components/ui/dialog";
 const CartDialog = async () => {
   const cookieStore = await cookies();
   const cartId = cookieStore.get("cart")?.value;
-  const cartItems = cartId ? (await getCart(cartId)).items : [];
+
+  let cartItems: Array<CartItem> = [];
+
+  if (cartId) {
+    const cart = await getCart(cartId);
+    if (cart) {
+      cartItems = cart.items;
+    }
+  }
 
   // console.log(JSON.stringify(cart))
   return (
