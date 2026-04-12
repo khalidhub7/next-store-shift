@@ -16,7 +16,7 @@ const hashPassword = async (password: string) => {
   return await bcrypt.hash(password, 10);
 };
 
-const register = async (email: string, password: string) => {
+const register = async (email: string, password: string, name: string) => {
   const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
@@ -28,6 +28,7 @@ const register = async (email: string, password: string) => {
   const userId = await createUser({
     email,
     password: hashedPassword,
+    name,
   });
 
   // create session
