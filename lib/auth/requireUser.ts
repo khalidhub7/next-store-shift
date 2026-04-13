@@ -3,11 +3,16 @@ import { redirect } from "next/navigation";
 import { getSession } from "../db/session";
 import { deleteSession } from "../db/session";
 
-const requireUser = async () => {
+const requireUser = async (redirectTo: string) => {
+  // routes that allowed and may need auth
+  const saferRoutes = ["/products"]
+
+  const safeRedirect = saferRoutes.includes(redirectTo) ? redirectTo : "/"
+
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
 
-  if (!sessionId) redirect("/login");
+  if (!sessionId) redirect(`/login${redirectTo}`);
 
   const session = await getSession(sessionId);
 
