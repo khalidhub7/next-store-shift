@@ -20,7 +20,6 @@ const register = async (
   email: string,
   password: string,
   name: string,
-  confirmPassword: string,
 ) => {
   const existingUser = await getUserByEmail(email);
 
@@ -33,7 +32,6 @@ const register = async (
     email,
     password: hashedPassword,
     name,
-    confirmPassword,
   };
   const userId = await createUser(userData);
 
