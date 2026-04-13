@@ -16,7 +16,7 @@ const middleware = async (request: NextRequest) => {
     for (const p of protectedPages) {
       if (pathname.startsWith(p)) {
         return NextResponse.redirect(
-          new URL(`/login?from=${pathname}`, request.url),
+          new URL(`/login?redirect=${pathname}`, request.url),
         );
       }
     }
@@ -31,7 +31,7 @@ const middleware = async (request: NextRequest) => {
     if (!session) {
       // fake session
       return NextResponse.redirect(
-        new URL(`/login?from=${pathname}`, request.url),
+        new URL(`/login?redirect=${pathname}`, request.url),
       );
     }
     const isValid = isSessionValid(session);
@@ -52,7 +52,7 @@ const middleware = async (request: NextRequest) => {
     for (const p of protectedPages) {
       if (!isValid && pathname.startsWith(p)) {
         return NextResponse.redirect(
-          new URL(`/login?from=${pathname}`, request.url),
+          new URL(`/login?redirect=${pathname}`, request.url),
         );
       }
     }
