@@ -7,23 +7,25 @@ const requireUser = async (redirectTo: string) => {
   // routes that allowed and may need auth
   const saferRoutes = ["/products"];
 
-  const safeRedirect = saferRoutes.includes(redirectTo) ? redirectTo : "/";
+  const safeRedirect = saferRoutes.some((r) => redirectTo.startsWith(r))
+    ? redirectTo
+    : "/";
 
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
 
-  if (!sessionId) redirect(`/login${safeRedirect}`);
+  if (!sessionId) redirect(`/login?redirect=${safeRedirect}`);
 
   const session = await getSession(sessionId);
 
-  if (!session) redirect(`/login${safeRedirect}`);
+  if (!session) redirect(`/login?redirect=${safeRedirect}`);
 
   const isExpired = new Date(session.expiresAt) < new Date();
 
   if (isExpired) {
     await deleteSession(sessionId);
     cookieStore.delete("sessionId");
-    redirect(`/login${safeRedirect}`);
+    redirect(`/login?redirect=${safeRedirect}`);
   }
 
   return session.userId;
