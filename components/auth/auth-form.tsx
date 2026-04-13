@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -31,8 +32,21 @@ const AuthForm = ({ type }: Props) => {
   const onSubmit = async (values: LoginData | RegisterData) => {
     try {
       setLoading(true);
+
       if (isLogin) await loginAction(values as LoginData);
       else await registerAction(values as RegisterData);
+
+      toast.success(
+        isLogin ? "Welcome back!" : "Account created! Welcome aboard 🎉",
+      );
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : isLogin
+            ? "Login failed. Please try again."
+            : "Registration failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
