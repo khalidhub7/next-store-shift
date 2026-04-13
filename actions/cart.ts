@@ -31,7 +31,7 @@ const appendToQueue = async (task: Task) => {
 
 // shared helper between actions
 const getCartId = async () => {
-  const userId = await requireUser();
+  const userId = await requireUser("/products");
 
   // get cart by user_id
   const userCart = await getCartByUserId(userId);
