@@ -1,20 +1,23 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getSession } from "./lib/db/session";
 import type { NextRequest } from "next/server";
-import { isSessionValid } from "./lib/auth/session";
-import { cookies } from "next/headers";
 import { deleteSession } from "./lib/db/session";
+import { isSessionValid } from "./lib/auth/session";
 
 const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
   const protectedPages: Array<string> = []; // add more if later
+
   const sessionId = request.cookies.get("sessionId")?.value;
 
   // not logged in → block protected routes
   if (!sessionId) {
     for (const p of protectedPages) {
       if (pathname.startsWith(p)) {
-        return NextResponse.redirect(new URL("/login", request.url));
+        return NextResponse.redirect(
+          new URL(`/login?from=${pathname}`, request.url),
+        );
       }
     }
   }
@@ -27,7 +30,9 @@ const middleware = async (request: NextRequest) => {
     const session = await getSession(sessionId);
     if (!session) {
       // fake session
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(
+        new URL(`/login?from=${pathname}`, request.url),
+      );
     }
     const isValid = isSessionValid(session);
     if (!isValid) {
@@ -46,7 +51,9 @@ const middleware = async (request: NextRequest) => {
     // session exist but not valid → block protected routes
     for (const p of protectedPages) {
       if (!isValid && pathname.startsWith(p)) {
-        return NextResponse.redirect(new URL("/login", request.url));
+        return NextResponse.redirect(
+          new URL(`/login?from=${pathname}`, request.url),
+        );
       }
     }
   }

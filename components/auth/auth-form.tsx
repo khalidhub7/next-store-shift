@@ -8,15 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginAction, registerAction } from "@/actions/auth";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loginSchema, LoginData } from "@/lib/validators/auth";
 import { registerSchema, RegisterData } from "@/lib/validators/auth";
-
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = { type: "login" | "register" };
 
 const AuthForm = ({ type }: Props) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const isLogin = type === "login";
 
   const form = useForm<LoginData | RegisterData>({
@@ -41,7 +43,9 @@ const AuthForm = ({ type }: Props) => {
         isLogin ? "Welcome back!" : "Account created! Welcome aboard 🎉",
         options,
       );
-      
+
+      const redirectTo = searchParams.get("from") || "/";
+      router.push(redirectTo);
     } catch (err) {
       toast.error(
         err instanceof Error
