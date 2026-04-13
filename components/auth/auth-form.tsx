@@ -30,6 +30,7 @@ const AuthForm = ({ type }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (values: LoginData | RegisterData) => {
+    const options = { position: "top-center" } as const;
     try {
       setLoading(true);
 
@@ -38,7 +39,9 @@ const AuthForm = ({ type }: Props) => {
 
       toast.success(
         isLogin ? "Welcome back!" : "Account created! Welcome aboard 🎉",
+        options,
       );
+      
     } catch (err) {
       toast.error(
         err instanceof Error
@@ -46,6 +49,7 @@ const AuthForm = ({ type }: Props) => {
           : isLogin
             ? "Login failed. Please try again."
             : "Registration failed. Please try again.",
+        options,
       );
     } finally {
       setLoading(false);

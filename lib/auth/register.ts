@@ -11,7 +11,6 @@ import bcrypt from "bcrypt";
 import { createSession } from "./session";
 import { saveSession } from "../db/session";
 import { createUser, getUserByEmail } from "../db/user";
-import { string } from "zod";
 
 const hashPassword = async (password: string) => {
   return await bcrypt.hash(password, 10);
