@@ -11,7 +11,7 @@ db.ts → connects to real DB
 */
 
 import { randomUUID } from "crypto";
-import { User } from "@/types/user";
+import { CreateUserData, User } from "@/types/user";
 import { RegisterData } from "../validators/auth";
 
 import path from "path";
@@ -60,7 +60,7 @@ const getUserByEmail = async (email: string): Promise<User | undefined> => {
   return users.find((u: User) => u.email === email);
 };
 
-const createUser = async (userData: RegisterData): Promise<string> => {
+const createUser = async (userData: CreateUserData): Promise<string> => {
   // userData like {email, pswd}
   const task = async () => {
     const users = await getUsers();
