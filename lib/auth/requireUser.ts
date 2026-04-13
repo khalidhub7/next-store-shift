@@ -5,9 +5,9 @@ import { deleteSession } from "../db/session";
 
 const requireUser = async (redirectTo: string) => {
   // routes that allowed and may need auth
-  const saferRoutes = ["/products"]
+  const saferRoutes = ["/products"];
 
-  const safeRedirect = saferRoutes.includes(redirectTo) ? redirectTo : "/"
+  const safeRedirect = saferRoutes.includes(redirectTo) ? redirectTo : "/";
 
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
@@ -16,14 +16,14 @@ const requireUser = async (redirectTo: string) => {
 
   const session = await getSession(sessionId);
 
-  if (!session) redirect("/login");
+  if (!session) redirect(`/login${redirectTo}`);
 
   const isExpired = new Date(session.expiresAt) < new Date();
 
   if (isExpired) {
     await deleteSession(sessionId);
     cookieStore.delete("sessionId");
-    redirect("/login");
+    redirect(`/login${redirectTo}`);
   }
 
   return session.userId;
