@@ -12,7 +12,7 @@ const middleware = async (request: NextRequest) => {
   if (redirectTo) {
     if (!saferRedirects.includes(redirectTo)) {
       const url = new URL(request.url);
-      url.searchParams.set("redirect", "/products");
+      url.searchParams.set("redirect", "");
 
       return NextResponse.redirect(url);
     }
