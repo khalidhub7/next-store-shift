@@ -4,27 +4,21 @@ import { getSession, deleteSession } from "../db/session";
 import { isSessionValid } from "./session";
 
 const requireUser = async (redirectTo: string) => {
-  // routes that allowed and may need auth
-  const saferRedirects = ["/products"];
-
-  const safeRedirect = saferRedirects.some((r) => redirectTo.startsWith(r))
-    ? redirectTo
-    : "/";
 
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
 
-  if (!sessionId) redirect(`/login?redirect=${safeRedirect}`);
+  if (!sessionId) redirect(`/login?redirect=${redirectTo}`);
 
   const session = await getSession(sessionId);
-  if (!session) redirect(`/login?redirect=${safeRedirect}`);
+  if (!session) redirect(`/login?redirect=${redirectTo}`);
 
   const isValid = isSessionValid(session);
 
   if (!isValid) {
     await deleteSession(sessionId);
     cookieStore.delete("sessionId");
-    redirect(`/login?redirect=${safeRedirect}`);
+    redirect(`/login?redirect=${redirectTo}`);
   }
 
   return session.userId;
