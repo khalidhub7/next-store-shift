@@ -1,0 +1,16 @@
+[
+  {
+    "id": "468cc96d-6f89-45a3-a753-18ab2147458d",
+    "userId": "c699a2f6-eb6e-4152-9009-49d7f9f4199c",
+    "items": [
+      {
+        "id": "1",
+        "title": "Essence Mascara Lash Princess",
+        "price": 9.99,
+        "qty": 11
+      }
+    ],
+    "createdAt": "2026-04-14T23:26:51.041Z",
+    "updatedAt": "2026-04-14T23:26:59.133Z"
+  }
+]
