@@ -37,8 +37,8 @@ const middleware = async (request: NextRequest) => {
     }
     const isValid = isSessionValid(session);
     if (!isValid) {
-      const cookieStore = await cookies();
-      cookieStore.delete("sessionId");
+      const res = NextResponse.next();
+      res.cookies.delete("sessionId");
       await deleteSession(sessionId);
     }
 
