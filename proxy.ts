@@ -5,7 +5,18 @@ import { deleteSession } from "./lib/db/session";
 import { isSessionValid } from "./lib/auth/session";
 
 const middleware = async (request: NextRequest) => {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
+  const saferRedirects = ["/products"];
+  const redirectTo = searchParams.get("redirect");
+
+  if (redirectTo) {
+    if (!saferRedirects.includes(redirectTo)) {
+      const url = new URL(request.url);
+      url.searchParams.set("redirect", "/products");
+
+      return NextResponse.redirect(url);
+    }
+  }
 
   const protectedPages: Array<string> = []; // add more later
 

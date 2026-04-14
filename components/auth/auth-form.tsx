@@ -44,8 +44,8 @@ const AuthForm = ({ type }: Props) => {
         options,
       );
 
-      const redirectTo = searchParams.get("redirect") || "/";
-      router.replace(redirectTo);
+      const redirectTo = searchParams.get("redirect");
+      router.replace(redirectTo || "/");
     } catch (err) {
       toast.error(
         err instanceof Error
