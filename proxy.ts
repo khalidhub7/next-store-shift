@@ -7,6 +7,7 @@ import { isSessionValid } from "./lib/auth/session";
 
 const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
+
   const protectedPages: Array<string> = []; // add more if later
 
   const sessionId = request.cookies.get("sessionId")?.value;

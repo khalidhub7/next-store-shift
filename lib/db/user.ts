@@ -12,7 +12,6 @@ db.ts → connects to real DB
 
 import { randomUUID } from "crypto";
 import { CreateUserData, User } from "@/types/user";
-import { RegisterData } from "../validators/auth";
 
 import path from "path";
 import { readFile, writeFile } from "fs/promises";
