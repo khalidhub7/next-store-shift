@@ -1,13 +1,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getSession } from "../db/session";
-import { deleteSession } from "../db/session";
+import { getSession, deleteSession } from "../db/session";
+import { isSessionValid } from "./session";
 
 const requireUser = async (redirectTo: string) => {
   // routes that allowed and may need auth
-  const saferRoutes = ["/products"];
+  const saferRedirects = ["/products"];
 
-  const safeRedirect = saferRoutes.some((r) => redirectTo.startsWith(r))
+  const safeRedirect = saferRedirects.some((r) => redirectTo.startsWith(r))
     ? redirectTo
     : "/";
 
@@ -17,12 +17,11 @@ const requireUser = async (redirectTo: string) => {
   if (!sessionId) redirect(`/login?redirect=${safeRedirect}`);
 
   const session = await getSession(sessionId);
-
   if (!session) redirect(`/login?redirect=${safeRedirect}`);
 
-  const isExpired = new Date(session.expiresAt) < new Date();
+  const isValid = isSessionValid(session);
 
-  if (isExpired) {
+  if (!isValid) {
     await deleteSession(sessionId);
     cookieStore.delete("sessionId");
     redirect(`/login?redirect=${safeRedirect}`);
