@@ -37,9 +37,12 @@ const middleware = async (request: NextRequest) => {
     }
     const isValid = isSessionValid(session);
     if (!isValid) {
-      const res = NextResponse.next();
+      const res = NextResponse.redirect(
+        new URL(`/login?redirect=${pathname}`, request.url),
+      );
       res.cookies.delete("sessionId");
       await deleteSession(sessionId);
+      return res;
     }
 
     const isAuthPage =
