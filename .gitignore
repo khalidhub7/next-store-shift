@@ -1,5 +1,5 @@
 .next/
-lib/data/*
+
 node_modules/
 package-lock.json
 
