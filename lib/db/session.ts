@@ -30,15 +30,6 @@ const appendToQueue = async (task: Task) => {
 };
 
 // session crud helpers
-const getSessions = async (): Promise<Array<Session>> => {
-  try {
-    const data = await readFile(sessionsFilePath, "utf-8");
-    return data === "" ? [] : JSON.parse(data);
-  } catch {
-    return [];
-  }
-};
-
 const cleanExpiredSessions = async () => {
   const sessions = await getSessions();
   const now = Date.now();
@@ -47,9 +38,18 @@ const cleanExpiredSessions = async () => {
 
   await saveSessions(valid);
 };
-
+const getSessions = async (): Promise<Array<Session>> => {
+  try {
+    await cleanExpiredSessions();
+    const data = await readFile(sessionsFilePath, "utf-8");
+    return data === "" ? [] : JSON.parse(data);
+  } catch {
+    return [];
+  }
+};
 const saveSessions = async (sessions: Array<Session>): Promise<void> => {
   try {
+    await cleanExpiredSessions();
     await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
   } catch (err) {
     console.log("Failed to write to sessions.json");
@@ -57,9 +57,12 @@ const saveSessions = async (sessions: Array<Session>): Promise<void> => {
   }
 };
 
+
+
+
+
 // session crud
 const getSession = async (sessionId: string): Promise<Session | undefined> => {
-  await cleanExpiredSessions();
   const sessions = await getSessions();
   return sessions.find((s: Session) => s.sessionId === sessionId);
 };
