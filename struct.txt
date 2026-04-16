@@ -1,5 +1,4 @@
 ../app-basics/
-├── README.md
 ├── actions
 │   ├── auth.ts
 │   └── cart.ts
@@ -9,23 +8,23 @@
 │   │   │   └── page.tsx
 │   │   └── register
 │   │       └── page.tsx
+│   ├── error.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── not-found.tsx
 │   ├── (public)
 │   │   ├── about
 │   │   │   └── page.tsx
 │   │   └── page.tsx
-│   ├── (shop)
-│   │   ├── layout.tsx
-│   │   └── products
-│   │       ├── [id]
-│   │       │   ├── loading.tsx
-│   │       │   ├── not-found.tsx
-│   │       │   └── page.tsx
-│   │       ├── loading.tsx
-│   │       └── page.tsx
-│   ├── error.tsx
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── not-found.tsx
+│   └── (shop)
+│       ├── layout.tsx
+│       └── products
+│           ├── [id]
+│           │   ├── loading.tsx
+│           │   ├── not-found.tsx
+│           │   └── page.tsx
+│           ├── loading.tsx
+│           └── page.tsx
 ├── components
 │   ├── auth
 │   │   └── auth-form.tsx
@@ -58,16 +57,12 @@
 ├── eslint.config.mjs
 ├── lib
 │   ├── auth
+│   │   ├── cookie.ts
 │   │   ├── login.ts
 │   │   ├── logout.ts
 │   │   ├── register.ts
 │   │   ├── requireUser.ts
 │   │   └── session.ts
-│   ├── data
-│   │   ├── carts.json
-│   │   ├── products.json
-│   │   ├── sessions.json
-│   │   └── users.json
 │   ├── db
 │   │   ├── cart.ts
 │   │   ├── session.ts
@@ -77,14 +72,15 @@
 │   ├── utils.ts
 │   └── validators
 │       └── auth.ts
-├── next-env.d.ts
 ├── next.config.ts
-├── package-lock.json
+├── next-env.d.ts
 ├── package.json
+├── package-lock.json
 ├── postcss.config.mjs
 ├── proxy.ts
 ├── public
 │   └── favicon.ico
+├── README.md
 ├── struct.txt
 ├── test.js
 ├── tsconfig.json
@@ -94,4 +90,4 @@
     ├── session.ts
     └── user.ts
 
-25 directories, 69 files
+25 directories, 66 files

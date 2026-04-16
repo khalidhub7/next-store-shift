@@ -38,6 +38,16 @@ const getSessions = async (): Promise<Array<Session>> => {
     return [];
   }
 };
+
+const cleanExpiredSessions = async () => {
+  const sessions = await getSessions();
+  const now = Date.now();
+
+  const valid = sessions.filter((s) => new Date(s.expiresAt).getTime() > now);
+
+  await saveSessions(valid);
+};
+
 const saveSessions = async (sessions: Array<Session>): Promise<void> => {
   try {
     await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
@@ -49,6 +59,7 @@ const saveSessions = async (sessions: Array<Session>): Promise<void> => {
 
 // session crud
 const getSession = async (sessionId: string): Promise<Session | undefined> => {
+  await cleanExpiredSessions();
   const sessions = await getSessions();
   return sessions.find((s: Session) => s.sessionId === sessionId);
 };
