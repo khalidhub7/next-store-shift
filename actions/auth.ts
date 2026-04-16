@@ -4,11 +4,11 @@ import { cookies } from "next/headers";
 import { login } from "@/lib/auth/login";
 import { logout } from "@/lib/auth/logout";
 import { register } from "@/lib/auth/register";
+import { getCartIdByUserId } from "@/lib/db/cart";
 import { cookieOptions } from "@/lib/auth/cookie";
+import { getUserIdBySessionId } from "@/lib/db/session";
 import { LoginData, RegisterData } from "@/lib/validators/auth";
 import { registerSchema, loginSchema } from "@/lib/validators/auth";
-import { getUserIdBySessionId } from "@/lib/db/session";
-import { getCartIdByUserId } from "@/lib/db/cart";
 
 const loginAction = async (data: LoginData) => {
   const values = loginSchema.parse(data); // server validation
