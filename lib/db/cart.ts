@@ -108,4 +108,16 @@ const deleteCart = async (id: string): Promise<void> => {
   return appendToQueue(task);
 };
 
-export { createCart, updateCart, deleteCart, getCart, getCartByUserId };
+const getCartIdByUserId = async (userId: string): Promise<string | null> => {
+  const cart = await getCartByUserId(userId);
+  return cart?.id ?? null;
+};
+
+export {
+  createCart,
+  updateCart,
+  deleteCart,
+  getCart,
+  getCartByUserId,
+  getCartIdByUserId,
+};

@@ -18,8 +18,6 @@ import { readFile, writeFile } from "fs/promises";
 
 const usersFilePath = path.join(process.cwd(), "lib", "data", "users.json");
 
-console.log(usersFilePath);
-
 type Task = () => Promise<any>;
 
 let queue = Promise.resolve();

@@ -84,4 +84,11 @@ const deleteSession = async (sessionId: string): Promise<void> => {
   return appendToQueue(task);
 };
 
-export { getSession, saveSession, deleteSession };
+const getUserIdBySessionId = async (
+  sessionId: string,
+): Promise<string | undefined> => {
+  const session = await getSession(sessionId);
+  return session?.userId;
+};
+
+export { getSession, saveSession, deleteSession, getUserIdBySessionId };
