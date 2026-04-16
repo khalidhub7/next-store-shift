@@ -12,7 +12,7 @@ const ShopLayout = async ({ children }: { children: React.ReactNode }) => {
   let cartItems: Array<CartItem>;
   try {
     if (!sessionId || !cartId) throw new Error();
-    const session = await getSession(sessionId)
+    const session = await getSession(sessionId);
     const cart = await getCart(cartId);
     if (!session || !cart) throw new Error();
     if (session.userId != cart.userId) throw new Error();
