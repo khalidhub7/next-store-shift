@@ -1,7 +1,7 @@
 .next/
 node_modules/
-lib/data/auth/*
-lib/data/cart/*
+storage/auth/*
+storage/cart/*
 package-lock.json
 
 

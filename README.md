@@ -30,3 +30,10 @@ test all visually (eyes), the tests if time
 
 Session Auth Best Practices:
 PracticeWhyRedis for session storage⚡ fast lookuphttpOnly cookie🔒 XSS protectionHTTPS only (secure flag)🔒 prevents network theftSession expiry⏰ auto logoutDelete on logout🔒 no dangling sessionsRotate sessionId after login🔒 prevents session fixationRate limit login attempts🔒 prevents brute forceCSRF protection🔒 prevents cross-site attacks
+
+
+A clean repo =
+
+keep package-lock.json ✔
+write a clear README ✔
+always add a test script ✔
