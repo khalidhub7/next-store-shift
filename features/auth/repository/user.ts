@@ -16,7 +16,7 @@ import { User, CreateUserData } from "../types/user";
 import path from "path";
 import { readFile, writeFile } from "fs/promises";
 
-const usersFilePath = path.join(process.cwd(), "lib", "data", "auth", "users.json");
+const usersFilePath = path.join(process.cwd(), "storage", "auth", "users.json");
 
 type Task = () => Promise<any>;
 

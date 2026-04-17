@@ -15,8 +15,7 @@ import { readFile, writeFile } from "fs/promises";
 
 const sessionsFilePath = path.join(
   process.cwd(),
-  "lib",
-  "data",
+  "storage",
   "auth",
   "sessions.json",
 );

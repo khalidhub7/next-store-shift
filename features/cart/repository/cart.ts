@@ -14,7 +14,7 @@ import { randomUUID } from "crypto";
 import { Cart, CartItem } from "../types/cart";
 import { readFile, writeFile } from "fs/promises";
 
-const cartsFilePath = path.join(process.cwd(), "lib", "data", "cart", "carts.json");
+const cartsFilePath = path.join(process.cwd(), "storage", "cart", "carts.json");
 
 // avoid race conditions
 type Task = () => Promise<any>;

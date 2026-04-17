@@ -1,0 +1,22 @@
+[
+  {
+    "id": "8b402169-2d55-4304-90f6-6885a1ab204e",
+    "userId": "c95632d8-b637-4f6a-bb93-372f4b182fb9",
+    "items": [
+      {
+        "id": "1",
+        "title": "Essence Mascara Lash Princess",
+        "price": 9.99,
+        "qty": 11
+      },
+      {
+        "id": "79",
+        "title": "Asus Zenbook Pro Dual Screen Laptop",
+        "price": 1799.99,
+        "qty": 11
+      }
+    ],
+    "createdAt": "2026-04-16T02:20:49.959Z",
+    "updatedAt": "2026-04-17T01:59:06.602Z"
+  }
+]
