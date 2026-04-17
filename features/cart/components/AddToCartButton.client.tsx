@@ -4,7 +4,6 @@ import { useState } from "react";
 import { addToCart } from "../actions";
 import { Button } from "@/components/ui/button";
 
-
 // client actions > add toast
 
 type ClientAddToCartProps = { productId: string };

@@ -1,8 +1,9 @@
-import Image from "next/image";
+
 import Link from "next/link";
+import Image from "next/image";
+import { Product } from "../types/product";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Product } from "../types/product";
 
 interface ProductCardProps {
   p: Product;
@@ -53,4 +54,4 @@ const ProductCard = ({ p }: ProductCardProps) => {
   );
 };
 
-export {ProductCard};
+export { ProductCard };

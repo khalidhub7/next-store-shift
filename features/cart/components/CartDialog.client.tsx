@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { CartItem } from "../types/cart";
 import { Button } from "@/components/ui/button";
@@ -46,4 +46,4 @@ const CartDialog = async ({ cartItems }: { cartItems: Array<CartItem> }) => {
   );
 };
 
-export {CartDialog};
+export { CartDialog };

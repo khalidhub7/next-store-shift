@@ -128,4 +128,4 @@ const AuthForm = ({ type }: Props) => {
   );
 };
 
-export {AuthForm};
+export { AuthForm };

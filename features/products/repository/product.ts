@@ -16,8 +16,6 @@ const fetchProducts = async () => {
   return products;
 };
 
-
-
 const fetchProductById = async (id: string) => {
   let res: Response;
 

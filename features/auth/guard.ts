@@ -4,7 +4,6 @@ import { getSession, deleteSession } from "./repository/session";
 import { isSessionValid } from "./session";
 
 const requireUser = async (redirectTo: string) => {
-
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
 

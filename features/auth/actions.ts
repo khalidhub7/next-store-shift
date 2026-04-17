@@ -8,7 +8,6 @@ import { login, logout, register } from "./service";
 import { registerSchema, loginSchema } from "./schema";
 import { getUserIdBySessionId } from "./repository/session";
 
-
 const loginAction = async (data: LoginData) => {
   const values = loginSchema.parse(data); // server validation
   const { email, password } = values;
