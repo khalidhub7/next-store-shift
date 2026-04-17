@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { Session } from "@/types/session";
+import { Session } from "./types/session";
 
 /* 
 

@@ -10,13 +10,14 @@ DELETE data/ folder
 db.ts → connects to real DB
 */
 import path from "path";
-import { Session } from "@/types/session";
+import { Session } from "../types/session";
 import { readFile, writeFile } from "fs/promises";
 
 const sessionsFilePath = path.join(
   process.cwd(),
   "lib",
   "data",
+  "auth",
   "sessions.json",
 );
 

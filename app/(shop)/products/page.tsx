@@ -1,5 +1,5 @@
-import { Product } from "@/types/product";
-import ProductCard from "../../../components/shop/ProductCard";
+import { Product } from "@/features/products/types";
+import { ProductCard } from "@/features/products/components/ProductCard";
 // hint: Uses parallel fetch if more than one dataset
 
 const Products = async () => {

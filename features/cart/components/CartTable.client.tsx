@@ -1,66 +1,22 @@
 "use client";
 import { toast } from "sonner";
-import { CartItem } from "@/types/cart";
+import { CartItem } from "../types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { removeFromCart, updateQty } from "../../actions/cart";
+import { increaseQty, decreaseQty } from "../actions";
+import { removeFromCart, updateQty } from "../actions";
 import { Plus, Minus, MoreHorizontalIcon } from "lucide-react";
 import { Table, TableBody, TableCell } from "@/components/ui/table";
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { addToCart, decreaseQty, increaseQty } from "../../actions/cart";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
-
-// client actions > add toast
-
-type ClientAddToCartProps = { productId: string };
-type ClientUpdateQtyProps = { productId: string; qty: number };
-
-const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
-  const [onAction, setOnAction] = useState(false);
-
-  const handleAdd = async () => {
-    setOnAction(true);
-
-    const id = toast.loading("Adding to cart ...", {
-      position: "top-center",
-    });
-
-    const options = {
-      id,
-      position: "top-center",
-    } as const;
-
-    await addToCart(productId)
-      .then(() => toast.success("Added to cart", options))
-      .catch((err: any) => {
-        if (err?.digest?.includes("NEXT_REDIRECT")) {
-          toast.warning("Please login first", options);
-        } else {
-          toast.error("Failed to add item", options);
-        }
-      })
-      .finally(() => setOnAction(false));
-  };
-
-  return (
-    <Button
-      type="button"
-      variant={onAction ? "default" : "destructive"}
-      disabled={onAction}
-      onClick={handleAdd}
-      className="opacity-70 hover:scale-[1.02] transition-transform duration-300"
-    >
-      add to cart
-    </Button>
-  );
-};
-
 // cartDialog dropdown actions
+
+type ClientUpdateQtyProps = { productId: string; qty: number };
 
 const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
   // qty prop: is always the last server value
@@ -247,4 +203,4 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   );
 };
 
-export { ClientAddToCart, ClientCartTable };
+export { ClientCartTable };

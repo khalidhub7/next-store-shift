@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Product } from "@/types/product";
+import { Product } from "../types";
 
 interface ProductCardProps {
   p: Product;
@@ -53,4 +53,4 @@ const ProductCard = ({ p }: ProductCardProps) => {
   );
 };
 
-export default ProductCard;
+export {ProductCard};

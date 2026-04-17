@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { CartItem } from "@/types/cart";
+import { CartItem } from "../types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
-import { ClientCartTable } from "../client-parts/ClientActions";
+import { ClientCartTable } from "./CartTable.client";
 import { DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogDescription } from "@/components/ui/dialog";
 
@@ -45,4 +45,4 @@ const CartDialog = async ({ cartItems }: { cartItems: Array<CartItem> }) => {
   );
 };
 
-export default CartDialog;
+export {CartDialog};

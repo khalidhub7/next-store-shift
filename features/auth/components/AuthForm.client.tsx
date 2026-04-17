@@ -7,10 +7,10 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginAction, registerAction } from "@/actions/auth";
+import { loginAction, registerAction } from "../actions";
 import { useRouter, useSearchParams } from "next/navigation";
-import { loginSchema, LoginData } from "@/lib/validators/auth";
-import { registerSchema, RegisterData } from "@/lib/validators/auth";
+import { loginSchema, LoginData } from "../schema";
+import { registerSchema, RegisterData } from "../schema";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -128,4 +128,4 @@ const AuthForm = ({ type }: Props) => {
   );
 };
 
-export default AuthForm;
+export {AuthForm};

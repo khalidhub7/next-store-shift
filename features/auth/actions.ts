@@ -1,14 +1,12 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { login } from "@/lib/auth/login";
-import { logout } from "@/lib/auth/logout";
-import { register } from "@/lib/auth/register";
-import { getCartIdByUserId } from "@/lib/db/cart";
-import { cookieOptions } from "@/lib/auth/cookie";
-import { getUserIdBySessionId } from "@/lib/db/session";
-import { LoginData, RegisterData } from "@/lib/validators/auth";
-import { registerSchema, loginSchema } from "@/lib/validators/auth";
+import { login, logout, register } from "./service";
+import { getCartIdByUserId } from "../cart/repository";
+import { cookieOptions } from "./cookies";
+import { getUserIdBySessionId } from "./repository/session";
+import { LoginData, RegisterData } from "./schema";
+import { registerSchema, loginSchema } from "./schema";
 
 const loginAction = async (data: LoginData) => {
   const values = loginSchema.parse(data); // server validation

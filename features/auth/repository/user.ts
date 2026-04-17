@@ -11,12 +11,12 @@ db.ts → connects to real DB
 */
 
 import { randomUUID } from "crypto";
-import { CreateUserData, User } from "@/types/user";
+import { User, CreateUserData } from "../types/user";
 
 import path from "path";
 import { readFile, writeFile } from "fs/promises";
 
-const usersFilePath = path.join(process.cwd(), "lib", "data", "users.json");
+const usersFilePath = path.join(process.cwd(), "lib", "data", "auth", "users.json");
 
 type Task = () => Promise<any>;
 

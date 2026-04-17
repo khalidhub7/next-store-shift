@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
-import { getCart } from "@/lib/db/cart";
-import { CartItem } from "@/types/cart";
-import { getSession } from "@/lib/db/session";
-import CartDialog from "../../components/cart/CartDialog";
+import { getCart } from "@/features/cart/repository";
+import { CartItem } from "@/features/cart/types";
+import { getSession } from "@/features/auth/repository/session";
+import { CartDialog } from "@/features/cart/components/CartDialog.client";
 
 const ShopLayout = async ({ children }: { children: React.ReactNode }) => {
   const cookieStore = await cookies();

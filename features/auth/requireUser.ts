@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getSession, deleteSession } from "../db/session";
+import { getSession, deleteSession } from "./repository/session";
 import { isSessionValid } from "./session";
 
 const requireUser = async (redirectTo: string) => {
