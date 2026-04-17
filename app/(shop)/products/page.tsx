@@ -1,16 +1,9 @@
 import { Product } from "@/features/products/types/product";
 import { ProductCard } from "@/features/products/components/ProductCard";
-// hint: Uses parallel fetch if more than one dataset
+import { fetchProducts } from "@/features/products/queries";
 
 const Products = async () => {
-  // add n to make it realistic
-  const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-  const url = `https://dummyjson.com/products?limit=${n}`;
-  const data = await fetch(url)
-    .then((res) => res.json())
-    .catch(() => ({ products: [] }));
-
-  // always differentiate HTTP errors from network errors
+  const products = await fetchProducts();
 
   return (
     <section className="max-w-6xl mx-auto mt-16 px-6 flex flex-col gap-10">
@@ -22,7 +15,7 @@ const Products = async () => {
       </header>
 
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-sm md:max-w-none mx-auto w-full">
-        {data.products.map((p: Product) => (
+        {products.products.map((p: Product) => (
           <ProductCard p={p} key={p.id} />
         ))}
       </ul>
