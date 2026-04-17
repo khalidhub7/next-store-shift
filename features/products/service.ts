@@ -1,4 +1,4 @@
-import { Product } from "./types";
+import { Product } from "./types/product";
 import { notFound } from "next/navigation";
 
 const fetchProductById = async (id: string) => {

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
-import { getCart } from "@/features/cart/repository";
-import { CartItem } from "@/features/cart/types";
+import { getCart } from "@/features/cart/repository/cart";
+import { CartItem } from "@/features/cart/types/cart";
 import { getSession } from "@/features/auth/repository/session";
 import { CartDialog } from "@/features/cart/components/CartDialog.client";
 

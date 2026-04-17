@@ -1,4 +1,4 @@
-import { Product } from "@/features/products/types";
+import { Product } from "@/features/products/types/product";
 import { ProductCard } from "@/features/products/components/ProductCard";
 // hint: Uses parallel fetch if more than one dataset
 

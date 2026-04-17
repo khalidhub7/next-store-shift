@@ -1,5 +1,5 @@
-import { CartItem } from "./types";
-import { getCart, updateCart } from "./repository";
+import { CartItem } from "./types/cart";
+import { getCart, updateCart } from "./repository/cart";
 import { fetchProductById } from "../products/service";
 
 type Task = () => Promise<void>;

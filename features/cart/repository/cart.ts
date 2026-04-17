@@ -11,7 +11,7 @@ db.ts → connects to real DB
 */
 import path from "path";
 import { randomUUID } from "crypto";
-import { Cart, CartItem } from "./types";
+import { Cart, CartItem } from "../types/cart";
 import { readFile, writeFile } from "fs/promises";
 
 const cartsFilePath = path.join(process.cwd(), "lib", "data", "cart", "carts.json");

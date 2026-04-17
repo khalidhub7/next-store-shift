@@ -1,5 +1,6 @@
+"use client"
 import Image from "next/image";
-import { CartItem } from "../types";
+import { CartItem } from "../types/cart";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { ClientCartTable } from "./CartTable.client";
