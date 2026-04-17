@@ -1,5 +1,5 @@
-import { getCartItems } from "@/features/cart/queries";
-import { CartDialog } from "@/features/cart/components/CartDialog.client";
+import { CartDialog } from "@/features/cart";
+import { getCartItems } from "@/features/cart";
 
 
 const ShopLayout = async ({ children }: { children: React.ReactNode }) => {
