@@ -1,29 +1,12 @@
-import { cookies } from "next/headers";
-import { getCart } from "@/features/cart/repository/cart";
-import { CartItem } from "@/features/cart/types/cart";
-import { getSession } from "@/features/auth/repository/session";
+import { getCartItems } from "@/features/cart/queries";
 import { CartDialog } from "@/features/cart/components/CartDialog.client";
 
+
 const ShopLayout = async ({ children }: { children: React.ReactNode }) => {
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get("cart")?.value;
-  const sessionId = cookieStore.get("sessionId")?.value;
-
-  let cartItems: Array<CartItem>;
-  try {
-    if (!sessionId || !cartId) throw new Error();
-    const session = await getSession(sessionId);
-    const cart = await getCart(cartId);
-    if (!session || !cart) throw new Error();
-    if (session.userId != cart.userId) throw new Error();
-    cartItems = cart.items;
-  } catch {
-    cartItems = [];
-  }
-
+  const items = await getCartItems()
   return (
     <>
-      <CartDialog cartItems={cartItems} />
+      <CartDialog cartItems={items} />
       {children}
     </>
   );

@@ -1,0 +1,23 @@
+import { cookies } from "next/headers";
+import { getCart } from "@/features/cart/repository/cart";
+import { CartItem } from "@/features/cart/types/cart";
+import { getSession } from "@/features/auth/repository/session";
+
+const getCartItems = async (): Promise<Array<CartItem>> => {
+  const cookieStore = await cookies();
+  const cartId = cookieStore.get("cart")?.value;
+  const sessionId = cookieStore.get("sessionId")?.value;
+
+  try {
+    if (!sessionId || !cartId) throw new Error();
+    const session = await getSession(sessionId);
+    const cart = await getCart(cartId);
+    if (!session || !cart) throw new Error();
+    if (session.userId != cart.userId) throw new Error();
+    return cart.items;
+  } catch {
+    return [];
+  }
+};
+
+export { getCartItems };
