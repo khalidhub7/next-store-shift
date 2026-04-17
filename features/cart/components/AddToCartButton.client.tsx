@@ -1,8 +1,9 @@
 "use client";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { addToCart } from "../actions";
 import { useState } from "react";
+import { addToCart } from "../actions";
+import { Button } from "@/components/ui/button";
+
 
 // client actions > add toast
 

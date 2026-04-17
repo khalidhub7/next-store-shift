@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { getCart } from "@/features/cart/repository/cart";
-import { CartItem } from "@/features/cart/types/cart";
-import { getSession } from "@/features/auth/repository/session";
+import { getCart } from "./repository/cart";
+import { CartItem } from "./types/cart";
+import { getSession } from "../auth";
 
 const getCartItems = async (): Promise<Array<CartItem>> => {
   const cookieStore = await cookies();
