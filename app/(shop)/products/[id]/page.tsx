@@ -1,9 +1,10 @@
 import Image from "next/image";
+import { ClientAddToCart } from "@/features/cart";
 import { Carousel } from "@/components/ui/carousel";
-import { fetchProductById } from "@/features/products/service";
+import { fetchProductById } from "@/features/products";
 import { CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ClientAddToCart } from "@/features/cart/components/AddToCartButton.client";
+
 
 interface ProductDetailsProps {
   params: Promise<{ id: string }>;

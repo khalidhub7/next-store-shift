@@ -1,6 +1,6 @@
-import { Product } from "@/features/products/types/product";
-import { ProductCard } from "@/features/products/components/ProductCard";
-import { fetchProducts } from "@/features/products/queries";
+import { Product } from "@/features/products";
+import { ProductCard } from "@/features/products";
+import { fetchProducts } from "@/features/products";
 
 const Products = async () => {
   const products = await fetchProducts();
