@@ -6,11 +6,11 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { loginSchema, LoginData } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginAction, registerAction } from "../actions";
-import { useRouter, useSearchParams } from "next/navigation";
-import { loginSchema, LoginData } from "../schema";
 import { registerSchema, RegisterData } from "../schema";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -115,8 +115,13 @@ const AuthForm = ({ type }: Props) => {
               />
             )}
             <Button className="w-full" disabled={loading}>
-              {loading && <Loader2 className="animate-spin" />}
-              {loading ? "" : isLogin ? "Sign in" : "Sign up"}
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : isLogin ? (
+                "Sign in"
+              ) : (
+                "Sign up"
+              )}
             </Button>
           </form>
         </Form>
