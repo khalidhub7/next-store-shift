@@ -57,7 +57,7 @@ const AuthForm = ({ type }: Props) => {
         options,
       );
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
