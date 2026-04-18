@@ -39,10 +39,7 @@ const AuthForm = ({ type }: Props) => {
       if (isLogin) await loginAction(values as LoginData);
       else await registerAction(values as RegisterData);
 
-      toast.success(
-        isLogin ? "Welcome back!" : "Account created! Welcome aboard 🎉",
-        options,
-      );
+      toast.success(isLogin ? "Logged in" : "Account created", options);
 
       const redirectTo = searchParams.get("redirect");
       router.replace(redirectTo || "/");
@@ -51,8 +48,8 @@ const AuthForm = ({ type }: Props) => {
         err instanceof Error
           ? err.message
           : isLogin
-            ? "Login failed. Please try again."
-            : "Registration failed. Please try again.",
+            ? "Login failed"
+            : "Signup failed",
         options,
       );
     } finally {
