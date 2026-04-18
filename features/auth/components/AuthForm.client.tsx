@@ -33,7 +33,7 @@ const AuthForm = ({ type }: Props) => {
   };
   const form = useForm<LoginData | RegisterData>(config);
 
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (values: LoginData | RegisterData) => {
     const options = { position: "top-center" } as const;
