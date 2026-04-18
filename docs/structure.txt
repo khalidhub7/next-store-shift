@@ -1,0 +1,108 @@
+../app-basics/
+├── README.md
+├── app
+│   ├── (auth)
+│   │   ├── login
+│   │   │   └── page.tsx
+│   │   └── register
+│   │       └── page.tsx
+│   ├── (public)
+│   │   ├── about
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── (shop)
+│   │   ├── layout.tsx
+│   │   └── products
+│   │       ├── [id]
+│   │       │   ├── loading.tsx
+│   │       │   ├── not-found.tsx
+│   │       │   └── page.tsx
+│   │       ├── loading.tsx
+│   │       └── page.tsx
+│   ├── error.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── not-found.tsx
+├── components
+│   ├── layout
+│   │   ├── ClientNav.client.tsx
+│   │   ├── ClientNav.module.css
+│   │   └── Header.tsx
+│   └── ui
+│       ├── aspect-ratio.tsx
+│       ├── avatar.tsx
+│       ├── badge.tsx
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── carousel.tsx
+│       ├── dialog.tsx
+│       ├── dropdown-menu.tsx
+│       ├── form.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── skeleton.tsx
+│       ├── sonner.tsx
+│       └── table.tsx
+├── components.json
+├── docs
+│   └── structure.txt
+├── eslint.config.mjs
+├── features
+│   ├── auth
+│   │   ├── actions.ts
+│   │   ├── components
+│   │   │   └── AuthForm.client.tsx
+│   │   ├── guard.ts
+│   │   ├── index.ts
+│   │   ├── repository
+│   │   │   ├── session.ts
+│   │   │   └── user.ts
+│   │   ├── schema.ts
+│   │   ├── server.ts
+│   │   ├── service.ts
+│   │   ├── session.helpers.ts
+│   │   └── types
+│   │       ├── session.ts
+│   │       └── user.ts
+│   ├── cart
+│   │   ├── actions.ts
+│   │   ├── components
+│   │   │   ├── AddToCartButton.client.tsx
+│   │   │   ├── CartDialog.client.tsx
+│   │   │   └── CartTable.client.tsx
+│   │   ├── index.ts
+│   │   ├── queries.ts
+│   │   ├── repository
+│   │   │   └── cart.ts
+│   │   ├── server.ts
+│   │   ├── service.ts
+│   │   └── types
+│   │       └── cart.ts
+│   └── products
+│       ├── components
+│       │   └── ProductCard.tsx
+│       ├── index.ts
+│       ├── repository
+│       │   └── product.ts
+│       ├── server.ts
+│       └── types
+│           └── product.ts
+├── lib
+│   └── utils.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── proxy.ts
+├── public
+│   └── favicon.ico
+├── storage
+│   ├── auth
+│   │   ├── sessions.json
+│   │   └── users.json
+│   └── cart
+│       └── carts.json
+└── tsconfig.json
+
+31 directories, 74 files
