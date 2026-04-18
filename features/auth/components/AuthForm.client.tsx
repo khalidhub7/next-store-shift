@@ -67,7 +67,7 @@ const AuthForm = ({ type }: Props) => {
         <CardTitle>{isLogin ? "Login" : "Create account"}</CardTitle>
       </CardHeader>
 
-      <CardContent>
+      <CardContent >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {!isLogin && (
