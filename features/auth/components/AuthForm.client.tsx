@@ -118,7 +118,7 @@ const AuthForm = ({ type }: Props) => {
                 )}
               />
             )}
-            <Button className="w-full" disabled={loading}>
+            <Button className="w-full" disabled={isSubmitting}>
               {loading ? (
                 <Loader2 className="animate-spin" />
               ) : isLogin ? (
