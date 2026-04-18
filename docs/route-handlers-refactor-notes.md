@@ -87,7 +87,7 @@ This note is a learning reference for how this project could be refactored from 
 │   │   │   └── session.ts
 │   │   ├── guard.ts
 │   │   ├── index.ts
-│   │   ├── repository
+│   │   ├── db
 │   │   │   ├── session.ts
 │   │   │   └── user.ts
 │   │   ├── schema.ts
@@ -109,7 +109,7 @@ This note is a learning reference for how this project could be refactored from 
 │   │   │   └── update-qty.ts
 │   │   ├── index.ts
 │   │   ├── queries.ts
-│   │   ├── repository
+│   │   ├── db
 │   │   │   └── cart.ts
 │   │   ├── service.ts
 │   │   └── types
@@ -122,7 +122,7 @@ This note is a learning reference for how this project could be refactored from 
 │       │   ├── get-product.ts
 │       │   └── list-products.ts
 │       ├── index.ts
-│       ├── repository
+│       ├── db
 │       │   └── product.ts
 │       └── types
 │           └── product.ts
@@ -154,7 +154,7 @@ This note is a learning reference for how this project could be refactored from 
 - `app/api/**/route.ts` becomes the HTTP entry layer.
 - UI calls API through `fetch()` or helper files like `features/auth/client.ts`.
 - `handlers/` contains route-handler-specific logic so `route.ts` stays thin.
-- `service/` and `repository/` can still stay almost the same.
+- `service/` and `db/` can still stay almost the same.
 
 ## Layer Meanings
 
@@ -163,7 +163,7 @@ This note is a learning reference for how this project could be refactored from 
 - `client.ts` = frontend caller of `/api/...`
 - `handlers/` = adapter between route handler and business logic
 - `service.ts` = business logic
-- `repository/` = db/file access
+- `db/` = db/file access
 
 ## Simple Mental Model
 
