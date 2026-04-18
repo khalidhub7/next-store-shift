@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { cookieOptions } from "./cookies";
-import { getCartIdByUserId } from "../cart";
+import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
 import { registerSchema, loginSchema } from "./schema";

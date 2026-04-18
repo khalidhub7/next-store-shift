@@ -1,6 +1,6 @@
-import { Product } from "@/features/products";
-import { ProductCard } from "@/features/products";
-import { fetchProducts } from "@/features/products";
+import { Product } from "@/features/products/server";
+import { ProductCard } from "@/features/products/server";
+import { fetchProducts } from "@/features/products/server";
 
 const Products = async () => {
   const products = await fetchProducts();

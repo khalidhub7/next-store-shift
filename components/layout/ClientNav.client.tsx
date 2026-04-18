@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import styles from "./Header.module.css";
+import styles from "./ClientNav.module.css";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 

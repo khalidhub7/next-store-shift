@@ -1,7 +1,7 @@
 // helpers (business logic)
 
 import bcrypt from "bcrypt";
-import { createSession } from "./session";
+import { createSession } from "./session.helpers";
 import { getUserByEmail, createUser } from "./repository/user";
 import { saveSession, deleteSession } from "./repository/session";
 

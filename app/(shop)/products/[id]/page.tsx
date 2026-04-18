@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ClientAddToCart } from "@/features/cart";
 import { Carousel } from "@/components/ui/carousel";
-import { fetchProductById } from "@/features/products";
+import { fetchProductById } from "@/features/products/server";
 import { CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
