@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getCart } from "./repository/cart";
+import { getCart } from "./db/cart";
 import { CartItem } from "./types/cart";
 import { getSession } from "../auth/server";
 

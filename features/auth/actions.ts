@@ -5,7 +5,7 @@ import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
 import { registerSchema, loginSchema } from "./schema";
-import { getUserIdBySessionId } from "./repository/session";
+import { getUserIdBySessionId } from "./db/session";
 
 const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   {

@@ -1,6 +1,6 @@
 // export server comps
 export { requireUser } from "./guard";
-export { getSession } from "./repository/session";
+export { getSession } from "./db/session";
 
 /* 
 hint:

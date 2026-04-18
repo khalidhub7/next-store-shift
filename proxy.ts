@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "./features/auth/server";
 import { isSessionValid } from "./features/auth/session.helpers";
-import { deleteSession } from "./features/auth/repository/session";
+import { deleteSession } from "./features/auth/db/session";
 
 
 const middleware = async (request: NextRequest) => {

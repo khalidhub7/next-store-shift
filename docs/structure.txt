@@ -45,6 +45,7 @@
 │       └── table.tsx
 ├── components.json
 ├── docs
+│   ├── route-handlers-refactor-notes.md
 │   └── structure.txt
 ├── eslint.config.mjs
 ├── features
@@ -52,11 +53,11 @@
 │   │   ├── actions.ts
 │   │   ├── components
 │   │   │   └── AuthForm.client.tsx
-│   │   ├── guard.ts
-│   │   ├── index.ts
-│   │   ├── repository
+│   │   ├── db
 │   │   │   ├── session.ts
 │   │   │   └── user.ts
+│   │   ├── guard.ts
+│   │   ├── index.ts
 │   │   ├── schema.ts
 │   │   ├── server.ts
 │   │   ├── service.ts
@@ -70,10 +71,10 @@
 │   │   │   ├── AddToCartButton.client.tsx
 │   │   │   ├── CartDialog.client.tsx
 │   │   │   └── CartTable.client.tsx
+│   │   ├── db
+│   │   │   └── cart.ts
 │   │   ├── index.ts
 │   │   ├── queries.ts
-│   │   ├── repository
-│   │   │   └── cart.ts
 │   │   ├── server.ts
 │   │   ├── service.ts
 │   │   └── types
@@ -81,9 +82,9 @@
 │   └── products
 │       ├── components
 │       │   └── ProductCard.tsx
-│       ├── index.ts
-│       ├── repository
+│       ├── db
 │       │   └── product.ts
+│       ├── index.ts
 │       ├── server.ts
 │       └── types
 │           └── product.ts
@@ -105,4 +106,4 @@
 │       └── carts.json
 └── tsconfig.json
 
-31 directories, 74 files
+31 directories, 75 files

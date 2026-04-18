@@ -2,8 +2,8 @@
 
 import bcrypt from "bcrypt";
 import { createSession } from "./session.helpers";
-import { getUserByEmail, createUser } from "./repository/user";
-import { saveSession, deleteSession } from "./repository/session";
+import { getUserByEmail, createUser } from "./db/user";
+import { saveSession, deleteSession } from "./db/session";
 
 // helpers
 const comparePassword = async (
