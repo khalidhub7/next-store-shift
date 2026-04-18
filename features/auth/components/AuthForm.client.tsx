@@ -21,13 +21,17 @@ const AuthForm = ({ type }: Props) => {
   const searchParams = useSearchParams();
   const isLogin = type === "login";
 
-  const form = useForm<LoginData | RegisterData>({
+  const config = {
+    // resolver
     resolver: zodResolver(isLogin ? loginSchema : registerSchema),
+    // defaultValues
     defaultValues: isLogin
       ? { email: "", password: "" }
       : { name: "", email: "", password: "", confirmPassword: "" },
-    mode: "onChange",
-  });
+    // mode
+    mode: "onChange" as const,
+  };
+  const form = useForm<LoginData | RegisterData>(config);
 
   const [loading, setLoading] = useState(false);
 
@@ -58,7 +62,7 @@ const AuthForm = ({ type }: Props) => {
   };
 
   return (
-    <Card className="max-w-sm mx-auto">
+    <Card className="max-w-sm mx-auto ">
       <CardHeader>
         <CardTitle>{isLogin ? "Login" : "Create account"}</CardTitle>
       </CardHeader>
