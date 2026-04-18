@@ -38,7 +38,7 @@ const AuthForm = ({ type }: Props) => {
   const onSubmit = async (values: LoginData | RegisterData) => {
     const options = { position: "top-center" } as const;
     try {
-      setLoading(true);
+      setIsSubmitting(true);
 
       if (isLogin) await loginAction(values as LoginData);
       else await registerAction(values as RegisterData);
