@@ -7,7 +7,7 @@ import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogDescription } from "@/components/ui/dialog";
 
-const CartDialog = async ({ cartItems }: { cartItems: Array<CartItem> }) => {
+const CartDialog = ({ cartItems }: { cartItems: Array<CartItem> }) => {
   // console.log(JSON.stringify(cart))
   return (
     /* cart dialog */
