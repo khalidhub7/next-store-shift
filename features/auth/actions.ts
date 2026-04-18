@@ -1,12 +1,20 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { cookieOptions } from "./cookies";
 import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
 import { registerSchema, loginSchema } from "./schema";
 import { getUserIdBySessionId } from "./repository/session";
+
+const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
+  {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    // maxAge: 60 * 60 * 24 * 3,
+    maxAge: 60,
+  };
 
 const loginAction = async (data: LoginData) => {
   const values = loginSchema.parse(data); // server validation

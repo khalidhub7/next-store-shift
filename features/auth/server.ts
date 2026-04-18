@@ -1,4 +1,10 @@
 // export server comps
 export { requireUser } from "./guard";
-export { cookieOptions } from "./cookies";
 export { getSession } from "./repository/session";
+
+/* 
+hint:
+'getSession' is low level func
+rule: dont export low lvl func
+so 'getSession' exported temporarily
+*/

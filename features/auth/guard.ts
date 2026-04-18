@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSession, deleteSession } from "./repository/session";
 import { isSessionValid } from "./session.helpers";
 
+
 const requireUser = async (redirectTo: string) => {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
