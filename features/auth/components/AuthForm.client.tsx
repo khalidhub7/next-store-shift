@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { toast } from "sonner";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
+import { AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { loginSchema, LoginData } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,54 +73,72 @@ const AuthForm = ({ type }: Props) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {!isLogin ? (
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <Input placeholder="Name" {...field} />
-                    <FormMessage />
-                  </FormItem>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={isLogin ? "login" : "register"}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="space-y-4"
+              >
+                {!isLogin && (
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Input placeholder="Name" {...field} />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
-            ) : undefined}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <Input type="email" placeholder="Email" {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <Input type="password" placeholder="Password" {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {!isLogin ? (
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <Input
-                      type="password"
-                      placeholder="Confirm Password"
-                      {...field}
-                    />
-                    <FormMessage />
-                  </FormItem>
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Input type="email" placeholder="Email" {...field} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {!isLogin && (
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Input
+                          type="password"
+                          placeholder="Confirm Password"
+                          {...field}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
-            ) : undefined}
+              </motion.div>
+            </AnimatePresence>
             <Button className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="animate-spin" />
