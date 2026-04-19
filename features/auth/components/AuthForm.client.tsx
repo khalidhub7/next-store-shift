@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -67,10 +68,10 @@ const AuthForm = ({ type }: Props) => {
         <CardTitle>{isLogin ? "Login" : "Create account"}</CardTitle>
       </CardHeader>
 
-      <CardContent >
+      <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {!isLogin && (
+            {!isLogin ? (
               <FormField
                 control={form.control}
                 name="name"
@@ -81,7 +82,7 @@ const AuthForm = ({ type }: Props) => {
                   </FormItem>
                 )}
               />
-            )}
+            ) : undefined}
             <FormField
               control={form.control}
               name="email"
@@ -102,7 +103,7 @@ const AuthForm = ({ type }: Props) => {
                 </FormItem>
               )}
             />
-            {!isLogin && (
+            {!isLogin ? (
               <FormField
                 control={form.control}
                 name="confirmPassword"
@@ -117,7 +118,7 @@ const AuthForm = ({ type }: Props) => {
                   </FormItem>
                 )}
               />
-            )}
+            ) : undefined}
             <Button className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="animate-spin" />
@@ -127,6 +128,19 @@ const AuthForm = ({ type }: Props) => {
                 "Sign up"
               )}
             </Button>
+
+            <p className="text-sm text-center text-muted-foreground">
+              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+              <Link
+                href={{
+                  pathname: isLogin ? "/register" : "/login",
+                  query: Object.fromEntries(searchParams),
+                }}
+                className="font-medium text-primary hover:underline"
+              >
+                {isLogin ? "Sign up" : "Sign in"}
+              </Link>
+            </p>
           </form>
         </Form>
       </CardContent>
