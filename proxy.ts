@@ -4,7 +4,6 @@ import { getSession } from "./features/auth/server";
 import { isSessionValid } from "./features/auth/session.helpers";
 import { deleteSession } from "./features/auth/db/session";
 
-
 const middleware = async (request: NextRequest) => {
   const { pathname, searchParams } = request.nextUrl;
   const saferRedirects = ["/products"]; // prevent bad redirects
@@ -43,9 +42,11 @@ const middleware = async (request: NextRequest) => {
     const session = await getSession(sessionId);
     if (!session) {
       // fake session
-      return NextResponse.redirect(
+      const res = NextResponse.redirect(
         new URL(`/login?redirect=${pathname}`, request.url),
       );
+      res.cookies.delete("sessionId");
+      return res;
     }
     const isValid = isSessionValid(session); // expired or not yet
     if (!isValid) {
