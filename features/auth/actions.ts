@@ -1,8 +1,8 @@
 "use server";
 
 import { Redis } from "@upstash/redis";
-import { cookies } from "next/headers";
 import { Ratelimit } from "@upstash/ratelimit";
+import { cookies, headers } from "next/headers";
 import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
@@ -22,13 +22,15 @@ const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(5, "15 m"),
 });
+const h = await headers();
 
 const loginAction = async (data: LoginData) => {
   // rate limiter
+  const ip =
+    h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown";
+  const identifier = email;
 
-
-  
-  // login 
+  // login
   const values = loginSchema.parse(data); // server validation
   const { email, password } = values;
   const { sessionId } = await login(email, password);
