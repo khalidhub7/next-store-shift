@@ -22,7 +22,6 @@ const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(5, "15 m"),
 });
-const h = await headers();
 
 const loginAction = async (data: LoginData) => {
   // server validation
@@ -30,12 +29,13 @@ const loginAction = async (data: LoginData) => {
   const { email, password } = values;
 
   // rate limiter
+  const h = await headers();
   const ip =
     h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown";
   const identifier = `${ip}:${email}`;
 
   const { success } = await ratelimit.limit(identifier);
-  if (!success) return { rateLimit: false };
+  if (!success) return { rateLimit: success };
 
   // login
   const { sessionId } = await login(email, password);
