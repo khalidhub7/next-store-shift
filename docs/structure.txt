@@ -1,28 +1,27 @@
 ../app-basics/
-├── README.md
 ├── app
 │   ├── (auth)
 │   │   ├── login
 │   │   │   └── page.tsx
 │   │   └── register
 │   │       └── page.tsx
+│   ├── error.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── not-found.tsx
 │   ├── (public)
 │   │   ├── about
 │   │   │   └── page.tsx
 │   │   └── page.tsx
-│   ├── (shop)
-│   │   ├── layout.tsx
-│   │   └── products
-│   │       ├── [id]
-│   │       │   ├── loading.tsx
-│   │       │   ├── not-found.tsx
-│   │       │   └── page.tsx
-│   │       ├── loading.tsx
-│   │       └── page.tsx
-│   ├── error.tsx
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── not-found.tsx
+│   └── (shop)
+│       ├── layout.tsx
+│       └── products
+│           ├── [id]
+│           │   ├── loading.tsx
+│           │   ├── not-found.tsx
+│           │   └── page.tsx
+│           ├── loading.tsx
+│           └── page.tsx
 ├── components
 │   ├── layout
 │   │   ├── ClientNav.client.tsx
@@ -90,20 +89,22 @@
 │           └── product.ts
 ├── lib
 │   └── utils.ts
-├── next-env.d.ts
 ├── next.config.ts
-├── package-lock.json
+├── next-env.d.ts
 ├── package.json
+├── package-lock.json
 ├── postcss.config.mjs
 ├── proxy.ts
 ├── public
 │   └── favicon.ico
+├── README.md
 ├── storage
 │   ├── auth
 │   │   ├── sessions.json
 │   │   └── users.json
 │   └── cart
 │       └── carts.json
-└── tsconfig.json
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
 
-31 directories, 75 files
+32 directories, 76 files
