@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
-import { registerSchema, loginSchema } from "./schema";
 import { getUserIdBySessionId } from "./db/session";
+import { registerSchema, loginSchema } from "./schema";
 
 const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   {
