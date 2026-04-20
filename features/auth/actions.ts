@@ -25,14 +25,18 @@ const ratelimit = new Ratelimit({
 const h = await headers();
 
 const loginAction = async (data: LoginData) => {
+  // server validation
+  const values = loginSchema.parse(data);
+  const { email, password } = values;
+
   // rate limiter
   const ip =
     h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown";
-  const identifier = email;
+  const identifier = `${ip}:${email}`;
+
+  const { success } = await ratelimit.limit(identifier);
 
   // login
-  const values = loginSchema.parse(data); // server validation
-  const { email, password } = values;
   const { sessionId } = await login(email, password);
   if (sessionId) {
     const store = await cookies();
@@ -47,6 +51,7 @@ const loginAction = async (data: LoginData) => {
       }
     }
   }
+  return { rateLimit: success };
 };
 
 const registerAction = async (data: RegisterData) => {
