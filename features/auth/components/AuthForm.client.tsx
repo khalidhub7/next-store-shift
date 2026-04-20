@@ -48,8 +48,12 @@ const AuthForm = ({ type }: Props) => {
 
       toast.success(isLogin ? "Logged in" : "Account created", options);
 
+      const safeRedirects = ["/products"];
       const redirectTo = searchParams.get("redirect");
-      router.replace(redirectTo || "/");
+
+      router.replace(
+        redirectTo && safeRedirects.includes(redirectTo) ? redirectTo : "/",
+      );
     } catch (err) {
       toast.error(
         err instanceof Error
