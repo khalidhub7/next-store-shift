@@ -1,6 +1,5 @@
 "use server";
 
-
 import { Redis } from "@upstash/redis";
 import { cookies } from "next/headers";
 import { Ratelimit } from "@upstash/ratelimit";
@@ -18,6 +17,11 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
     // maxAge: 60 * 60 * 24 * 3,
     maxAge: 60,
   };
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, "15 m"),
+});
 
 const loginAction = async (data: LoginData) => {
   const values = loginSchema.parse(data); // server validation
