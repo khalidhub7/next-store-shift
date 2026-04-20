@@ -35,6 +35,7 @@ const loginAction = async (data: LoginData) => {
   const identifier = `${ip}:${email}`;
 
   const { success } = await ratelimit.limit(identifier);
+  if (!success) return { rateLimit: false };
 
   // login
   const { sessionId } = await login(email, password);
@@ -51,7 +52,7 @@ const loginAction = async (data: LoginData) => {
       }
     }
   }
-  return { rateLimit: success };
+  return { rateLimit: false };
 };
 
 const registerAction = async (data: RegisterData) => {
