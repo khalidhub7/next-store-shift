@@ -1,6 +1,9 @@
 "use server";
 
+
+import { Redis } from "@upstash/redis";
 import { cookies } from "next/headers";
+import { Ratelimit } from "@upstash/ratelimit";
 import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
