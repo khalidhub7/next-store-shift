@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 const fetchProducts = async () => {
   // add n to make it realistic
-  const start = 70;
+  const start = 80;
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
   const url = `https://dummyjson.com/products?limit=${n}&skip=${start}`;
   const products = await fetch(url)

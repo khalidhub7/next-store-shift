@@ -1,8 +1,10 @@
 .next/
+../dump.rdb
 node_modules/
 storage/auth/*
 storage/cart/*
 package-lock.json
+
 
 
 # debug files
