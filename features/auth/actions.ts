@@ -31,9 +31,8 @@ const loginAction = async (data: LoginData) => {
   const attempts = await redis.incr(key);
   if (attempts === 1) {
     await redis.expire(key, 900); // 15 min
+    return { rateLimit: true }
   }
-
-  // if (!success) return { rateLimit: success };
 
   // login
   const { sessionId } = await login(email, password);
