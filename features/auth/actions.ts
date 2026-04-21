@@ -29,10 +29,8 @@ const loginAction = async (data: LoginData) => {
     h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown";
   const key = `login:${ip}:${email}`;
   const attempts = await redis.incr(key);
-  if (attempts === 1) {
-    await redis.expire(key, 900); // 15 min
-    return { rateLimit: true }
-  }
+  if (attempts === 1) await redis.expire(key, 900); // 15 min
+  if (attempts > 5) return { rateLimit: true };
 
   // login
   const { sessionId } = await login(email, password);
@@ -49,6 +47,7 @@ const loginAction = async (data: LoginData) => {
       }
     }
   }
+  await redis.del(key);
   return { rateLimit: false };
 };
 
