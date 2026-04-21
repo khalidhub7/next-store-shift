@@ -47,8 +47,9 @@ const loginAction = async (data: LoginData) => {
         store.set("cart", cartId, cookieOptions);
       }
     }
+    await redis.del(key);
   }
-  await redis.del(key);
+  
   return { rateLimit: false };
 };
 
