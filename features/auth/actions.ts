@@ -1,7 +1,6 @@
 "use server";
 
-import { Redis } from "@upstash/redis";
-import { Ratelimit } from "@upstash/ratelimit";
+import { redis } from "@/lib/redis";
 import { cookies, headers } from "next/headers";
 import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
@@ -18,11 +17,6 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
     maxAge: 60,
   };
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, "15 m"),
-});
-
 const loginAction = async (data: LoginData) => {
   // server validation
   const values = loginSchema.parse(data);
@@ -33,10 +27,13 @@ const loginAction = async (data: LoginData) => {
   const h = await headers();
   const ip =
     h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown";
-  const identifier = `${ip}:${email}`;
+  const key = `login:${ip}:${email}`;
+  const attempts = await redis.incr(key);
+  if (attempts === 1) {
+    await redis.expire(key, 900); // 15 min
+  }
 
-  const { success } = await ratelimit.limit(identifier);
-  if (!success) return { rateLimit: success };
+  // if (!success) return { rateLimit: success };
 
   // login
   const { sessionId } = await login(email, password);
