@@ -49,7 +49,7 @@ const loginAction = async (data: LoginData) => {
     }
     await redis.del(key);
   }
-  
+
   return { rateLimit: false };
 };
 
