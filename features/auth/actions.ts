@@ -28,6 +28,7 @@ const loginAction = async (data: LoginData) => {
   const ip =
     h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown";
   const key = `login:${ip}:${email}`;
+
   const attempts = await redis.incr(key);
   if (attempts === 1) await redis.expire(key, 900); // 15 min
   if (attempts > 5) return { rateLimit: true };
