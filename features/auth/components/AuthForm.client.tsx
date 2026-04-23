@@ -44,9 +44,9 @@ const AuthForm = ({ type }: Props) => {
       setIsSubmitting(true);
 
       if (isLogin) {
-        const { rateLimit } = await loginAction(values as LoginData);
+        const { rateLimit, message } = await loginAction(values as LoginData);
         if (rateLimit) {
-          toast.error("Too many login attempts. Try again later.");
+          toast.error(message);
           return; // stop here
         }
       } else await registerAction(values as RegisterData);
