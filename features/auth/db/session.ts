@@ -62,14 +62,13 @@ const getSession = async (sessionId: string): Promise<Session | undefined> => {
 };
 
 const saveSession = async (session: Session): Promise<string> => {
-  await cleanExpiredSessions();
   const task = async () => {
+    await cleanExpiredSessions();
     const sessions = await getSessions();
     sessions.push(session);
     await saveSessions(sessions);
     return session.sessionId;
   };
-
   return appendToQueue(task);
 };
 

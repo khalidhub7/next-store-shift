@@ -52,7 +52,9 @@ const AuthForm = ({ type }: Props) => {
           return; // stop here
         }
         success ? toast.success(message) : toast.error(message);
-      } else await registerAction(values as RegisterData);
+      } else {
+        await registerAction(values as RegisterData);
+      }
 
       toast.success(isLogin ? "Logged in" : "Account created", options);
 

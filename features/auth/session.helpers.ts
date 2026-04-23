@@ -17,6 +17,11 @@ cookieStore.set("sessionId", session.sessionId);
 
 */
 const createSession = (userId: string) => {
+  /* 
+  this func need try catch ? hmmm
+  no i remember some one tell me before "don’t over-engineer"
+   */
+
   // session
   const createdAt = new Date();
   const session = {
