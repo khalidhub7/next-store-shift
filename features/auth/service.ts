@@ -33,8 +33,8 @@ const login = async (email: string, password: string) => {
   // create session
   const session = createSession(user.id);
   await saveSession({
-    sessionId: hashSessionId(session.sessionId),
     ...session,
+    sessionId: hashSessionId(session.sessionId),
   });
   return { sessionId: session.sessionId };
 };
