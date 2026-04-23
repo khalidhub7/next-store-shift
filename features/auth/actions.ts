@@ -47,7 +47,7 @@ const loginAction = async (data: LoginData) => {
       const store = await cookies();
       store.set("sessionId", sessionId, cookieOptions);
 
-      // restore cart
+      // load cart
       const userId = await getUserIdBySessionId(sessionId);
       if (userId) {
         const cartId = await getCartIdByUserId(userId);
@@ -56,9 +56,8 @@ const loginAction = async (data: LoginData) => {
         }
       }
       await redis.del(key);
-    }
-
-    return { success: true, message: "Logged in", rateLimit: false };
+      return { success: true, message: "Logged in", rateLimit: false };
+    } else return { success: false, message: "Login failed", rateLimit: false };
   } catch {
     return { success: false, message: "Login failed", rateLimit: false };
   }
