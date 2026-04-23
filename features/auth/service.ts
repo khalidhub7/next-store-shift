@@ -63,8 +63,10 @@ const register = async (email: string, password: string, name: string) => {
 
   // create session
   const session = createSession(userId);
-  await saveSession(session);
-
+  await saveSession({
+    ...session,
+    sessionId: hashSessionId(session.sessionId),
+  });
   return { sessionId: session.sessionId, userId };
 };
 
