@@ -44,12 +44,14 @@ const AuthForm = ({ type }: Props) => {
       setIsSubmitting(true);
 
       if (isLogin) {
-        const { rateLimit, message } = await loginAction(values as LoginData);
+        const { success, rateLimit, message } = await loginAction(
+          values as LoginData,
+        );
         if (rateLimit) {
           toast.error(message);
           return; // stop here
         }
-        toast.success(message);
+        success ? toast.success(message) : toast.error(message);
       } else await registerAction(values as RegisterData);
 
       toast.success(isLogin ? "Logged in" : "Account created", options);

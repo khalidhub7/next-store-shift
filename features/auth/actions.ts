@@ -36,6 +36,7 @@ const loginAction = async (data: LoginData) => {
     if (attempts === 1) await redis.expire(key, 900); // 15 min
     if (attempts > 5)
       return {
+        success: false,
         message: "Too many login attempts. Try again later.",
         rateLimit: true,
       };
@@ -57,9 +58,9 @@ const loginAction = async (data: LoginData) => {
       await redis.del(key);
     }
 
-    return { message: "Logged in", rateLimit: false };
+    return { success: true, message: "Logged in", rateLimit: false };
   } catch {
-    return { message: "Login failed", rateLimit: false };
+    return { success: false, message: "Login failed", rateLimit: false };
   }
 };
 
