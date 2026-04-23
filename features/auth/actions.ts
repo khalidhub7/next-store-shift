@@ -78,13 +78,18 @@ const registerAction = async (data: RegisterData) => {
 };
 
 const logoutAction = async () => {
-  const store = await cookies();
-  const sessionId = store.get("sessionId");
+  try {
+    const store = await cookies();
+    const sessionId = store.get("sessionId");
 
-  if (sessionId) {
-    await logout(sessionId.value); // rm from db
-    store.delete("sessionId");
-  }
+    if (sessionId) {
+      await logout(sessionId.value); // rm from db
+      store.delete("sessionId");
+      return { success: true, message: "Logged out" };
+    }
+  } catch {}
+
+  return { success: false, message: "Logout failed" };
 };
 
 export { loginAction, registerAction, logoutAction };
