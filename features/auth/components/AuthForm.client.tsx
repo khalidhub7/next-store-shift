@@ -40,47 +40,31 @@ const AuthForm = ({ type }: Props) => {
 
   const onSubmit = async (values: LoginData | RegisterData) => {
     const options = { position: "top-center" } as const;
-    try {
-      setIsSubmitting(true);
 
-      if (isLogin) {
-        const { success, rateLimit, message } = await loginAction(
-          values as LoginData,
-        );
-        if (rateLimit) {
-          toast.error(message, options);
-          return; // stop here
-        }
-        success
-          ? toast.success(message, options)
-          : toast.error(message, options);
-      } else {
-        const { success, message } = await registerAction(
-          values as RegisterData,
-        );
-        success
-          ? toast.success(message, options)
-          : toast.error(message, options);
+    setIsSubmitting(true);
+
+    if (isLogin) {
+      const { success, rateLimit, message } = await loginAction(
+        values as LoginData,
+      );
+      if (rateLimit) {
+        toast.error(message, options);
+        return; // stop here
       }
-
-      const safeRedirects = ["/products"];
-      const redirectTo = searchParams.get("redirect");
-
-      router.replace(
-        redirectTo && safeRedirects.includes(redirectTo) ? redirectTo : "/",
-      );
-    } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : isLogin
-            ? "Login failed"
-            : "Signup failed",
-        options,
-      );
-    } finally {
-      setIsSubmitting(false);
+      success ? toast.success(message, options) : toast.error(message, options);
+    } else {
+      const { success, message } = await registerAction(values as RegisterData);
+      success ? toast.success(message, options) : toast.error(message, options);
     }
+
+    const safeRedirects = ["/products"];
+    const redirectTo = searchParams.get("redirect");
+
+    router.replace(
+      redirectTo && safeRedirects.includes(redirectTo) ? redirectTo : "/",
+    );
+
+    setIsSubmitting(false);
   };
 
   return (
