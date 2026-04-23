@@ -41,30 +41,38 @@ const AuthForm = ({ type }: Props) => {
   const onSubmit = async (values: LoginData | RegisterData) => {
     const options = { position: "top-center" } as const;
 
-    setIsSubmitting(true);
+    try {
+      setIsSubmitting(true);
 
-    if (isLogin) {
-      const { success, rateLimit, message } = await loginAction(
-        values as LoginData,
-      );
-      if (rateLimit) {
-        toast.error(message, options);
-        return; // stop here
+      if (isLogin) {
+        const { success, rateLimit, message } = await loginAction(
+          values as LoginData,
+        );
+        if (rateLimit) {
+          toast.error(message, options);
+          return; // stop here
+        }
+        success
+          ? toast.success(message, options)
+          : toast.error(message, options);
+      } else {
+        const { success, message } = await registerAction(
+          values as RegisterData,
+        );
+        success
+          ? toast.success(message, options)
+          : toast.error(message, options);
       }
-      success ? toast.success(message, options) : toast.error(message, options);
-    } else {
-      const { success, message } = await registerAction(values as RegisterData);
-      success ? toast.success(message, options) : toast.error(message, options);
+
+      const safeRedirects = ["/products"];
+      const redirectTo = searchParams.get("redirect");
+
+      router.replace(
+        redirectTo && safeRedirects.includes(redirectTo) ? redirectTo : "/",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const safeRedirects = ["/products"];
-    const redirectTo = searchParams.get("redirect");
-
-    router.replace(
-      redirectTo && safeRedirects.includes(redirectTo) ? redirectTo : "/",
-    );
-
-    setIsSubmitting(false);
   };
 
   return (
