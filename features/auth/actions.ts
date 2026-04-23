@@ -64,16 +64,18 @@ const loginAction = async (data: LoginData) => {
 };
 
 const registerAction = async (data: RegisterData) => {
-  const values = registerSchema.parse(data);
-  const { email, password, name } = values;
-
-  const { sessionId, userId } = await register(email, password, name);
-
-  if (sessionId && userId) {
-    const store = await cookies();
-    store.set("sessionId", sessionId, cookieOptions);
-    return { success: true, message: "Account created" };
-  } else return { success: false, message: "Signup failed" };
+  try {
+    const values = registerSchema.parse(data);
+    const { email, password, name } = values;
+    const { sessionId, userId } = await register(email, password, name);
+    if (sessionId && userId) {
+      const store = await cookies();
+      store.set("sessionId", sessionId, cookieOptions);
+      return { success: true, message: "Account created" };
+    } else return { success: false, message: "Signup failed" };
+  } catch {
+    return { success: false, message: "Signup failed" };
+  }
 };
 
 const logoutAction = async () => {
