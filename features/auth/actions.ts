@@ -18,39 +18,43 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   };
 
 const loginAction = async (data: LoginData) => {
-  // server validation
-  const values = loginSchema.parse(data);
-  const { email, password } = values;
+  try {
+    // server validation
+    const values = loginSchema.parse(data);
+    const { email, password } = values;
 
-  // rate limiter
+    // rate limiter
 
-  const h = await headers();
-  const ip =
-    h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown";
-  const key = `login:${ip}:${email}`;
+    const h = await headers();
+    const ip =
+      h.get("x-forwarded-for")?.split(",")[0] ||
+      h.get("x-real-ip") ||
+      "unknown";
+    const key = `login:${ip}:${email}`;
 
-  const attempts = await redis.incr(key);
-  if (attempts === 1) await redis.expire(key, 900); // 15 min
-  if (attempts > 5) return { rateLimit: true };
+    const attempts = await redis.incr(key);
+    if (attempts === 1) await redis.expire(key, 900); // 15 min
+    if (attempts > 5) return { rateLimit: true };
 
-  // login
-  const { sessionId } = await login(email, password);
-  if (sessionId) {
-    const store = await cookies();
-    store.set("sessionId", sessionId, cookieOptions);
+    // login
+    const { sessionId } = await login(email, password);
+    if (sessionId) {
+      const store = await cookies();
+      store.set("sessionId", sessionId, cookieOptions);
 
-    // restore cart
-    const userId = await getUserIdBySessionId(sessionId);
-    if (userId) {
-      const cartId = await getCartIdByUserId(userId);
-      if (cartId) {
-        store.set("cart", cartId, cookieOptions);
+      // restore cart
+      const userId = await getUserIdBySessionId(sessionId);
+      if (userId) {
+        const cartId = await getCartIdByUserId(userId);
+        if (cartId) {
+          store.set("cart", cartId, cookieOptions);
+        }
       }
+      await redis.del(key);
     }
-    await redis.del(key);
-  }
 
-  return { rateLimit: false };
+    return { rateLimit: false };
+  } catch (error) {}
 };
 
 const registerAction = async (data: RegisterData) => {
