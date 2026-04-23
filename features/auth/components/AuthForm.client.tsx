@@ -48,17 +48,20 @@ const AuthForm = ({ type }: Props) => {
           values as LoginData,
         );
         if (rateLimit) {
-          toast.error(message);
+          toast.error(message, options);
           return; // stop here
         }
-        success ? toast.success(message) : toast.error(message);
+        success
+          ? toast.success(message, options)
+          : toast.error(message, options);
       } else {
         const { success, message } = await registerAction(
           values as RegisterData,
         );
+        success
+          ? toast.success(message, options)
+          : toast.error(message, options);
       }
-
-      toast.success(isLogin ? "Logged in" : "Account created", options);
 
       const safeRedirects = ["/products"];
       const redirectTo = searchParams.get("redirect");
