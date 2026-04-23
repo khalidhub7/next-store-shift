@@ -43,11 +43,12 @@ const AuthForm = ({ type }: Props) => {
 
     try {
       setIsSubmitting(true);
-
+      let resolved = false;
       if (isLogin) {
         const { success, rateLimit, message } = await loginAction(
           values as LoginData,
         );
+        if (success) resolved = true;
         if (rateLimit) {
           toast.error(message, options);
           return; // stop here
@@ -59,17 +60,20 @@ const AuthForm = ({ type }: Props) => {
         const { success, message } = await registerAction(
           values as RegisterData,
         );
+        if (success) resolved = true;
         success
           ? toast.success(message, options)
           : toast.error(message, options);
       }
 
-      const safeRedirects = ["/products"];
-      const redirectTo = searchParams.get("redirect");
+      if (resolved) {
+        const safeRedirects = ["/products"];
+        const redirectTo = searchParams.get("redirect");
 
-      router.replace(
-        redirectTo && safeRedirects.includes(redirectTo) ? redirectTo : "/",
-      );
+        router.replace(
+          redirectTo && safeRedirects.includes(redirectTo) ? redirectTo : "/",
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
