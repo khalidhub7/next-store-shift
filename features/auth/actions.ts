@@ -34,7 +34,7 @@ const loginAction = async (data: LoginData) => {
 
     const attempts = await redis.incr(key);
     if (attempts === 1) await redis.expire(key, 900); // 15 min
-    if (attempts > 5) return { rateLimit: true };
+    if (attempts > 5) return { message: "Login failed", rateLimit: true };
 
     // login
     const { sessionId } = await login(email, password);
@@ -53,8 +53,10 @@ const loginAction = async (data: LoginData) => {
       await redis.del(key);
     }
 
-    return { rateLimit: false };
-  } catch (error) {}
+    return { message: "Logged in", rateLimit: false };
+  } catch {
+    return { message: "Login failed", rateLimit: false };
+  }
 };
 
 const registerAction = async (data: RegisterData) => {
