@@ -39,12 +39,6 @@ const login = async (email: string, password: string) => {
   return { sessionId: session.sessionId };
 };
 
-const logout = async (sessionId: string) => {
-  if (!sessionId) return;
-  // hmm cookie also should removed
-  await deleteSession(hashSessionId(sessionId)); // from db
-};
-
 // check if user exists > hash password > create user > return userId
 const register = async (email: string, password: string, name: string) => {
   const existingUser = await getUserByEmail(email);
@@ -68,6 +62,12 @@ const register = async (email: string, password: string, name: string) => {
     sessionId: hashSessionId(session.sessionId),
   });
   return { sessionId: session.sessionId, userId };
+};
+
+const logout = async (sessionId: string) => {
+  if (!sessionId) return;
+  // hmm cookie also should removed
+  await deleteSession(hashSessionId(sessionId)); // from db
 };
 
 export { login, register, logout };
