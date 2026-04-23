@@ -72,10 +72,9 @@ const registerAction = async (data: RegisterData) => {
       const store = await cookies();
       store.set("sessionId", sessionId, cookieOptions);
       return { success: true, message: "Account created" };
-    } else throw new Error();
-  } catch {
-    return { success: false, message: "Signup failed" };
-  }
+    }
+  } catch {}
+  return { success: false, message: "Signup failed" };
 };
 
 const logoutAction = async () => {
