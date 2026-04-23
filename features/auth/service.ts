@@ -1,6 +1,7 @@
 // helpers (business logic)
 
 import bcrypt from "bcrypt";
+import crypto from "node:crypto";
 import { createSession } from "./session.helpers";
 import { getUserByEmail, createUser } from "./db/user";
 import { saveSession, deleteSession } from "./db/session";
@@ -15,6 +16,9 @@ const comparePassword = async (
 const hashPassword = async (password: string) => {
   return await bcrypt.hash(password, 10);
 };
+const hashSessionId = (sessionId: string) => {
+  return crypto.createHash("sha256").update(sessionId).digest("hex");
+};
 
 // get user > check password > create session > return sessionId
 const login = async (email: string, password: string) => {
@@ -28,7 +32,10 @@ const login = async (email: string, password: string) => {
 
   // create session
   const session = createSession(user.id);
-  await saveSession(session);
+  await saveSession({
+    sessionId: hashSessionId(session.sessionId),
+    ...session,
+  });
   return { sessionId: session.sessionId };
 };
 
