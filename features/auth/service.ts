@@ -42,7 +42,7 @@ const login = async (email: string, password: string) => {
 const logout = async (sessionId: string) => {
   if (!sessionId) return;
   // hmm cookie also should removed
-  await deleteSession(sessionId); // from db
+  await deleteSession(hashSessionId(sessionId)); // from db
 };
 
 // check if user exists > hash password > create user > return userId
