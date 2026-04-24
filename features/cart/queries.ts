@@ -16,10 +16,10 @@ const getCartItems = async (): Promise<Array<CartItem>> => {
 
     const session = await getSession(hashSessionId(sessionId));
     if (!session) throw new Error();
-    const cart = await getCart(cartId);
-
-    if (!cart) throw new Error();
     if (!isSessionValid(session)) throw new Error();
+
+    const cart = await getCart(cartId);
+    if (!cart) throw new Error();
     if (session.userId != cart.userId) throw new Error();
     return cart.items;
   } catch {
