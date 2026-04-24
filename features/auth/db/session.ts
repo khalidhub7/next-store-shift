@@ -58,7 +58,9 @@ const saveSessions = async (sessions: Array<Session>): Promise<void> => {
 // session crud
 const getSession = async (sessionId: string): Promise<Session | undefined> => {
   const sessions = await getSessions();
-  return sessions.find((s: Session) => s.sessionId === sessionId);
+  return sessions.find(
+    (s: Session) => s.sessionId === sessionId,
+  );
 };
 
 const saveSession = async (session: Session): Promise<string> => {

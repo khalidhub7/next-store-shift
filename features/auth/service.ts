@@ -70,4 +70,4 @@ const logout = async (sessionId: string) => {
   await deleteSession(hashSessionId(sessionId)); // from db
 };
 
-export { login, register, logout };
+export { login, register, logout, hashSessionId };

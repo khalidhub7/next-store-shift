@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSession, deleteSession } from "./db/session";
 import { isSessionValid } from "./session.helpers";
+import { hashSessionId } from "./service";
 
 const requireUser = async (redirectTo: string) => {
   const cookieStore = await cookies();
@@ -9,7 +10,7 @@ const requireUser = async (redirectTo: string) => {
 
   if (!sessionId) redirect(`/login?redirect=${redirectTo}`);
 
-  const session = await getSession(sessionId);
+  const session = await getSession(hashSessionId(sessionId));
   if (!session) {
     cookieStore.delete("sessionId");
     redirect(`/login?redirect=${redirectTo}`);

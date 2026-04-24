@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { getSession } from "./features/auth/server";
 import { isSessionValid } from "./features/auth/session.helpers";
 import { deleteSession } from "./features/auth/db/session";
+import { hashSessionId } from "./features/auth/server";
 
 const middleware = async (request: NextRequest) => {
   const { pathname, searchParams } = request.nextUrl;
@@ -39,7 +40,7 @@ const middleware = async (request: NextRequest) => {
   // but lets do db (disk) lookup temporarily
 
   if (sessionId) {
-    const session = await getSession(sessionId);
+    const session = await getSession(hashSessionId(sessionId));
     if (!session) {
       // fake session
       const res = NextResponse.redirect(
