@@ -19,7 +19,7 @@ const requireUser = async (redirectTo: string) => {
   const isValid = isSessionValid(session);
 
   if (!isValid) {
-    await deleteSession(sessionId);
+    await deleteSession(hashSessionId(sessionId));
     cookieStore.delete("sessionId");
     redirect(`/login?redirect=${redirectTo}`);
   }
