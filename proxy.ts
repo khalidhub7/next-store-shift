@@ -56,7 +56,7 @@ const middleware = async (request: NextRequest) => {
         new URL(`/login?redirect=${pathname}`, request.url),
       );
       res.cookies.delete("sessionId");
-      await deleteSession(sessionId);
+      await deleteSession(hashSessionId(sessionId));
       return res;
     }
 
