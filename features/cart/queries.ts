@@ -1,5 +1,5 @@
-import { cookies } from "next/headers";
 import { getCart } from "./db/cart";
+import { cookies } from "next/headers";
 import { CartItem } from "./types/cart";
 import { getSession } from "../auth/server";
 import { hashSessionId } from "../auth/server";
@@ -13,11 +13,12 @@ const getCartItems = async (): Promise<Array<CartItem>> => {
 
   try {
     if (!sessionId || !cartId) throw new Error();
-    const session = await getSession(hashSessionId(sessionId));
-    if (!isSessionValid(session))throw new Error();
 
+    const session = await getSession(hashSessionId(sessionId));
     const cart = await getCart(cartId);
+
     if (!session || !cart) throw new Error();
+    if (!isSessionValid(session)) throw new Error();
     if (session.userId != cart.userId) throw new Error();
     return cart.items;
   } catch {
@@ -26,5 +27,3 @@ const getCartItems = async (): Promise<Array<CartItem>> => {
 };
 
 export { getCartItems };
-
-
