@@ -18,7 +18,7 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
     secure: true,
     sameSite: "lax",
     // maxAge: 60 * 60 * 24 * 3,
-    maxAge: 60,
+    maxAge: 180,
   };
 
 // shared helper between actions

@@ -3,6 +3,7 @@ import { getCart } from "./db/cart";
 import { CartItem } from "./types/cart";
 import { getSession } from "../auth/server";
 import { hashSessionId } from "../auth/server";
+import { isSessionValid } from "../auth/server";
 
 const getCartItems = async (): Promise<Array<CartItem>> => {
   const cookieStore = await cookies();
@@ -12,6 +13,8 @@ const getCartItems = async (): Promise<Array<CartItem>> => {
   try {
     if (!sessionId || !cartId) throw new Error();
     const session = await getSession(hashSessionId(sessionId));
+    if (!isSessionValid(session))throw new Error();
+    
     const cart = await getCart(cartId);
     if (!session || !cart) throw new Error();
     if (session.userId != cart.userId) throw new Error();
@@ -22,3 +25,5 @@ const getCartItems = async (): Promise<Array<CartItem>> => {
 };
 
 export { getCartItems };
+
+
