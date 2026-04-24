@@ -7,6 +7,7 @@ import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
 import { getUserIdBySessionId } from "./db/session";
 import { registerSchema, loginSchema } from "./schema";
+import { hashSessionId } from "./service";
 
 const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   {
@@ -48,7 +49,7 @@ const loginAction = async (data: LoginData) => {
       store.set("sessionId", sessionId, cookieOptions);
 
       // load cart
-      const userId = await getUserIdBySessionId(sessionId);
+      const userId = await getUserIdBySessionId(hashSessionId(sessionId));
       if (userId) {
         const cartId = await getCartIdByUserId(userId);
         if (cartId) {
