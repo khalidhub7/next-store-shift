@@ -26,6 +26,7 @@ const appendToQueue = async (task: Task) => {
   queue = result.catch(() => {});
   return result;
 };
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // user crud helpers
 const getUsers = async (): Promise<Array<User>> => {
@@ -60,6 +61,7 @@ const getUserByEmail = async (email: string): Promise<User | undefined> => {
 const createUser = async (userData: CreateUserData): Promise<string> => {
   // userData like {email, pswd}
   const task = async () => {
+    await delay(10000); // 10s delay (for testing)
     const users = await getUsers();
     const newUser = {
       id: randomUUID(),
