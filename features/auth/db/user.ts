@@ -16,7 +16,7 @@ import { randomUUID } from "crypto";
 import { User, CreateUserData } from "../types/user";
 import { readFile, writeFile, access } from "fs/promises";
 
-// create file
+// create files
 const usersDir = path.join(process.cwd(), "storage", "auth", "users.json");
 await mkdir(usersDir, { recursive: true });
 const emailIndexPath = path.join(
@@ -28,7 +28,7 @@ const emailIndexPath = path.join(
 try {
   await access(emailIndexPath);
 } catch {
-  await writeFile(emailIndexPath, "{}");
+  await writeFile(emailIndexPath, "[]");
 }
 
 // queue
