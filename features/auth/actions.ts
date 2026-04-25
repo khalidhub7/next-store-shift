@@ -94,5 +94,3 @@ const logoutAction = async () => {
 };
 
 export { loginAction, registerAction, logoutAction };
-
-
