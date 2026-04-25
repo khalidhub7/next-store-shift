@@ -6,3 +6,4 @@ package-lock.json
 # debug files
 tsconfig.tsbuildinfo
 ../.codex
+storage/**/*.json
