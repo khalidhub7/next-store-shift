@@ -2,7 +2,9 @@
 ../dump.rdb
 node_modules/
 package-lock.json
-
+storage/auth/users.json
+storage/cart/carts.json
+storage/auth/sessions.json
 
 
 # debug files
