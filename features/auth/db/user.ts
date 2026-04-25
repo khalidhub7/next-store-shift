@@ -67,7 +67,7 @@ const getUserByEmail = async (email: string): Promise<User | undefined> => {
 const createUser = async (userData: CreateUserData): Promise<string> => {
   // userData like {email, pswd}
   const task = async () => {
-    await delay(10000); // 10s delay (for testing)
+    // await delay(10000); // 10s delay (for testing)
     const users = await getUsers();
     const newUser = {
       id: randomUUID(),
