@@ -3,11 +3,6 @@
 node_modules/
 package-lock.json
 
-
-
 # debug files
-
-
-
 tsconfig.tsbuildinfo
-../.codexstorage/**/*.json
+../.codex
