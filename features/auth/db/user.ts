@@ -10,13 +10,14 @@ DELETE data/ folder
 db.ts → connects to real DB
 */
 
+import path from "path";
+import { mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
+import { readFile, writeFile } from "fs/promises";
 import { User, CreateUserData } from "../types/user";
 
-import path from "path";
-import { readFile, writeFile } from "fs/promises";
-
-const usersFilePath = path.join(process.cwd(), "storage", "auth", "users.json");
+const usersDir = path.join(process.cwd(), "storage", "auth", "users.json");
+await mkdir(usersDir, { recursive: true });
 
 type Task = () => Promise<any>;
 
