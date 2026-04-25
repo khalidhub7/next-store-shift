@@ -57,8 +57,11 @@ const getUserById = async (id: string): Promise<User | undefined> => {
 };
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
-  const users = await getUsers();
-  return users.find((u: User) => u.email === email);
+  const task = async () => {
+    const users = await getUsers();
+    return users.find((u: User) => u.email === email);
+  };
+  return appendToQueue(task);
 };
 
 const createUser = async (userData: CreateUserData): Promise<string> => {
