@@ -13,20 +13,33 @@ db.ts → connects to real DB
 import path from "path";
 import { mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
-import { readFile, writeFile } from "fs/promises";
 import { User, CreateUserData } from "../types/user";
+import { readFile, writeFile, access } from "fs/promises";
 
+// create file
 const usersDir = path.join(process.cwd(), "storage", "auth", "users.json");
 await mkdir(usersDir, { recursive: true });
+const emailIndexPath = path.join(
+  process.cwd(),
+  "storage",
+  "auth",
+  "emailIndex.json",
+);
+try {
+  await access(emailIndexPath);
+} catch {
+  await writeFile(emailIndexPath, "{}");
+}
 
+// queue
 type Task = () => Promise<any>;
-
 let queue = Promise.resolve();
 const appendToQueue = async (task: Task) => {
   const result = queue.then(() => task());
   queue = result.catch(() => {});
   return result;
 };
+
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // user crud helpers
