@@ -33,10 +33,23 @@ try {
 
 // queue
 type Task = () => Promise<any>;
-let queue = Promise.resolve();
-const appendToQueue = async (task: Task) => {
-  const result = queue.then(() => task());
-  queue = result.catch(() => {});
+
+const userQueues = new Map();
+let emailIndexQueue = Promise.resolve();
+
+const appendToUserQueue = async (userId: string, task: Task) => {
+  const queue = userQueues.get(userId) || Promise.resolve();
+  const result = queue.then(task);
+  userQueues.set(
+    userId,
+    result.catch(() => {}),
+  );
+  return result;
+};
+
+const appendToEmailIndexQueue = async (task: Task) => {
+  const result = emailIndexQueue.then(() => task());
+  emailIndexQueue = result.catch(() => {});
   return result;
 };
 
