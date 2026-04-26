@@ -76,6 +76,16 @@ const saveUsers = async (users: EmailIndexType): Promise<void> => {
   }
 };
 
+const saveEmailIndexRecord = async (id: string, email: string) => {
+  try {
+    const data = await getUsers();
+    await saveUsers({ ...data, [email]: id });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 // user crud
 const getUserById = async (id: string): Promise<User | undefined> => {
   const task = async () => {
@@ -98,6 +108,7 @@ const getUserById = async (id: string): Promise<User | undefined> => {
 };
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
+  // ques: why this does not need to be queued
   const users = await getUsers();
 
   for (const [id, userEmail] of Object.entries(users)) {
@@ -112,6 +123,7 @@ const getUserByEmail = async (email: string): Promise<User | undefined> => {
 
 const createUser = async (userData: CreateUserData): Promise<string> => {
   // userData like {email, pswd}
+
   const task = async () => {
     // await delay(10000); // 10s delay (for testing)
     const users = await getUsers();
