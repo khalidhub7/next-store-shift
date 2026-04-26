@@ -98,19 +98,16 @@ const getUserById = async (id: string): Promise<User | undefined> => {
 };
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
-  const task = async () => {
-    const users = await getUsers();
+  const users = await getUsers();
 
-    for (const [id, userEmail] of Object.entries(users)) {
-      if (email === userEmail) {
-        const user = await getUserById(id);
-        if (!user) return undefined;
-        return user;
-      }
+  for (const [id, userEmail] of Object.entries(users)) {
+    if (email === userEmail) {
+      const user = await getUserById(id);
+      if (!user) return undefined;
+      return user;
     }
-    return undefined;
-  };
-  return appendToEmailIndexQueue(task);
+  }
+  return undefined;
 };
 
 const createUser = async (userData: CreateUserData): Promise<string> => {
