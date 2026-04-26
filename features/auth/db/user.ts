@@ -78,18 +78,13 @@ const saveUsers = async (users: EmailIndexType): Promise<void> => {
 // user crud
 const getUserById = async (id: string): Promise<User | undefined> => {
   const task = async () => {
-    const users = await getUsers();
-    for (const [userId, _] of Object.entries(users)) {
-      if (userId === id) {
-        try {
-          const userPath = path.join(
-            process.cwd(),
-            "storage",
-            "auth",
-            "emailIndex.json",
-          );
-        } catch (error) {}
-      }
+    const userPath = path.join(process.cwd(), "storage", "auth", `${id}.json`);
+    try {
+      const data = await readFile(userPath, "utf-8");
+      const user = JSON.parse(data);
+      return user;
+    } catch {
+      return undefined;
     }
   };
   return appendToQueue(task);
