@@ -77,13 +77,16 @@ const saveUsers = async (users: EmailIndexType): Promise<void> => {
 };
 
 const saveEmailIndexRecord = async (id: string, email: string) => {
-  try {
-    const data = await getUsers();
-    await saveUsers({ ...data, [email]: id });
-    return true;
-  } catch {
-    return false;
-  }
+  const task = async () => {
+    try {
+      const data = await getUsers();
+      await saveUsers({ ...data, [email]: id });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  return appendToEmailIndexQueue(task);
 };
 
 // user crud
