@@ -103,10 +103,14 @@ const getUserByEmail = async (email: string): Promise<User | undefined> => {
 
     for (const [id, userEmail] of Object.entries(users)) {
       if (email === userEmail) {
+        const user = await getUserById(id);
+        if (!user) return undefined;
+        return user;
       }
     }
+    return undefined;
   };
-  return appendToQueue(task);
+  return appendToEmailIndexQueue(task);
 };
 
 const createUser = async (userData: CreateUserData): Promise<string> => {
