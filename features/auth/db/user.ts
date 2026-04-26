@@ -78,16 +78,22 @@ const saveUsers = async (users: EmailIndexType): Promise<void> => {
 // user crud
 const getUserById = async (id: string): Promise<User | undefined> => {
   const task = async () => {
-    const userPath = path.join(process.cwd(), "storage", "auth", `${id}.json`);
+    const userPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "users",
+      `${id}.json`,
+    );
     try {
       const data = await readFile(userPath, "utf-8");
       const user = JSON.parse(data);
-      return user;
+      return user as User;
     } catch {
       return undefined;
     }
   };
-  return appendToQueue(task);
+  return appendToEmailIndexQueue(task);
 };
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
