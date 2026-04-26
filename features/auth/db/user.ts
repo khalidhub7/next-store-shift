@@ -17,7 +17,7 @@ import { User, CreateUserData } from "../types/user";
 import { readFile, writeFile, access } from "fs/promises";
 
 // create files
-const usersDir = path.join(process.cwd(), "storage", "auth", "users.json");
+const usersDir = path.join(process.cwd(), "storage", "auth", "users");
 await mkdir(usersDir, { recursive: true });
 const emailIndexPath = path.join(
   process.cwd(),
@@ -70,7 +70,7 @@ const saveUsers = async (users: EmailIndexType): Promise<void> => {
   try {
     await writeFile(emailIndexPath, JSON.stringify(users, null, 2));
   } catch (err) {
-    // console.log("Failed to write to users.json");
+    // console.log("Failed to write users");
     throw err;
   }
 };
@@ -79,7 +79,18 @@ const saveUsers = async (users: EmailIndexType): Promise<void> => {
 const getUserById = async (id: string): Promise<User | undefined> => {
   const task = async () => {
     const users = await getUsers();
-    return users.find((u: User) => u.id === id);
+    for (const [userId, _] of Object.entries(users)) {
+      if (userId === id) {
+        try {
+          const userPath = path.join(
+            process.cwd(),
+            "storage",
+            "auth",
+            "emailIndex.json",
+          );
+        } catch (error) {}
+      }
+    }
   };
   return appendToQueue(task);
 };
