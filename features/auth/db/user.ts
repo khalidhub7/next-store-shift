@@ -89,6 +89,23 @@ const saveEmailIndexRecord = async (id: string, email: string) => {
   return appendToEmailIndexQueue(task);
 };
 
+const saveUser = async (user: User) => {
+  try {
+    const userPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "users",
+      `${user.id}.json`,
+    );
+
+    await writeFile(userPath, JSON.stringify(user, null, 2));
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 // user crud
 const getUserById = async (id: string): Promise<User | undefined> => {
   const task = async () => {
@@ -129,13 +146,21 @@ const createUser = async (userData: CreateUserData): Promise<string> => {
 
   const task = async () => {
     // await delay(10000); // 10s delay (for testing)
-    const users = await getUsers();
+
     const newUser = {
       id: randomUUID(),
       ...userData,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+
+    const addEmailIndexRecord = await saveEmailIndexRecord(
+      newUser.id,
+      newUser.email,
+    );
+
+    if (!addEmailIndexRecord) return false;
+
     users.push(newUser);
     await saveUsers(users);
     return newUser.id;
