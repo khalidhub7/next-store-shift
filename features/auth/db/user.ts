@@ -41,6 +41,7 @@ let emailIndexQueue = Promise.resolve();
 
 const appendToUserQueue = async (userId: string, task: Task) => {
   const queue = userQueues.get(userId) || Promise.resolve();
+
   const result = queue.then(task);
   userQueues.set(
     userId,
@@ -92,20 +93,20 @@ const saveEmailIndexRecord = async (id: string, email: string) => {
 const saveUser = async (user: User) => {
   const task = async () => {
     try {
-    const userPath = path.join(
-      process.cwd(),
-      "storage",
-      "auth",
-      "users",
-      `${user.id}.json`,
-    );
-    await writeFile(userPath, JSON.stringify(user, null, 2));
-    return true;
-  } catch {
-    return false;
-  }
-  }
-  return appendToUserQueue(task)
+      const userPath = path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "users",
+        `${user.id}.json`,
+      );
+      await writeFile(userPath, JSON.stringify(user, null, 2));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  return appendToUserQueue(user.id, task);
 };
 
 // user crud
