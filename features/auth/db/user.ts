@@ -28,11 +28,12 @@ const emailIndexPath = path.join(
 try {
   await access(emailIndexPath);
 } catch {
-  await writeFile(emailIndexPath, "[]");
+  await writeFile(emailIndexPath, "{}");
 }
 
 // queue
 type Task = () => Promise<any>;
+type EmailIndexType = Record<string, string>;
 
 const userQueues = new Map();
 let emailIndexQueue = Promise.resolve();
@@ -56,20 +57,20 @@ const appendToEmailIndexQueue = async (task: Task) => {
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // user crud helpers
-const getUsers = async (): Promise<Array<User>> => {
+const getUsers = async (): Promise<EmailIndexType> => {
   try {
-    const data = await readFile(usersFilePath, "utf-8");
-    return data === "" ? [] : JSON.parse(data);
-  } catch (error) {
-    return [];
+    const users = await readFile(emailIndexPath, "utf-8");
+    return JSON.parse(users);
+  } catch {
+    return {} as EmailIndexType;
   }
 };
 
-const saveUsers = async (users: Array<User>): Promise<void> => {
+const saveUsers = async (users: EmailIndexType): Promise<void> => {
   try {
-    await writeFile(usersFilePath, JSON.stringify(users, null, 2));
+    await writeFile(emailIndexPath, JSON.stringify(users, null, 2));
   } catch (err) {
-    console.log("Failed to write to users.json");
+    // console.log("Failed to write to users.json");
     throw err;
   }
 };
