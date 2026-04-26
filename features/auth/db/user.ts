@@ -90,7 +90,8 @@ const saveEmailIndexRecord = async (id: string, email: string) => {
 };
 
 const saveUser = async (user: User) => {
-  try {
+  const task = async () => {
+    try {
     const userPath = path.join(
       process.cwd(),
       "storage",
@@ -98,12 +99,13 @@ const saveUser = async (user: User) => {
       "users",
       `${user.id}.json`,
     );
-
     await writeFile(userPath, JSON.stringify(user, null, 2));
     return true;
   } catch {
     return false;
   }
+  }
+  return appendToUserQueue(task)
 };
 
 // user crud
