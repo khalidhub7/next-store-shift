@@ -153,12 +153,12 @@ const createUser = async (
         updatedAt: new Date().toISOString(),
       };
 
-      const addEmailIndexRecord = await setEmailIndexEntry(
+      const emailIndexSaved = await setEmailIndexEntry(
         newUser.id,
         newUser.email,
       );
-      const userWrited = await writeUser(newUser);
-      if (!addEmailIndexRecord || !userWrited) return false;
+      const userWritten = await writeUser(newUser);
+      if (!emailIndexSaved || !userWritten) return false;
       return newUser.id;
     } catch {
       return false;
