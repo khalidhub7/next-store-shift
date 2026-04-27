@@ -38,7 +38,8 @@ type EmailIndexType = Record<string, string>;
 const userQueues = new Map(); // write user
 let emailIndexQueue = Promise.resolve(); // ensures email stays unique (lock)
 
-const appendToUserQueue = async (userId: string, task: Task) => {
+const appendToUserQueue = async (userId: string | undefined, task: Task) => {
+  if (!userId) return;
   const queue = userQueues.get(userId) || Promise.resolve();
 
   const result = queue.then(task);
@@ -137,32 +138,36 @@ const getUserByEmail = async (email: string): Promise<User | undefined> => {
   return id ? await getUserById(id) : undefined;
 };
 
-const createUser = async (userData: CreateUserData): Promise<string> => {
-  // userData like {email, pswd}
+const createUser = async (
+  userData: CreateUserData,
+): Promise<string | false> => {
+  // userData like {email, pswd, role}
 
+  let userId;
   const task = async () => {
     // await delay(10000); // 10s delay (for testing)
+    try {
+      const newUser = {
+        id: randomUUID(),
+        ...userData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      userId = newUser.id;
 
-    const newUser = {
-      id: randomUUID(),
-      ...userData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const addEmailIndexRecord = await saveEmailIndexRecord(
-      newUser.id,
-      newUser.email,
-    );
-
-    if (!addEmailIndexRecord) return false;
-
-    users.push(newUser);
-    await saveUsers(users);
-    return newUser.id;
+      const addEmailIndexRecord = await setEmailIndexEntry(
+        newUser.id,
+        newUser.email,
+      );
+      const userWrited = await writeUser(newUser);
+      if (!addEmailIndexRecord || !userWrited) return false;
+      return newUser.id;
+    } catch {
+      return false;
+    }
   };
 
-  return appendToQueue(task);
+  return appendToUserQueue(userId, task);
 };
 
 const updateUser = async (
