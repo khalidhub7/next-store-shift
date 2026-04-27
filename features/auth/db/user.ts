@@ -14,7 +14,7 @@ import path from "path";
 import { mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
 import { User, CreateUserData } from "../types/user";
-import { readFile, writeFile, access } from "fs/promises";
+import { readFile, writeFile, access, unlink } from "fs/promises";
 
 // create files
 const usersDir = path.join(process.cwd(), "storage", "auth", "users");
@@ -190,11 +190,22 @@ const updateUser = async (
 
 const deleteUser = async (id: string): Promise<void> => {
   const task = async () => {
-    const user =  getUserById(id)
-    if (!user) return false
-    
+    const userPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "users",
+      `${id}.json`,
+    );
+
+    try {
+      await unlink(userPath);
+      return true;
+    } catch {
+      return false; // file may not exist
+    }
   };
-  return appendToQueue(task);
+  return appendToUserQueue(id, task);
 };
 
 export { createUser, updateUser, deleteUser, getUserById, getUserByEmail };
