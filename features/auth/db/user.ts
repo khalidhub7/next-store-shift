@@ -15,7 +15,6 @@ import { mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
 import { User, CreateUserData } from "../types/user";
 import { readFile, writeFile, access } from "fs/promises";
-import { object } from "zod/v3";
 
 // create files
 const usersDir = path.join(process.cwd(), "storage", "auth", "users");
@@ -32,7 +31,7 @@ try {
   await writeFile(emailIndexPath, "{}");
 }
 
-// queue
+// setup queues
 type Task = () => Promise<any>;
 type EmailIndexType = Record<string, string>;
 
@@ -56,9 +55,8 @@ const appendToEmailIndexQueue = async (task: Task) => {
   return result;
 };
 
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
 // user crud helpers
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const getUsers = async (): Promise<EmailIndexType> => {
   try {
     const users = await readFile(emailIndexPath, "utf-8");
