@@ -185,7 +185,7 @@ const updateUser = async (
       return false;
     }
   };
-  return appendToQueue(task);
+  return appendToUserQueue(id, task);
 };
 
 const deleteUser = async (id: string): Promise<void> => {
