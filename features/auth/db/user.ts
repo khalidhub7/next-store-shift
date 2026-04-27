@@ -131,16 +131,10 @@ const getUserById = async (id: string): Promise<User | undefined> => {
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
   // ques: why this does not need to be queued
-  const users = await getUsers();
+  const emailIndex = await getEmailIndex();
 
-  for (const [id, userEmail] of Object.entries(users)) {
-    if (email === userEmail) {
-      const user = await getUserById(id);
-      if (!user) return undefined;
-      return user;
-    }
-  }
-  return undefined;
+  const id = emailIndex[email];
+  return id ? await getUserById(id) : undefined;
 };
 
 const createUser = async (userData: CreateUserData): Promise<string> => {
