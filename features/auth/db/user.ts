@@ -38,8 +38,7 @@ type EmailIndexType = Record<string, string>;
 const userQueues = new Map(); // write user
 let emailIndexQueue = Promise.resolve(); // ensures email stays unique (lock)
 
-const appendToUserQueue = async (userId: string | undefined, task: Task) => {
-  if (!userId) return;
+const appendToUserQueue = async (userId: string, task: Task) => {
   const queue = userQueues.get(userId) || Promise.resolve();
 
   const result = queue.then(task);
@@ -143,17 +142,16 @@ const createUser = async (
 ): Promise<string | false> => {
   // userData like {email, pswd, role}
 
-  let userId;
+  const id = randomUUID();
   const task = async () => {
     // await delay(10000); // 10s delay (for testing)
     try {
       const newUser = {
-        id: randomUUID(),
+        id,
         ...userData,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      userId = newUser.id;
 
       const addEmailIndexRecord = await setEmailIndexEntry(
         newUser.id,
@@ -167,7 +165,7 @@ const createUser = async (
     }
   };
 
-  return appendToUserQueue(userId, task);
+  return appendToUserQueue(id, task);
 };
 
 const updateUser = async (
