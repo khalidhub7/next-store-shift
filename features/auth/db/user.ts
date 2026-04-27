@@ -180,6 +180,7 @@ const updateUser = async (
 
       const userWritten = writeUser(newUser);
       if (!user) return false;
+      return true;
     } catch {
       return false;
     }
