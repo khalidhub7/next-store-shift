@@ -126,7 +126,7 @@ const getUserById = async (id: string): Promise<User | undefined> => {
     }
   };
   // return appendToUserQueue(id, task);
-  task();
+  return task();
 };
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
