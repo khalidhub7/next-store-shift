@@ -41,24 +41,6 @@ const appendToSessionQueue = async (sessionId: string, task: Task) => {
   await saveSessions(valid);
 }; */
 
-const getSessions = async (): Promise<Array<Session>> => {
-  try {
-    const data = await readFile(sessionsFilePath, "utf-8");
-    return data === "" ? [] : JSON.parse(data);
-  } catch {
-    return [];
-  }
-};
-
-const saveSessions = async (sessions: Array<Session>): Promise<void> => {
-  try {
-    await writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2));
-  } catch (err) {
-    console.log("Failed to write to sessions.json");
-    throw err;
-  }
-};
-
 // session crud
 const getSession = async (sessionId: string): Promise<Session | undefined> => {
   const task = async () => {
@@ -84,7 +66,6 @@ const getSession = async (sessionId: string): Promise<Session | undefined> => {
 const writeSession = async (session: Session): Promise<string> => {
   const task = async () => {
     /* await cleanExpiredSessions(); */
-
     try {
       const sessionPath = path.join(
         process.cwd(),
