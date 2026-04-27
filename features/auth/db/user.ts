@@ -170,20 +170,19 @@ const createUser = async (
 
 const updateUser = async (
   id: string,
-  userData: Partial<User>,
+  newData: Partial<User>,
 ): Promise<void> => {
   const task = async () => {
-    const users = await getUsers();
-    const newUsers = users.map((u: User) =>
-      u.id === id
-        ? {
-            ...u,
-            ...userData,
-            updatedAt: new Date().toISOString(),
-          }
-        : u,
-    );
-    await saveUsers(newUsers);
+    try {
+      const user = await getUserById(id);
+      if (!user) throw new Error("user not found");
+      const newUser = { ...user, newData };
+
+      const userWritten = writeUser(newUser);
+      if (!user) return false;
+    } catch {
+      return false;
+    }
   };
   return appendToQueue(task);
 };
