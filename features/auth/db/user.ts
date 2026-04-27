@@ -57,7 +57,7 @@ const appendToEmailIndexQueue = async (task: Task) => {
 
 // user crud helpers
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-const getUsers = async (): Promise<EmailIndexType> => {
+const getEmailIndex = async (): Promise<EmailIndexType> => {
   try {
     const users = await readFile(emailIndexPath, "utf-8");
     return JSON.parse(users);
@@ -66,7 +66,7 @@ const getUsers = async (): Promise<EmailIndexType> => {
   }
 };
 
-const saveUsers = async (users: EmailIndexType): Promise<void> => {
+const saveEmailIndex = async (users: EmailIndexType): Promise<void> => {
   try {
     await writeFile(emailIndexPath, JSON.stringify(users, null, 2));
   } catch (err) {
@@ -75,11 +75,11 @@ const saveUsers = async (users: EmailIndexType): Promise<void> => {
   }
 };
 
-const saveEmailIndexRecord = async (id: string, email: string) => {
+const setEmailIndexEntry = async (id: string, email: string) => {
   const task = async () => {
     try {
-      const data = await getUsers();
-      await saveUsers({ ...data, [email]: id });
+      const data = await getEmailIndex();
+      await saveEmailIndex({ ...data, [email]: id });
       return true;
     } catch {
       return false;
@@ -88,7 +88,7 @@ const saveEmailIndexRecord = async (id: string, email: string) => {
   return appendToEmailIndexQueue(task);
 };
 
-const saveUser = async (user: User) => {
+const writeUser = async (user: User) => {
   const task = async () => {
     try {
       const userPath = path.join(
@@ -125,7 +125,8 @@ const getUserById = async (id: string): Promise<User | undefined> => {
       return undefined;
     }
   };
-  return appendToEmailIndexQueue(task);
+  // return appendToUserQueue(id, task);
+  task();
 };
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
