@@ -176,10 +176,10 @@ const updateUser = async (
     try {
       const user = await getUserById(id);
       if (!user) throw new Error("user not found");
-      const newUser = { ...user, newData };
+      const updatedUser = { ...user, newData };
 
-      const userWritten = writeUser(newUser);
-      if (!user) return false;
+      const userWritten = writeUser(updatedUser);
+      if (!userWritten) return false;
       return true;
     } catch {
       return false;
@@ -190,9 +190,9 @@ const updateUser = async (
 
 const deleteUser = async (id: string): Promise<void> => {
   const task = async () => {
-    const users = await getUsers();
-    const newUsers = users.filter((u: User) => u.id !== id);
-    await saveUsers(newUsers);
+    const user =  getUserById(id)
+    if (!user) return false
+    
   };
   return appendToQueue(task);
 };
