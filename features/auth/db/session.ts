@@ -78,17 +78,28 @@ const getSession = async (sessionId: string): Promise<Session | undefined> => {
       return undefined;
     }
   };
+  return task();
 };
 
-const saveSession = async (session: Session): Promise<string> => {
+const writeSession = async (session: Session): Promise<string> => {
   const task = async () => {
-    await cleanExpiredSessions();
-    const sessions = await getSessions();
-    sessions.push(session);
-    await saveSessions(sessions);
-    return session.sessionId;
+    /* await cleanExpiredSessions(); */
+
+    try {
+      const sessionPath = path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "users",
+        `${session.sessionId}.json`,
+      );
+      await writeFile(sessionPath, JSON.stringify(session, null, 2));
+      return session.sessionId;
+    } catch {
+      return false;
+    }
   };
-  return appendToQueue(task);
+  return appendToSessionQueue(session.sessionId, task);
 };
 
 const deleteSession = async (sessionId: string): Promise<void> => {
