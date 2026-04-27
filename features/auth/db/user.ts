@@ -36,7 +36,7 @@ type Task = () => Promise<any>;
 type EmailIndexType = Record<string, string>;
 
 const userQueues = new Map(); // write user
-let emailIndexQueue = Promise.resolve(); // ensures email stays unique
+let emailIndexQueue = Promise.resolve(); // ensures email stays unique (lock)
 
 const appendToUserQueue = async (userId: string, task: Task) => {
   const queue = userQueues.get(userId) || Promise.resolve();
