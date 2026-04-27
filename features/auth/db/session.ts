@@ -11,21 +11,23 @@ db.ts → connects to real DB
 */
 import path from "path";
 import { Session } from "../types/session";
-import { readFile, writeFile } from "fs/promises";
+import { readFile, writeFile, mkdir } from "fs/promises";
 
-const sessionsFilePath = path.join(
-  process.cwd(),
-  "storage",
-  "auth",
-  "sessions.json",
-);
+// create files
+const sessionsDir = path.join(process.cwd(), "storage", "auth", "sessions");
+await mkdir(sessionsDir, { recursive: true });
 
+// setup queues
 type Task = () => Promise<any>;
+const sessionQueues = new Map();
+const appendToSessionQueue = async (sessionId: string, task: Task) => {
+  const queue = sessionQueues.get(sessionId) || Promise.resolve();
 
-let queue = Promise.resolve();
-const appendToQueue = async (task: Task) => {
-  const result = queue.then(() => task());
-  queue = result.catch(() => {});
+  const result = queue.then(task);
+  sessionQueues.set(
+    sessionId,
+    result.catch(() => {}),
+  );
   return result;
 };
 
@@ -58,9 +60,7 @@ const saveSessions = async (sessions: Array<Session>): Promise<void> => {
 // session crud
 const getSession = async (sessionId: string): Promise<Session | undefined> => {
   const sessions = await getSessions();
-  return sessions.find(
-    (s: Session) => s.sessionId === sessionId,
-  );
+  return sessions.find((s: Session) => s.sessionId === sessionId);
 };
 
 const saveSession = async (session: Session): Promise<string> => {
