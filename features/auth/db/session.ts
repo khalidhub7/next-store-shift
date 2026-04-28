@@ -36,23 +36,16 @@ const sessionQueues = new Map();
 const appendToSessionQueue = async (session: Session, task: Task) => {
   const userQueue = sessionQueues.get(session.userId);
   if (userQueue) {
+    // run appended usually crud
     const result = userQueue.nextQueue.then(task);
     const nextQueue = result.catch(() => {});
-    const { userSessions } = userQueue;
+    let { userSessions } = userQueue;
 
-    /*
-    {
-        "sessionId": "c1f3a9e2-7b4d-4a6f-9d2e-123456789abc",
-        "userId": "user123",
-        "createdAt": "2026-04-28T10:00:00.000Z",
-        "expiresAt": "2026-04-28T10:01:00.000Z"
-    }
-    */
-
+    // remove unvalid sessions
     for (const session of userSessions) {
       const isValid = new Date(session.expiresAt) > new Date();
       if (!isValid) {
-        const deleted = deleteFile(
+        const deleted = await deleteFile(
           path.join(
             process.cwd(),
             "storage",
@@ -61,19 +54,15 @@ const appendToSessionQueue = async (session: Session, task: Task) => {
             `${session.sessionId}.json`,
           ),
         );
+        if (deleted) {
+          userSessions.filter((s) => s === session);
+        }
       }
     }
+    sessionQueues.set(session.userId, { userSessions, nextQueue });
+    return result;
+  } else {
   }
-
-  const nextQueue = result.catch(() => {});
-  const userSessions = [];
-  const userQueueState = {
-    nextQueue,
-    userSessions,
-  };
-
-  sessionQueues.set(session.userId, nextQueue);
-  return result;
 };
 
 // session crud helpers
