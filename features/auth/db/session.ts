@@ -11,7 +11,17 @@ db.ts → connects to real DB
 */
 import path from "path";
 import { Session } from "../types/session";
-import { readFile, writeFile, mkdir } from "fs/promises";
+import { readFile, writeFile, mkdir, unlink } from "fs/promises";
+
+// helpers
+const deleteFile = async (path: string): Promise<boolean> => {
+  try {
+    await unlink(path);
+    return true;
+  } catch {
+    return false; // file may not exist
+  }
+};
 
 // create files
 const sessionsDir = path.join(process.cwd(), "storage", "auth", "sessions");
@@ -20,14 +30,49 @@ await mkdir(sessionsDir, { recursive: true });
 // setup queues
 type Task = () => Promise<any>;
 const sessionQueues = new Map();
-const appendToSessionQueue = async (sessionId: string, task: Task) => {
-  const queue = sessionQueues.get(sessionId) || Promise.resolve();
 
-  const result = queue.then(task);
-  sessionQueues.set(
-    sessionId,
-    result.catch(() => {}),
-  );
+// chof mli tsali gol lgpt y3tik imgs bach tchof full flow
+
+const appendToSessionQueue = async (session: Session, task: Task) => {
+  const userQueue = sessionQueues.get(session.userId);
+  if (userQueue) {
+    const result = userQueue.nextQueue.then(task);
+    const nextQueue = result.catch(() => {});
+    const { userSessions } = userQueue;
+
+    /*
+    {
+        "sessionId": "c1f3a9e2-7b4d-4a6f-9d2e-123456789abc",
+        "userId": "user123",
+        "createdAt": "2026-04-28T10:00:00.000Z",
+        "expiresAt": "2026-04-28T10:01:00.000Z"
+    }
+    */
+
+    for (const session of userSessions) {
+      const isValid = new Date(session.expiresAt) > new Date();
+      if (!isValid) {
+        const deleted = deleteFile(
+          path.join(
+            process.cwd(),
+            "storage",
+            "auth",
+            "sessions",
+            `${session.sessionId}.json`,
+          ),
+        );
+      }
+    }
+  }
+
+  const nextQueue = result.catch(() => {});
+  const userSessions = [];
+  const userQueueState = {
+    nextQueue,
+    userSessions,
+  };
+
+  sessionQueues.set(session.userId, nextQueue);
   return result;
 };
 
@@ -85,13 +130,22 @@ const writeSession = async (session: Session): Promise<string> => {
 
 const deleteSession = async (sessionId: string): Promise<void> => {
   const task = async () => {
-    const sessions = await getSessions();
-    const newSessions = sessions.filter(
-      (s: Session) => s.sessionId !== sessionId,
+    const userPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "sessions",
+      `${sessionId}.json`,
     );
-    await saveSessions(newSessions);
+
+    try {
+      await unlink(userPath);
+      return true;
+    } catch {
+      return false; // file may not exist
+    }
   };
-  return appendToQueue(task);
+  return appendToSessionQueue(task);
 };
 
 const getUserIdBySessionId = async (
