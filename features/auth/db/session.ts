@@ -31,19 +31,18 @@ await mkdir(sessionsDir, { recursive: true });
 type Task = () => Promise<any>;
 const sessionQueues = new Map();
 
-// chof mli tsali gol lgpt y3tik imgs bach tchof full flow
-
 const appendToSessionQueue = async (session: Session, task: Task) => {
   const userQueue = sessionQueues.get(session.userId);
   if (userQueue) {
     // run appended usually crud
+    let expiredSessions = [];
     const result = userQueue.nextQueue.then(task);
     const nextQueue = result.catch(() => {});
     let { userSessions } = userQueue;
-    userSessions.set(session.sessionId, session)
+    userSessions.set(session.sessionId, session);
 
     // remove unvalid sessions
-    for (const session of userSessions) {
+    for (const [sessionId, session] of userSessions) {
       const isValid = new Date(session.expiresAt) > new Date();
       if (!isValid) {
         const deleted = await deleteFile(
@@ -52,14 +51,17 @@ const appendToSessionQueue = async (session: Session, task: Task) => {
             "storage",
             "auth",
             "sessions",
-            `${session.sessionId}.json`,
+            `${sessionId}.json`,
           ),
         );
         if (deleted) {
-          userSessions.filter((s) => s === session);
+          expiredSessions.push(sessionId);
         }
       }
     }
+    expiredSessions.forEach((s) => {
+      userSessions.delete(s);
+    });
     sessionQueues.set(session.userId, { userSessions, nextQueue });
     return result;
   } else {
