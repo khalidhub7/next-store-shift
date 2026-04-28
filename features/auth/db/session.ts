@@ -12,6 +12,7 @@ db.ts → connects to real DB
 import path from "path";
 import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink } from "fs/promises";
+import { promise } from "zod/v3";
 
 // helpers
 const deleteFile = async (path: string): Promise<boolean> => {
@@ -40,6 +41,7 @@ const appendToSessionQueue = async (session: Session, task: Task) => {
     const result = userQueue.nextQueue.then(task);
     const nextQueue = result.catch(() => {});
     let { userSessions } = userQueue;
+    userSessions.push(session);
 
     // remove unvalid sessions
     for (const session of userSessions) {
@@ -62,6 +64,8 @@ const appendToSessionQueue = async (session: Session, task: Task) => {
     sessionQueues.set(session.userId, { userSessions, nextQueue });
     return result;
   } else {
+    const result = Promise.resolve().then(task);
+    const nextQueue = result.catch(() => {});
   }
 };
 
