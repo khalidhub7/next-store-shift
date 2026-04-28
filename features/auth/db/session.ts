@@ -40,7 +40,7 @@ const appendToSessionQueue = async (session: Session, task: Task) => {
     const result = userQueue.nextQueue.then(task);
     const nextQueue = result.catch(() => {});
     let { userSessions } = userQueue;
-    userSessions.push(session);
+    userSessions.set(session.sessionId, session)
 
     // remove unvalid sessions
     for (const session of userSessions) {
