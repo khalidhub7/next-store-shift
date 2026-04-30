@@ -59,6 +59,9 @@ type QueueOptions =
 const appendToSessionQueue = async (options: QueueOptions) => {
   const mode = "session" in options ? "write" : "read";
   const userId = "session" in options ? options.session.userId : options.userId;
+  const sessionId =
+    "session" in options ? options.session.sessionId : options.sessionId;
+  const session = "session" in options ? options.session : undefined;
 
   const queue = sessionQueues.get(userId) ?? {
     userSessions: new Map<string, Session>(),
@@ -66,13 +69,13 @@ const appendToSessionQueue = async (options: QueueOptions) => {
   };
 
   const result = queue.nextQueue.then(async () => {
-    queue.userSessions.set(session.sessionId, session);
-    await task();
-    await cleanup(queue.userSessions);
+    mode === "write" && queue.userSessions.set(sessionId, session);
+    await options.task();
+    mode === "write" && (await cleanup(queue.userSessions));
   });
 
   queue.nextQueue = result.catch(() => {});
-  sessionQueues.set(session.userId, queue);
+  sessionQueues.set(userId, queue);
 
   return result;
 };
