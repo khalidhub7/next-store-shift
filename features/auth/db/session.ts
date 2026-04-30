@@ -24,26 +24,6 @@ const deleteFile = async (filePath: string): Promise<boolean> => {
   }
 };
 
-/* const cleanup = async (userSessions: Map<string, Session>) => {
-  const now = Date.now();
-  const expired = [...userSessions.entries()].filter(
-    ([, session]) => new Date(session.expiresAt).getTime() <= now,
-  );
-
-  for (const [sessionId] of expired) {
-    const deleted = await deleteFile(
-      path.join(
-        process.cwd(),
-        "storage",
-        "auth",
-        "sessions",
-        `${sessionId}.json`,
-      ),
-    );
-    if (deleted) userSessions.delete(sessionId);
-  }
-}; */
-
 // create files
 const sessionsDir = path.join(process.cwd(), "storage", "auth", "sessions");
 await mkdir(sessionsDir, { recursive: true });
@@ -101,7 +81,6 @@ const saveUserSessionsIndex = async (
   try {
     await writeFile(userSessionsIndexPath, JSON.stringify(users, null, 2));
   } catch (err) {
-    // console.log("Failed to write users");
     throw err;
   }
 };
