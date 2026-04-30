@@ -12,7 +12,7 @@ db.ts → connects to real DB
 
 import path from "path";
 import { Session } from "../types/session";
-import { readFile, writeFile, mkdir, unlink } from "fs/promises";
+import { readFile, writeFile, mkdir, unlink, access } from "fs/promises";
 
 // helpers
 const deleteFile = async (filePath: string): Promise<boolean> => {
@@ -24,7 +24,7 @@ const deleteFile = async (filePath: string): Promise<boolean> => {
   }
 };
 
-const cleanup = async (userSessions: Map<string, Session>) => {
+/* const cleanup = async (userSessions: Map<string, Session>) => {
   const now = Date.now();
   const expired = [...userSessions.entries()].filter(
     ([, session]) => new Date(session.expiresAt).getTime() <= now,
@@ -42,40 +42,37 @@ const cleanup = async (userSessions: Map<string, Session>) => {
     );
     if (deleted) userSessions.delete(sessionId);
   }
-};
+}; */
 
 // create files
 const sessionsDir = path.join(process.cwd(), "storage", "auth", "sessions");
 await mkdir(sessionsDir, { recursive: true });
+const userSessionsIndexPath = path.join(
+  process.cwd(),
+  "storage",
+  "auth",
+  "userSessionsIndex.json",
+);
+try {
+  await access(userSessionsIndexPath);
+} catch {
+  await writeFile(userSessionsIndexPath, "{}");
+}
 
 // setup queues
 type Task = () => Promise<any>;
+
 const sessionQueues = new Map();
+let userSessionsIndexQueue = Promise.resolve(); // ensures user stays unique (lock)
 
-type QueueOptions = {
-  sessionId: string;
-  task: Task;
-  session?: Session; // only for write
-};
+const appendToSessionQueue = async (userId: string, task: Task) => {
+  const queue = sessionQueues.get(userId) || Promise.resolve();
 
-const appendToSessionQueue = async (options: QueueOptions) => {
-  const mode = options.session ? "write" : "read";
-  const sessionId = options.sessionId;
-  const session = options.session;
-
-  const queue = sessionQueues.get(userId) ?? {
-    userSessions: new Map<string, Session>(),
-    nextQueue: Promise.resolve(),
-  };
-
-  const result = queue.nextQueue.then(async () => {
-    mode === "write" && queue.userSessions.set(sessionId, session);
-    await options.task();
-    mode === "write" && (await cleanup(queue.userSessions));
-  });
-
-  queue.nextQueue = result.catch(() => {});
-  sessionQueues.set(userId, queue);
+  const result = queue.then(task);
+  sessionQueues.set(
+    userId,
+    result.catch(() => {}),
+  );
 
   return result;
 };
