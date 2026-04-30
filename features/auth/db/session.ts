@@ -15,9 +15,9 @@ import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink } from "fs/promises";
 
 // helpers
-const deleteFile = async (path: string): Promise<boolean> => {
+const deleteFile = async (filePath: string): Promise<boolean> => {
   try {
-    await unlink(path);
+    await unlink(filePath);
     return true;
   } catch {
     return false; // file may not exist
@@ -26,20 +26,21 @@ const deleteFile = async (path: string): Promise<boolean> => {
 
 const cleanup = async (userSessions: Map<string, Session>) => {
   const now = Date.now();
-  for (const [sessionId, session] of userSessions) {
-    const isValid = new Date(session.expiresAt).getTime() > now;
-    if (!isValid) {
-      const deleted = await deleteFile(
-        path.join(
-          process.cwd(),
-          "storage",
-          "auth",
-          "sessions",
-          `${sessionId}.json`,
-        ),
-      );
-      if (deleted) userSessions.delete(sessionId);
-    }
+  const expired = [...userSessions.entries()].filter(
+    ([, session]) => new Date(session.expiresAt).getTime() <= now,
+  );
+
+  for (const [sessionId] of expired) {
+    const deleted = await deleteFile(
+      path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "sessions",
+        `${sessionId}.json`,
+      ),
+    );
+    if (deleted) userSessions.delete(sessionId);
   }
 };
 
@@ -51,8 +52,15 @@ await mkdir(sessionsDir, { recursive: true });
 type Task = () => Promise<any>;
 const sessionQueues = new Map();
 
-const appendToSessionQueue = async (session: Session, task: Task) => {
-  const queue = sessionQueues.get(session.userId) ?? {
+type QueueOptions =
+  | { session: Session; task: Task }
+  | { sessionId: string; userId: string; task: Task };
+
+const appendToSessionQueue = async (options: QueueOptions) => {
+  const mode = "session" in options ? "write" : "read";
+  const userId = "session" in options ? options.session.userId : options.userId;
+
+  const queue = sessionQueues.get(userId) ?? {
     userSessions: new Map<string, Session>(),
     nextQueue: Promise.resolve(),
   };
@@ -70,7 +78,7 @@ const appendToSessionQueue = async (session: Session, task: Task) => {
 };
 
 // session crud
-const getSession = async (sessionId: string): Promise<Session | undefined> => {
+const getSession = async (sessionId: Session): Promise<Session | undefined> => {
   const task = async () => {
     try {
       const sessionPath = path.join(
@@ -80,15 +88,13 @@ const getSession = async (sessionId: string): Promise<Session | undefined> => {
         "sessions",
         `${sessionId}.json`,
       );
-
       const data = await readFile(sessionPath, "utf-8");
-      const session = JSON.parse(data);
-      return session as Session;
+      return JSON.parse(data) as Session;
     } catch {
       return undefined;
     }
   };
-  return task();
+  return appendToSessionQueue();
 };
 
 const saveSession = async (session: Session): Promise<string> => {
@@ -99,7 +105,7 @@ const saveSession = async (session: Session): Promise<string> => {
         process.cwd(),
         "storage",
         "auth",
-        "users",
+        "sessions",
         `${session.sessionId}.json`,
       );
       await writeFile(sessionPath, JSON.stringify(session, null, 2));
