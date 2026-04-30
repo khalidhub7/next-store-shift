@@ -61,6 +61,7 @@ try {
 
 // setup queues
 type Task = () => Promise<any>;
+type UserSessionsIndex = Record<string, string[]>;
 
 const sessionQueues = new Map();
 // ensures user stays unique (lock)
@@ -85,18 +86,20 @@ const appendToUserSessionsIndexQueue = async (task: Task) => {
 
 // userSessionsIndex.json crud
 
-const getUserSessionsIndex = async (): Promise<EmailIndexType> => {
+const getUserSessionsIndex = async (): Promise<UserSessionsIndex> => {
   try {
-    const users = await readFile(emailIndexPath, "utf-8");
+    const users = await readFile(userSessionsIndexPath, "utf-8");
     return JSON.parse(users);
   } catch {
-    return {} as EmailIndexType;
+    return {} as UserSessionsIndex;
   }
 };
 
-const saveUserSessionsIndex = async (users: EmailIndexType): Promise<void> => {
+const saveUserSessionsIndex = async (
+  users: UserSessionsIndex,
+): Promise<void> => {
   try {
-    await writeFile(emailIndexPath, JSON.stringify(users, null, 2));
+    await writeFile(userSessionsIndexPath, JSON.stringify(users, null, 2));
   } catch (err) {
     // console.log("Failed to write users");
     throw err;
