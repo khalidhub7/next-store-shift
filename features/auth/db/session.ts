@@ -53,8 +53,8 @@ type Task = () => Promise<any>;
 const sessionQueues = new Map();
 
 type QueueOptions =
-  | { session: Session; task: Task }
-  | { sessionId: string; userId: string; task: Task };
+  | { session: Session; task: Task } // write
+  | { sessionId: string; userId: string; task: Task }; // read
 
 const appendToSessionQueue = async (options: QueueOptions) => {
   const mode = "session" in options ? "write" : "read";
