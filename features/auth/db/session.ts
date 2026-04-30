@@ -52,16 +52,16 @@ await mkdir(sessionsDir, { recursive: true });
 type Task = () => Promise<any>;
 const sessionQueues = new Map();
 
-type QueueOptions =
-  | { session: Session; task: Task } // write
-  | { sessionId: string; userId: string; task: Task }; // read
+type QueueOptions = {
+  sessionId: string;
+  task: Task;
+  session?: Session; // only for write
+};
 
 const appendToSessionQueue = async (options: QueueOptions) => {
-  const mode = "session" in options ? "write" : "read";
-  const userId = "session" in options ? options.session.userId : options.userId;
-  const sessionId =
-    "session" in options ? options.session.sessionId : options.sessionId;
-  const session = "session" in options ? options.session : undefined;
+  const mode = options.session ? "write" : "read";
+  const sessionId = options.sessionId;
+  const session = options.session;
 
   const queue = sessionQueues.get(userId) ?? {
     userSessions: new Map<string, Session>(),
@@ -81,6 +81,14 @@ const appendToSessionQueue = async (options: QueueOptions) => {
 };
 
 // session crud
+
+const getUserIdBySessionId = async (
+  sessionId: string,
+): Promise<string | undefined> => {
+  const session = await getSession(sessionId);
+  return session?.userId;
+};
+
 const getSession = async (sessionId: Session): Promise<Session | undefined> => {
   const task = async () => {
     try {
@@ -138,13 +146,6 @@ const deleteSession = async (session: Session): Promise<void> => {
     }
   };
   return appendToSessionQueue(session, task);
-};
-
-const getUserIdBySessionId = async (
-  sessionId: string,
-): Promise<string | undefined> => {
-  const session = await getSession(sessionId);
-  return session?.userId;
 };
 
 export { getSession, saveSession, deleteSession, getUserIdBySessionId };
