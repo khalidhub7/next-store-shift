@@ -106,11 +106,15 @@ const saveUserSessionsIndex = async (
   }
 };
 
-const setUserSessionsIndexEntry = async (id: string, email: string) => {
+const setUserSessionsIndexEntry = async (userId: string, sessionId: string) => {
   const task = async () => {
     try {
       const data = await getUserSessionsIndex();
-      await saveUserSessionsIndex({ ...data, [email]: id });
+      const sessions = data[userId] ?? [];
+      await saveUserSessionsIndex({
+        ...data,
+        [userId]: [...sessions, sessionId],
+      });
       return true;
     } catch {
       return false;
