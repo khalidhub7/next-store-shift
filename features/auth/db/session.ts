@@ -9,6 +9,7 @@ Later (real DB)
 DELETE data/ folder
 db.ts → connects to real DB
 */
+
 import path from "path";
 import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink } from "fs/promises";
@@ -23,6 +24,25 @@ const deleteFile = async (path: string): Promise<boolean> => {
   }
 };
 
+const cleanup = async (userSessions: Map<string, Session>) => {
+  const now = Date.now();
+  for (const [sessionId, session] of userSessions) {
+    const isValid = new Date(session.expiresAt).getTime() > now;
+    if (!isValid) {
+      const deleted = await deleteFile(
+        path.join(
+          process.cwd(),
+          "storage",
+          "auth",
+          "sessions",
+          `${sessionId}.json`,
+        ),
+      );
+      if (deleted) userSessions.delete(sessionId);
+    }
+  }
+};
+
 // create files
 const sessionsDir = path.join(process.cwd(), "storage", "auth", "sessions");
 await mkdir(sessionsDir, { recursive: true });
@@ -32,58 +52,22 @@ type Task = () => Promise<any>;
 const sessionQueues = new Map();
 
 const appendToSessionQueue = async (session: Session, task: Task) => {
-  const userQueue = sessionQueues.get(session.userId);
-  if (userQueue) {
-    // run appended usually crud
-    let expiredSessions = [];
-    const result = userQueue.nextQueue.then(task);
-    const nextQueue = result.catch(() => {});
-    let { userSessions } = userQueue;
-    userSessions.set(session.sessionId, session);
+  const queue = sessionQueues.get(session.userId) ?? {
+    userSessions: new Map<string, Session>(),
+    nextQueue: Promise.resolve(),
+  };
 
-    // remove unvalid sessions
-    for (const [sessionId, session] of userSessions) {
-      const isValid = new Date(session.expiresAt) > new Date();
-      if (!isValid) {
-        const deleted = await deleteFile(
-          path.join(
-            process.cwd(),
-            "storage",
-            "auth",
-            "sessions",
-            `${sessionId}.json`,
-          ),
-        );
-        if (deleted) {
-          expiredSessions.push(sessionId);
-        }
-      }
-    }
-    expiredSessions.forEach((s) => {
-      userSessions.delete(s);
-    });
-    sessionQueues.set(session.userId, { userSessions, nextQueue });
-    return result;
-  } else {
-    const result = Promise.resolve().then(task);
-    const nextQueue = result.catch(() => {});
-    const userSessions = new Map();
+  const result = queue.nextQueue.then(async () => {
+    queue.userSessions.set(session.sessionId, session);
+    await task();
+    await cleanup(queue.userSessions);
+  });
 
-    userSessions.set(session.sessionId, session);
-    sessionQueues.set(session.userId, { userSessions, nextQueue });
-    return result;
-  }
+  queue.nextQueue = result.catch(() => {});
+  sessionQueues.set(session.userId, queue);
+
+  return result;
 };
-
-// session crud helpers
-/* const cleanExpiredSessions = async () => {
-  const sessions = await getSessions();
-  const now = Date.now();
-
-  const valid = sessions.filter((s) => new Date(s.expiresAt).getTime() > now);
-
-  await saveSessions(valid);
-}; */
 
 // session crud
 const getSession = async (sessionId: string): Promise<Session | undefined> => {
@@ -107,7 +91,7 @@ const getSession = async (sessionId: string): Promise<Session | undefined> => {
   return task();
 };
 
-const writeSession = async (session: Session): Promise<string> => {
+const saveSession = async (session: Session): Promise<string> => {
   const task = async () => {
     /* await cleanExpiredSessions(); */
     try {
@@ -124,17 +108,17 @@ const writeSession = async (session: Session): Promise<string> => {
       return false;
     }
   };
-  return appendToSessionQueue(session.sessionId, task);
+  return appendToSessionQueue(session, task);
 };
 
-const deleteSession = async (sessionId: string): Promise<void> => {
+const deleteSession = async (session: Session): Promise<void> => {
   const task = async () => {
     const userPath = path.join(
       process.cwd(),
       "storage",
       "auth",
       "sessions",
-      `${sessionId}.json`,
+      `${session.sessionId}.json`,
     );
 
     try {
@@ -144,7 +128,7 @@ const deleteSession = async (sessionId: string): Promise<void> => {
       return false; // file may not exist
     }
   };
-  return appendToSessionQueue(task);
+  return appendToSessionQueue(session, task);
 };
 
 const getUserIdBySessionId = async (
