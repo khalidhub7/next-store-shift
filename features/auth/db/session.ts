@@ -13,6 +13,7 @@ db.ts → connects to real DB
 import path from "path";
 import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink, access } from "fs/promises";
+import { file } from "zod";
 
 // helpers
 const deleteFile = async (filePath: string): Promise<boolean> => {
@@ -70,11 +71,20 @@ const appendToUserSessionsIndexQueue = async (userId: string, task: Task) => {
   return result;
 };
 
-// userSessionsIndex.json crud
+// userSessions crud
 
-const getUserSessionsIndex = async (): Promise<UserSessionsIndex> => {
+const getUserSessionsIndex = async (
+  userId: string,
+): Promise<UserSessionsIndex> => {
   try {
-    const users = await readFile(userSessionsIndexPath, "utf-8");
+    const filePath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "userSessions",
+      `${userId}.json`,
+    );
+    const users = await readFile(filePath, "utf-8");
     return JSON.parse(users);
   } catch {
     return {} as UserSessionsIndex;
@@ -82,10 +92,18 @@ const getUserSessionsIndex = async (): Promise<UserSessionsIndex> => {
 };
 
 const saveUserSessionsIndex = async (
-  users: UserSessionsIndex,
+  userId: string,
+  sessions: UserSessionsIndex,
 ): Promise<void> => {
   try {
-    await writeFile(userSessionsIndexPath, JSON.stringify(users, null, 2));
+    const filePath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "userSessions",
+      `${userId}.json`,
+    );
+    await writeFile(filePath, JSON.stringify(sessions, null, 2));
   } catch (err) {
     throw err;
   }
@@ -94,12 +112,8 @@ const saveUserSessionsIndex = async (
 const setUserSessionsIndexEntry = async (userId: string, sessionId: string) => {
   const task = async () => {
     try {
-      const data = await getUserSessionsIndex();
-      const sessions = data[userId] ?? [];
-      await saveUserSessionsIndex({
-        ...data,
-        [userId]: [...sessions, sessionId],
-      });
+      const sessions = await getUserSessionsIndex(userId);
+      await saveUserSessionsIndex(userId, sessions);
       return true;
     } catch {
       return false;
