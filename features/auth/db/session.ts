@@ -128,7 +128,7 @@ const getUserIdBySessionId = async (
   return session?.userId;
 };
 
-const getSession = async (sessionId: Session): Promise<Session | undefined> => {
+const getSession = async (sessionId: string): Promise<Session | undefined> => {
   const task = async () => {
     try {
       const sessionPath = path.join(
@@ -144,7 +144,7 @@ const getSession = async (sessionId: Session): Promise<Session | undefined> => {
       return undefined;
     }
   };
-  return appendToSessionQueue();
+  return appendToSessionQueue(sessionId, task);
 };
 
 const saveSession = async (session: Session): Promise<string> => {
