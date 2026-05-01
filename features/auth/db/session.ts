@@ -13,7 +13,6 @@ db.ts → connects to real DB
 import path from "path";
 import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink, access } from "fs/promises";
-import { file } from "zod";
 
 // helpers
 const deleteFile = async (filePath: string): Promise<boolean> => {
@@ -40,7 +39,6 @@ await mkdir(userSessionsDir, { recursive: true });
 
 // types
 type Task = () => Promise<any>;
-type UserSessionMap = Record<string, string[]>;
 
 // setup queues
 const sessionQueues = new Map(); // ensure session queues ordered
@@ -63,7 +61,7 @@ const appendToUserSessionsQueue = async (userId: string, task: Task) => {
 
   const result = queue.then(task);
 
-  sessionQueues.set(
+  userSessionsQueue.set(
     userId,
     result.catch(() => {}),
   );
@@ -73,7 +71,7 @@ const appendToUserSessionsQueue = async (userId: string, task: Task) => {
 
 // userSessions crud
 
-const getUserSessions = async (userId: string): Promise<UserSessionMap> => {
+const getUserSessions = async (userId: string): Promise<Array<string>> => {
   try {
     const filePath = path.join(
       process.cwd(),
@@ -82,16 +80,16 @@ const getUserSessions = async (userId: string): Promise<UserSessionMap> => {
       "userSessions",
       `${userId}.json`,
     );
-    const users = await readFile(filePath, "utf-8");
-    return JSON.parse(users);
+    const userSessions = await readFile(filePath, "utf-8");
+    return JSON.parse(userSessions);
   } catch {
-    return {} as UserSessionMap;
+    return [];
   }
 };
 
 const saveUserSessions = async (
   userId: string,
-  sessions: UserSessionMap,
+  sessions: Array<string>,
 ): Promise<void> => {
   try {
     const filePath = path.join(
@@ -111,7 +109,8 @@ const setUserSessionsEntry = async (userId: string, sessionId: string) => {
   const task = async () => {
     try {
       const sessions = await getUserSessions(userId);
-      await saveUserSessions(userId, sessions);
+      const newSessions = [...sessions, sessionId];
+      await saveUserSessions(userId, newSessions);
       return true;
     } catch {
       return false;
