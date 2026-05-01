@@ -13,6 +13,7 @@ db.ts → connects to real DB
 import path from "path";
 import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink, access } from "fs/promises";
+import { UserRoundIcon } from "lucide-react";
 
 // helpers
 const deleteFile = async (filePath: string): Promise<boolean> => {
@@ -124,6 +125,7 @@ const setUserSessionsEntry = async (userId: string, sessionId: string) => {
 const getUserIdBySessionId = async (
   sessionId: string,
 ): Promise<string | undefined> => {
+  // that ensure last write ends before read
   const session = await getSession(sessionId);
   return session?.userId;
 };
@@ -159,13 +161,19 @@ const saveSession = async (session: Session): Promise<string> => {
         `${session.sessionId}.json`,
       );
       await writeFile(sessionPath, JSON.stringify(session, null, 2));
+      const userSessionTask = async () => {
+        await setUserSessionsEntry(session.userId, session.sessionId);
+      };
+      await appendToUserSessionsQueue(session.userId, userSessionTask);
       return session.sessionId;
     } catch {
       return false;
     }
   };
-  return appendToSessionQueue(session, task);
+  return appendToSessionQueue(session.sessionId, task);
 };
+
+// i stoped here
 
 const deleteSession = async (session: Session): Promise<void> => {
   const task = async () => {
