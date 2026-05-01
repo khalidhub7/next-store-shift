@@ -40,11 +40,11 @@ await mkdir(userSessionsDir, { recursive: true });
 
 // types
 type Task = () => Promise<any>;
-type UserSessionsIndex = Record<string, string[]>;
+type UserSessionMap = Record<string, string[]>;
 
 // setup queues
 const sessionQueues = new Map(); // ensure session queues ordered
-const userSessionsIndexQueue = new Map(); // ensure userSessions queues ordered
+const userSessionsQueue = new Map(); // ensure userSessions queues ordered
 
 const appendToSessionQueue = async (sessionId: string, task: Task) => {
   const queue = sessionQueues.get(sessionId) || Promise.resolve();
@@ -58,8 +58,8 @@ const appendToSessionQueue = async (sessionId: string, task: Task) => {
 
   return result;
 };
-const appendToUserSessionsIndexQueue = async (userId: string, task: Task) => {
-  const queue = sessionQueues.get(userId) || Promise.resolve();
+const appendToUserSessionsQueue = async (userId: string, task: Task) => {
+  const queue = userSessionsQueue.get(userId) || Promise.resolve();
 
   const result = queue.then(task);
 
@@ -73,9 +73,7 @@ const appendToUserSessionsIndexQueue = async (userId: string, task: Task) => {
 
 // userSessions crud
 
-const getUserSessionsIndex = async (
-  userId: string,
-): Promise<UserSessionsIndex> => {
+const getUserSessions = async (userId: string): Promise<UserSessionMap> => {
   try {
     const filePath = path.join(
       process.cwd(),
@@ -87,13 +85,13 @@ const getUserSessionsIndex = async (
     const users = await readFile(filePath, "utf-8");
     return JSON.parse(users);
   } catch {
-    return {} as UserSessionsIndex;
+    return {} as UserSessionMap;
   }
 };
 
-const saveUserSessionsIndex = async (
+const saveUserSessions = async (
   userId: string,
-  sessions: UserSessionsIndex,
+  sessions: UserSessionMap,
 ): Promise<void> => {
   try {
     const filePath = path.join(
@@ -109,17 +107,17 @@ const saveUserSessionsIndex = async (
   }
 };
 
-const setUserSessionsIndexEntry = async (userId: string, sessionId: string) => {
+const setUserSessionsEntry = async (userId: string, sessionId: string) => {
   const task = async () => {
     try {
-      const sessions = await getUserSessionsIndex(userId);
-      await saveUserSessionsIndex(userId, sessions);
+      const sessions = await getUserSessions(userId);
+      await saveUserSessions(userId, sessions);
       return true;
     } catch {
       return false;
     }
   };
-  return appendToUserSessionsIndexQueue(task);
+  return appendToUserSessionsQueue(userId, task);
 };
 
 // session crud
