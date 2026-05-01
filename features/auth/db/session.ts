@@ -26,41 +26,47 @@ const deleteFile = async (filePath: string): Promise<boolean> => {
 
 // create files
 const sessionsDir = path.join(process.cwd(), "storage", "auth", "sessions");
-await mkdir(sessionsDir, { recursive: true });
-const userSessionsIndexPath = path.join(
+
+const userSessionsDir = path.join(
   process.cwd(),
   "storage",
   "auth",
-  "userSessionsIndex.json",
+  "userSessions",
 );
-try {
-  await access(userSessionsIndexPath);
-} catch {
-  await writeFile(userSessionsIndexPath, "{}");
-}
 
-// setup queues
+await mkdir(sessionsDir, { recursive: true });
+await mkdir(userSessionsDir, { recursive: true });
+
+// types
 type Task = () => Promise<any>;
 type UserSessionsIndex = Record<string, string[]>;
 
-const sessionQueues = new Map();
-// ensures user stays unique (lock)
-let userSessionsIndexQueue = Promise.resolve();
+// setup queues
+const sessionQueues = new Map(); // ensure session queues ordered
+const userSessionsIndexQueue = new Map(); // ensure userSessions queues ordered
 
-const appendToSessionQueue = async (userId: string, task: Task) => {
-  const queue = sessionQueues.get(userId) || Promise.resolve();
+const appendToSessionQueue = async (sessionId: string, task: Task) => {
+  const queue = sessionQueues.get(sessionId) || Promise.resolve();
 
   const result = queue.then(task);
+
   sessionQueues.set(
-    userId,
+    sessionId,
     result.catch(() => {}),
   );
 
   return result;
 };
-const appendToUserSessionsIndexQueue = async (task: Task) => {
-  const result = userSessionsIndexQueue.then(() => task());
-  userSessionsIndexQueue = result.catch(() => {});
+const appendToUserSessionsIndexQueue = async (userId: string, task: Task) => {
+  const queue = sessionQueues.get(userId) || Promise.resolve();
+
+  const result = queue.then(task);
+
+  sessionQueues.set(
+    userId,
+    result.catch(() => {}),
+  );
+
   return result;
 };
 
