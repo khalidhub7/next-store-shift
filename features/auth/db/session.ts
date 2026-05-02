@@ -105,7 +105,7 @@ const saveUserSessions = async (
   }
 };
 
-const setUserSessionsEntry = async (userId: string, sessionId: string) => {
+const addUserSessionsEntry = async (userId: string, sessionId: string) => {
   const task = async () => {
     try {
       const sessions = await getUserSessions(userId);
@@ -116,6 +116,24 @@ const setUserSessionsEntry = async (userId: string, sessionId: string) => {
       return false;
     }
   };
+  return appendToUserSessionsQueue(userId, task);
+};
+
+const deleteUserSessionsEntry = async (userId: string, sessionId: string) => {
+  const task = async () => {
+    try {
+      const sessions = await getUserSessions(userId);
+
+      // remove the sessionId
+      const updatedSessions = sessions.filter((id) => id !== sessionId);
+
+      await saveUserSessions(userId, updatedSessions);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   return appendToUserSessionsQueue(userId, task);
 };
 
@@ -160,7 +178,7 @@ const saveSession = async (session: Session): Promise<string | false> => {
         `${session.sessionId}.json`,
       );
       await writeFile(sessionPath, JSON.stringify(session, null, 2));
-      await setUserSessionsEntry(session.userId, session.sessionId);
+      await addUserSessionsEntry(session.userId, session.sessionId);
       return session.sessionId;
     } catch {
       return false;
@@ -169,11 +187,9 @@ const saveSession = async (session: Session): Promise<string | false> => {
   return appendToSessionQueue(session.sessionId, task);
 };
 
-// i stoped here
-
-const deleteSession = async (sessionId: string): Promise<void> => {
+const deleteSession = async (sessionId: string): Promise<any> => {
   const task = async () => {
-    const userPath = path.join(
+    const filePath = path.join(
       process.cwd(),
       "storage",
       "auth",
@@ -181,14 +197,16 @@ const deleteSession = async (sessionId: string): Promise<void> => {
       `${sessionId}.json`,
     );
 
-    try {
-      await unlink(userPath);
-      return true;
-    } catch {
-      return false; // file may not exist
-    }
+    // Read file before deleting
+    const sessionData = await readFile(filePath, "utf-8");
+    const userId = JSON.parse(sessionData).userId;
+
+    // Delete file
+    await deleteFile(filePath);
+    await deleteUserSessionsEntry(userId, sessionId);
   };
-  return appendToSessionQueue(session, task);
+
+  return appendToSessionQueue(sessionId, task);
 };
 
 export { getSession, saveSession, deleteSession, getUserIdBySessionId };
