@@ -202,8 +202,14 @@ const deleteSession = async (sessionId: string): Promise<any> => {
     const userId = JSON.parse(sessionData).userId;
 
     // Delete file
-    await deleteFile(filePath);
-    await deleteUserSessionsEntry(userId, sessionId);
+    const [fileDeleted, userUpdated] = await Promise.all([
+      deleteFile(filePath),
+      deleteUserSessionsEntry(userId, sessionId),
+    ]);
+
+    if (!fileDeleted || !userUpdated) {
+      throw new Error("Delete failed");
+    }
   };
 
   return appendToSessionQueue(sessionId, task);
