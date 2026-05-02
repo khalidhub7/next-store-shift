@@ -13,7 +13,6 @@ db.ts → connects to real DB
 import path from "path";
 import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink, access } from "fs/promises";
-import { UserRoundIcon } from "lucide-react";
 
 // helpers
 const deleteFile = async (filePath: string): Promise<boolean> => {
@@ -149,7 +148,7 @@ const getSession = async (sessionId: string): Promise<Session | undefined> => {
   return appendToSessionQueue(sessionId, task);
 };
 
-const saveSession = async (session: Session): Promise<string> => {
+const saveSession = async (session: Session): Promise<string | false> => {
   const task = async () => {
     /* await cleanExpiredSessions(); */
     try {
@@ -161,10 +160,7 @@ const saveSession = async (session: Session): Promise<string> => {
         `${session.sessionId}.json`,
       );
       await writeFile(sessionPath, JSON.stringify(session, null, 2));
-      const userSessionTask = async () => {
-        await setUserSessionsEntry(session.userId, session.sessionId);
-      };
-      await appendToUserSessionsQueue(session.userId, userSessionTask);
+      await setUserSessionsEntry(session.userId, session.sessionId);
       return session.sessionId;
     } catch {
       return false;
@@ -175,14 +171,14 @@ const saveSession = async (session: Session): Promise<string> => {
 
 // i stoped here
 
-const deleteSession = async (session: Session): Promise<void> => {
+const deleteSession = async (sessionId: string): Promise<void> => {
   const task = async () => {
     const userPath = path.join(
       process.cwd(),
       "storage",
       "auth",
       "sessions",
-      `${session.sessionId}.json`,
+      `${sessionId}.json`,
     );
 
     try {
