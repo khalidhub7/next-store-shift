@@ -180,13 +180,7 @@ const deleteUser = async (id: string): Promise<void> => {
       "users",
       `${id}.json`,
     );
-
-    try {
-      await unlink(userPath);
-      return true;
-    } catch {
-      return false; // file may not exist
-    }
+    await unlink(userPath); // file may not exist
   };
   return appendToUserQueue(id, task);
 };
