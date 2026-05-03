@@ -165,8 +165,7 @@ const updateUser = async (
 
       await writeUser(updatedUser);
     } catch (err) {
-      if (err instanceof Error) throw err.message;
-      throw String(err);
+      throw err;
     }
   };
   return appendToUserQueue(id, task);
