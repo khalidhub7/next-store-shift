@@ -90,9 +90,8 @@ const writeUser = async (user: User) => {
         `${user.id}.json`,
       );
       await writeFile(userPath, JSON.stringify(user, null, 2));
-      return true;
-    } catch {
-      return false;
+    } catch (err) {
+      throw err;
     }
   };
   return appendToUserQueue(user.id, task);
@@ -121,14 +120,11 @@ const getUserById = async (id: string): Promise<User | undefined> => {
 };
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
-  // ques: why this does not need to be queued
-  const task = async () => {
-    const emailIndex = await getEmailIndex();
+  // not need to be queued bcs EmailIndex already  guarantees email uniqueness
+  const emailIndex = await getEmailIndex();
 
-    const id = emailIndex[email];
-    return id ? await getUserById(id) : undefined;
-  };
-  return appendToEmailIndexQueue(task);
+  const id = emailIndex[email];
+  return id ? await getUserById(id) : undefined;
 };
 
 const createUser = async (
@@ -137,6 +133,7 @@ const createUser = async (
   // userData like {email, pswd, role}
 
   const id = randomUUID();
+
   const task = async () => {
     // await delay(10000); // 10s delay (for testing)
     try {
@@ -147,12 +144,11 @@ const createUser = async (
         updatedAt: new Date().toISOString(),
       };
 
-      const emailIndexSaved = await setEmailIndex(newUser.id, newUser.email);
-      const userWritten = await writeUser(newUser);
-      if (!emailIndexSaved || !userWritten) return false;
+      await setEmailIndex(newUser.id, newUser.email);
+
       return newUser.id;
-    } catch {
-      return false;
+    } catch (err) {
+      throw err;
     }
   };
 
