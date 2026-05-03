@@ -78,13 +78,9 @@ const saveEmailIndex = async (users: EmailIndexType): Promise<void> => {
 
 const setEmailIndexEntry = async (id: string, email: string) => {
   const task = async () => {
-    try {
-      const data = await getEmailIndex();
-      if (data[email]) throw new Error("");
-      await saveEmailIndex({ ...data, [email]: id });
-    } catch (err) {
-      throw err;
-    }
+    const data = await getEmailIndex();
+    if (data[email]) throw new Error("Email already exists");
+    await saveEmailIndex({ ...data, [email]: id });
   };
   return appendToEmailIndexQueue(task);
 };
