@@ -131,10 +131,13 @@ const getUserById = async (id: string): Promise<User | undefined> => {
 
 const getUserByEmail = async (email: string): Promise<User | undefined> => {
   // ques: why this does not need to be queued
-  const emailIndex = await getEmailIndex();
+  const task = async () => {
+    const emailIndex = await getEmailIndex();
 
-  const id = emailIndex[email];
-  return id ? await getUserById(id) : undefined;
+    const id = emailIndex[email];
+    return id ? await getUserById(id) : undefined;
+  };
+  return appendToEmailIndexQueue(task);
 };
 
 const createUser = async (
@@ -176,7 +179,7 @@ const updateUser = async (
     try {
       const user = await getUserById(id);
       if (!user) throw new Error("user not found");
-      const updatedUser = { ...user, newData };
+      const updatedUser = { ...user, ...newData };
 
       const userWritten = writeUser(updatedUser);
       if (!userWritten) return false;
