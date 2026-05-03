@@ -80,10 +80,10 @@ const setEmailIndexEntry = async (id: string, email: string) => {
   const task = async () => {
     try {
       const data = await getEmailIndex();
+      if (data[email]) throw new Error("");
       await saveEmailIndex({ ...data, [email]: id });
-      return true;
-    } catch {
-      return false;
+    } catch (err) {
+      throw err;
     }
   };
   return appendToEmailIndexQueue(task);
