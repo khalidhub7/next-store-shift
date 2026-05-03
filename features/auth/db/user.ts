@@ -57,13 +57,17 @@ const appendToEmailIndexQueue = async (task: Task) => {
 
 // user crud helpers
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 const getEmailIndex = async (): Promise<EmailIndexType> => {
-  try {
-    const users = await readFile(emailIndexPath, "utf-8");
-    return JSON.parse(users);
-  } catch {
-    return {} as EmailIndexType;
-  }
+  const task = async () => {
+    try {
+      const users = await readFile(emailIndexPath, "utf-8");
+      return JSON.parse(users);
+    } catch {
+      return {} as EmailIndexType;
+    }
+  };
+  return appendToEmailIndexQueue(task);
 };
 
 const saveEmailIndex = async (users: EmailIndexType): Promise<void> => {
