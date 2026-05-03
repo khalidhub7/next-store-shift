@@ -143,9 +143,7 @@ const createUser = async (
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-
       await setEmailIndex(newUser.id, newUser.email);
-
       return newUser.id;
     } catch (err) {
       throw err;
@@ -165,11 +163,9 @@ const updateUser = async (
       if (!user) throw new Error("user not found");
       const updatedUser = { ...user, ...newData };
 
-      const userWritten = writeUser(updatedUser);
-      if (!userWritten) return false;
-      return true;
-    } catch {
-      return false;
+      await writeUser(updatedUser);
+    } catch (err) {
+      throw err;
     }
   };
   return appendToUserQueue(id, task);
