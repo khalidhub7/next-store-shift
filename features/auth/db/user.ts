@@ -59,27 +59,21 @@ const appendToEmailIndexQueue = async (task: Task) => {
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const getEmailIndex = async (): Promise<EmailIndexType> => {
-  const task = async () => {
-    try {
-      const users = await readFile(emailIndexPath, "utf-8");
-      return JSON.parse(users);
-    } catch {
-      return {} as EmailIndexType;
-    }
-  };
-  return appendToEmailIndexQueue(task);
+  try {
+    const users = await readFile(emailIndexPath, "utf-8");
+    return JSON.parse(users);
+  } catch {
+    return {} as EmailIndexType;
+  }
 };
 
 const saveEmailIndex = async (users: EmailIndexType): Promise<void> => {
-  const task = async () => {
-    try {
-      await writeFile(emailIndexPath, JSON.stringify(users, null, 2));
-    } catch (err) {
-      // console.log("Failed to write users");
-      throw err;
-    }
-  };
-  return appendToEmailIndexQueue(task);
+  try {
+    await writeFile(emailIndexPath, JSON.stringify(users, null, 2));
+  } catch (err) {
+    // console.log("Failed to write users");
+    throw err;
+  }
 };
 
 const setEmailIndexEntry = async (id: string, email: string) => {
