@@ -56,7 +56,7 @@ const appendToEmailIndexQueue = async (task: Task) => {
 };
 
 // user crud helpers
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const getEmailIndex = async (): Promise<EmailIndexType> => {
   try {
@@ -67,20 +67,14 @@ const getEmailIndex = async (): Promise<EmailIndexType> => {
   }
 };
 
-const saveEmailIndex = async (users: EmailIndexType): Promise<void> => {
-  try {
-    await writeFile(emailIndexPath, JSON.stringify(users, null, 2));
-  } catch (err) {
-    // console.log("Failed to write users");
-    throw err;
-  }
-};
-
-const setEmailIndexEntry = async (id: string, email: string) => {
+const setEmailIndex = async (id: string, email: string) => {
   const task = async () => {
     const data = await getEmailIndex();
     if (data[email]) throw new Error("Email already exists");
-    await saveEmailIndex({ ...data, [email]: id });
+    await writeFile(
+      emailIndexPath,
+      JSON.stringify({ ...data, [email]: id }, null, 2),
+    );
   };
   return appendToEmailIndexQueue(task);
 };
@@ -153,10 +147,7 @@ const createUser = async (
         updatedAt: new Date().toISOString(),
       };
 
-      const emailIndexSaved = await setEmailIndexEntry(
-        newUser.id,
-        newUser.email,
-      );
+      const emailIndexSaved = await setEmailIndex(newUser.id, newUser.email);
       const userWritten = await writeUser(newUser);
       if (!emailIndexSaved || !userWritten) return false;
       return newUser.id;
