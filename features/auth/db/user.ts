@@ -79,6 +79,16 @@ const setEmailIndex = async (id: string, email: string) => {
   return appendToEmailIndexQueue(task);
 };
 
+const deleteEmailIndex = async (email: string) => {
+  const task = async () => {
+    const data = await getEmailIndex();
+    if (!data[email]) throw new Error("Email not found");
+    delete data[email];
+    await writeFile(emailIndexPath, JSON.stringify(data, null, 2));
+  };
+  return appendToEmailIndexQueue(task);
+};
+
 const writeUser = async (user: User) => {
   const task = async () => {
     try {
@@ -143,7 +153,14 @@ const createUser = async (
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
+      // setEmailIndex check also email if already registered
       await setEmailIndex(newUser.id, newUser.email);
+      await writeUser(newUser).catch(async (err) => {
+        // rollback and rethrow
+        await deleteEmailIndex(newUser.email);
+        throw err;
+      });
+
       return newUser.id;
     } catch (err) {
       throw err;
@@ -172,7 +189,7 @@ const updateUser = async (
 };
 
 const deleteUser = async (id: string): Promise<void> => {
-  const task = async () => {
+  const userTask = async () => {
     const userPath = path.join(
       process.cwd(),
       "storage",
@@ -180,9 +197,21 @@ const deleteUser = async (id: string): Promise<void> => {
       "users",
       `${id}.json`,
     );
-    await unlink(userPath); // file may not exist
+    const user = await getUserById(id);
+    if (!user) throw new Error("User not found");
+    await unlink(userPath);
+    return user.email;
   };
-  return appendToUserQueue(id, task);
+
+  const email = await appendToUserQueue(id, userTask);
+
+  const emailTask = async () => {
+    const emailIndex = await getEmailIndex();
+    delete emailIndex[email];
+    await writeFile(emailIndexPath, JSON.stringify(emailIndex, null, 2));
+  };
+
+  return appendToEmailIndexQueue(emailTask);
 };
 
 export { createUser, updateUser, deleteUser, getUserById, getUserByEmail };
