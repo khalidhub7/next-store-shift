@@ -23,7 +23,7 @@ type Task = () => Promise<any>;
 
 const cartsQueue = new Map();
 
-const appendToQueue = async (task: Task) => {
+const appendToQueue = async (cartId: string, task: Task) => {
   const result = queue.then(() => task());
   queue = result.catch(() => {});
   return result;
