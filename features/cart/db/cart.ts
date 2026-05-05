@@ -35,29 +35,26 @@ const appendToQueue = async (cartId: string, task: Task) => {
 };
 
 // cart crud helpers
-const getCarts = async (): Promise<Array<Cart>> => {
-  try {
-    const data = await readFile(cartsFilePath, "utf-8");
-    return data === "" ? [] : JSON.parse(data);
-  } catch {
-    return [];
-  }
-};
-
-const saveCarts = async (carts: Array<Cart>): Promise<void> => {
-  try {
-    await writeFile(cartsFilePath, JSON.stringify(carts, null, 2));
-    return;
-  } catch (err) {
-    console.log("Failed to write to carts.json");
-    throw err;
-  }
-};
 
 // cart crud
-const getCart = async (id: string): Promise<Cart | null> => {
-  const carts = await getCarts();
-  return carts.find((c: Cart) => c.id === id) ?? null;
+
+const getCart = async (cartId: string): Promise<Cart | null> => {
+  const task = async () => {
+    try {
+      const sessionPath = path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "carts",
+        `${cartId}.json`,
+      );
+      const data = await readFile(sessionPath, "utf-8");
+      return JSON.parse(data) as Session;
+    } catch {
+      return undefined;
+    }
+  };
+  return appendToSessionQueue(sessionId, task);
 };
 
 const getCartByUserId = async (userId: string): Promise<Cart | null> => {
