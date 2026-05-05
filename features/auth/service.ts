@@ -23,9 +23,8 @@ const hashSessionId = (sessionId: string) => {
 // get user > check password > create session > return sessionId
 const login = async (email: string, password: string) => {
   const user = await getUserByEmail(email);
-  if (!user) {
-    throw new Error("user not found");
-  }
+
+  if (!user) throw new Error("user not found");
   if (!(await comparePassword(password, user.password))) {
     throw new Error("invalid credentials");
   }
@@ -47,7 +46,7 @@ const register = async (email: string, password: string, name: string) => {
     password: hashedPassword,
     name,
   };
-  // this also check if the email already exist
+  // this throw if the email already exist
   const userId = await createUser(userData);
   if (!userId) throw new Error("Failed to create user");
 
