@@ -13,16 +13,16 @@ db.ts → connects to real DB
 import path from "path";
 import { randomUUID } from "crypto";
 import { Cart, CartItem } from "../types/cart";
-import { readFile, writeFile } from "fs/promises";
+import { readFile, writeFile, mkdir } from "fs/promises";
 
-const cartsFilePath = path.join(process.cwd(), "storage", "cart", "carts.json");
-
-
+const cartsDir = path.join(process.cwd(), "storage", "cart", "carts");
+await mkdir(cartsDir, { recursive: true });
 
 // avoid race conditions
 type Task = () => Promise<any>;
 
-let queue = Promise.resolve();
+const cartsQueue = new Map();
+
 const appendToQueue = async (task: Task) => {
   const result = queue.then(() => task());
   queue = result.catch(() => {});
