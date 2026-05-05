@@ -12,7 +12,7 @@ db.ts → connects to real DB
 
 import path from "path";
 import { Session } from "../types/session";
-import { readFile, writeFile, mkdir, unlink, access } from "fs/promises";
+import { readFile, writeFile, mkdir, unlink } from "fs/promises";
 
 // helpers
 const deleteFile = async (filePath: string): Promise<boolean> => {
@@ -139,14 +139,6 @@ const deleteUserSessionsEntry = async (userId: string, sessionId: string) => {
 
 // session crud
 
-const getUserIdBySessionId = async (
-  sessionId: string,
-): Promise<string | undefined> => {
-  // that ensure last write ends before read
-  const session = await getSession(sessionId);
-  return session?.userId;
-};
-
 const getSession = async (sessionId: string): Promise<Session | undefined> => {
   const task = async () => {
     try {
@@ -166,6 +158,14 @@ const getSession = async (sessionId: string): Promise<Session | undefined> => {
   return appendToSessionQueue(sessionId, task);
 };
 
+const getUserIdBySessionId = async (
+  sessionId: string,
+): Promise<string | undefined> => {
+  // that ensure last write ends before read
+  const session = await getSession(sessionId);
+  return session?.userId;
+};
+
 const saveSession = async (session: Session): Promise<string | false> => {
   const task = async () => {
     /* await cleanExpiredSessions(); */
@@ -178,7 +178,14 @@ const saveSession = async (session: Session): Promise<string | false> => {
         `${session.sessionId}.json`,
       );
       await writeFile(sessionPath, JSON.stringify(session, null, 2));
-      await addUserSessionsEntry(session.userId, session.sessionId);
+      const added = await addUserSessionsEntry(
+        session.userId,
+        session.sessionId,
+      );
+      if (!added) {
+        await deleteFile(sessionPath);
+        return false;
+      }
       return session.sessionId;
     } catch {
       return false;

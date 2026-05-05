@@ -1,26 +1,13 @@
 import { randomUUID } from "crypto";
 import { Session } from "./types/session";
 
-/* 
+/* session.helpers.ts → create object
+db/session.ts → store logic
+actions.ts → orchestrate */
 
-lib/auth/* → create object
-lib/db.ts → store
-actions/* → orchestrate
-
-*/
-/* 
-
-Then in actions
-const session = createSession(userId); // session logic
-await saveSession(session); // db func
-cookieStore.set("sessionId", session.sessionId);
-
-*/
 const createSession = (userId: string) => {
-  /* 
-  this func need try catch ? hmmm
-  no i remember some one tell me before "don’t over-engineer"
-   */
+  /* this func need try catch ? hmmm
+  no i remember some one tell me before "don’t over-engineer" */
 
   // session
   const createdAt = new Date();
@@ -51,4 +38,5 @@ const isSessionValid = (session: Session) => {
   if (!session) return false;
   return new Date(session.expiresAt) > new Date();
 };
+
 export { createSession, getUserFromSession, destroySession, isSessionValid };
