@@ -94,8 +94,12 @@ const getCart = async (cartId: string): Promise<Cart | null> => {
 };
 
 const getCartByUserId = async (userId: string): Promise<Cart | null> => {
-  const carts = await getCarts();
-  return carts.find((c: Cart) => c.userId === userId) || null;
+  const index = await getUserCartIndex();
+  const cartId = index[userId];
+
+  if (!cartId) return null;
+
+  return await getCart(cartId);
 };
 
 const createCart = async (
