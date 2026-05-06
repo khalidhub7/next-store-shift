@@ -42,7 +42,7 @@ const appendToCartQueue = async (cartId: string, task: Task) => {
   const cartQueue = cartsQueue.get(cartId) || Promise.resolve();
 
   const result = cartQueue.then(task);
-  cartQueue.set(
+  cartsQueue.set(
     cartId,
     result.catch(() => {}),
   );
@@ -108,7 +108,7 @@ const getCart = async (cartId: string): Promise<Cart | null> => {
       const sessionPath = path.join(
         process.cwd(),
         "storage",
-        "auth",
+        "cart",
         "carts",
         `${cartId}.json`,
       );
