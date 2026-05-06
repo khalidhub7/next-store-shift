@@ -55,6 +55,25 @@ const appendToEmailIndexQueue = async (task: Task) => {
   return result;
 };
 
+// helpers
+const writeCart = async (cart: Cart) => {
+  const task = async () => {
+    try {
+      const userPath = path.join(
+        process.cwd(),
+        "storage",
+        "cart",
+        "carts",
+        `${cart.id}.json`,
+      );
+      await writeFile(userPath, JSON.stringify(cart, null, 2));
+    } catch (err) {
+      throw err;
+    }
+  };
+  return appendToCartQueue(cart.id, task);
+};
+
 // UserCartIndex crud
 const getUserCartIndex = async (): Promise<UserCartIndex> => {
   const task = async () => {
@@ -70,6 +89,15 @@ const setUserCartIndex = async (index: UserCartIndex): Promise<void> => {
     await writeFile(emailIndexPath, JSON.stringify(index, null, 2));
   };
 
+  return appendToEmailIndexQueue(task);
+};
+
+const deleteUserCartIndex = async (userId: string): Promise<void> => {
+  const task = async () => {
+    const index = await getUserCartIndex();
+    delete index[userId];
+    await writeFile(emailIndexPath, JSON.stringify(index, null, 2));
+  };
   return appendToEmailIndexQueue(task);
 };
 
@@ -98,7 +126,6 @@ const getCartByUserId = async (userId: string): Promise<Cart | null> => {
   const cartId = index[userId];
 
   if (!cartId) return null;
-
   return await getCart(cartId);
 };
 
@@ -107,7 +134,6 @@ const createCart = async (
   items: Array<CartItem>,
 ): Promise<string> => {
   const task = async () => {
-    const carts = await getCarts();
     const newCart = {
       id: randomUUID(),
       userId,
@@ -115,11 +141,16 @@ const createCart = async (
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    carts.push(newCart);
-    await saveCarts(carts);
+
+    const userCartIndex = await getUserCartIndex();
+    await setUserCartIndex({ ...userCartIndex, userId: newCart.id });
+    await writeCart(newCart).catch(async (err) => {
+      await deleteUserCartIndex(userId);
+      throw err;
+    });
     return newCart.id;
   };
-  return appendToQueue(task);
+  return task(); // not need to be queued
 };
 
 const updateCart = async (
