@@ -13,7 +13,7 @@ db.ts → connects to real DB
 import path from "path";
 import { randomUUID } from "crypto";
 import { Cart, CartItem } from "../types/cart";
-import { readFile, writeFile, mkdir, access } from "fs/promises";
+import { readFile, writeFile, mkdir, access, unlink } from "fs/promises";
 
 // create files
 const cartsDir = path.join(process.cwd(), "storage", "cart", "carts");
@@ -172,14 +172,15 @@ const updateCart = async (
   return appendToCartQueue(cartId, task);
 };
 
-const deleteCart = async (id: string): Promise<void> => {
+const deleteCart = async (cartId: string): Promise<void> => {
   const task = async () => {
-    const carts = await getCarts();
-    const newCarts = carts.filter((c: Cart) => c.id !== id);
-    await saveCarts(newCarts);
+    const cart = await getCart(cartId);
+    if (!cart) throw new Error("Cart not found");
+    await deleteUserCartIndex(cart.userId);
+    const cartPath = path.join(cartsDir, `${cartId}.json`);
+    await unlink(cartPath);
   };
-
-  return appendToQueue(task);
+  return appendToCartQueue(cartId, task);
 };
 
 const getCartIdByUserId = async (userId: string): Promise<string | null> => {
