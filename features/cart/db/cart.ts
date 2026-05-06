@@ -13,17 +13,32 @@ db.ts → connects to real DB
 import path from "path";
 import { randomUUID } from "crypto";
 import { Cart, CartItem } from "../types/cart";
-import { readFile, writeFile, mkdir } from "fs/promises";
+import { readFile, writeFile, mkdir, access } from "fs/promises";
 
+// create files
 const cartsDir = path.join(process.cwd(), "storage", "cart", "carts");
 await mkdir(cartsDir, { recursive: true });
+const emailIndexPath = path.join(
+  process.cwd(),
+  "storage",
+  "cart",
+  "userCartIndex.json",
+);
+try {
+  await access(emailIndexPath);
+} catch {
+  await writeFile(emailIndexPath, "{}");
+}
 
 // avoid race conditions
+
+type UserCartIndex = Record<string, string>;
 type Task = () => Promise<any>;
 
 const cartsQueue = new Map();
+let userCartIndexQueue = Promise.resolve();
 
-const appendToQueue = async (cartId: string, task: Task) => {
+const appendToCartQueue = async (cartId: string, task: Task) => {
   const cartQueue = cartsQueue.get(cartId) || Promise.resolve();
 
   const result = cartQueue.then(task);
@@ -34,10 +49,31 @@ const appendToQueue = async (cartId: string, task: Task) => {
   return result;
 };
 
-// cart crud helpers
+const appendToEmailIndexQueue = async (task: Task) => {
+  const result = userCartIndexQueue.then(() => task());
+  userCartIndexQueue = result.catch(() => {});
+  return result;
+};
+
+// UserCartIndex crud
+const getUserCartIndex = async (): Promise<UserCartIndex> => {
+  const task = async () => {
+    const data = await readFile(emailIndexPath, "utf-8");
+    return JSON.parse(data) as UserCartIndex;
+  };
+
+  return appendToEmailIndexQueue(task);
+};
+
+const setUserCartIndex = async (index: UserCartIndex): Promise<void> => {
+  const task = async () => {
+    await writeFile(emailIndexPath, JSON.stringify(index, null, 2));
+  };
+
+  return appendToEmailIndexQueue(task);
+};
 
 // cart crud
-
 const getCart = async (cartId: string): Promise<Cart | null> => {
   const task = async () => {
     try {
@@ -49,12 +85,12 @@ const getCart = async (cartId: string): Promise<Cart | null> => {
         `${cartId}.json`,
       );
       const data = await readFile(sessionPath, "utf-8");
-      return JSON.parse(data) as Session;
+      return JSON.parse(data) as Cart;
     } catch {
       return undefined;
     }
   };
-  return appendToSessionQueue(sessionId, task);
+  return appendToCartQueue(cartId, task);
 };
 
 const getCartByUserId = async (userId: string): Promise<Cart | null> => {
