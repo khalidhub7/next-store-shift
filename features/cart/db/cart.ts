@@ -143,7 +143,7 @@ const createCart = async (
     };
 
     const userCartIndex = await getUserCartIndex();
-    await setUserCartIndex({ ...userCartIndex, userId: newCart.id });
+    await setUserCartIndex({ ...userCartIndex, [userId]: newCart.id });
     await writeCart(newCart).catch(async (err) => {
       await deleteUserCartIndex(userId);
       throw err;
@@ -154,24 +154,22 @@ const createCart = async (
 };
 
 const updateCart = async (
-  id: string,
-  items: Array<CartItem>,
+  cartId: string,
+  newItems: Array<CartItem>,
 ): Promise<void> => {
   const task = async () => {
-    const carts = await getCarts();
-    const newCarts = carts.map((c: Cart) =>
-      c.id === id
-        ? {
-            ...c,
-            items,
-            updatedAt: new Date().toISOString(),
-          }
-        : c,
-    );
-    await saveCarts(newCarts);
+    const cart = await getCart(cartId);
+
+    if (!cart) throw new Error("Cart not found");
+
+    await writeCart({
+      ...cart,
+      items: newItems,
+      updatedAt: new Date().toISOString(),
+    });
   };
 
-  return appendToQueue(task);
+  return appendToCartQueue(cartId, task);
 };
 
 const deleteCart = async (id: string): Promise<void> => {
