@@ -18,16 +18,16 @@ import { readFile, writeFile, mkdir, access, unlink } from "fs/promises";
 // create files
 const cartsDir = path.join(process.cwd(), "storage", "cart", "carts");
 await mkdir(cartsDir, { recursive: true });
-const emailIndexPath = path.join(
+const userCartIndexPath = path.join(
   process.cwd(),
   "storage",
   "cart",
   "userCartIndex.json",
 );
 try {
-  await access(emailIndexPath);
+  await access(userCartIndexPath);
 } catch {
-  await writeFile(emailIndexPath, "{}");
+  await writeFile(userCartIndexPath, "{}");
 }
 
 // avoid race conditions
@@ -77,7 +77,7 @@ const writeCart = async (cart: Cart) => {
 // UserCartIndex crud
 const getUserCartIndex = async (): Promise<UserCartIndex> => {
   const task = async () => {
-    const data = await readFile(emailIndexPath, "utf-8");
+    const data = await readFile(userCartIndexPath, "utf-8");
     return JSON.parse(data) as UserCartIndex;
   };
 
@@ -86,7 +86,7 @@ const getUserCartIndex = async (): Promise<UserCartIndex> => {
 
 const setUserCartIndex = async (index: UserCartIndex): Promise<void> => {
   const task = async () => {
-    await writeFile(emailIndexPath, JSON.stringify(index, null, 2));
+    await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
 
   return appendToEmailIndexQueue(task);
@@ -96,13 +96,14 @@ const deleteUserCartIndex = async (userId: string): Promise<void> => {
   const task = async () => {
     const index = await getUserCartIndex();
     delete index[userId];
-    await writeFile(emailIndexPath, JSON.stringify(index, null, 2));
+    await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
+
   return appendToEmailIndexQueue(task);
 };
 
 // cart crud
-const getCart = async (cartId: string): Promise<Cart | null> => {
+const getCart = async (cartId: string): Promise<Cart | undefined> => {
   const task = async () => {
     try {
       const sessionPath = path.join(
@@ -121,11 +122,11 @@ const getCart = async (cartId: string): Promise<Cart | null> => {
   return appendToCartQueue(cartId, task);
 };
 
-const getCartByUserId = async (userId: string): Promise<Cart | null> => {
+const getCartByUserId = async (userId: string): Promise<Cart | undefined> => {
   const index = await getUserCartIndex();
   const cartId = index[userId];
 
-  if (!cartId) return null;
+  if (!cartId) return undefined;
   return await getCart(cartId);
 };
 
@@ -133,9 +134,10 @@ const createCart = async (
   userId: string,
   items: Array<CartItem>,
 ): Promise<string> => {
+  const cartId = randomUUID();
   const task = async () => {
     const newCart = {
-      id: randomUUID(),
+      id: cartId,
       userId,
       items,
       createdAt: new Date().toISOString(),
@@ -144,6 +146,7 @@ const createCart = async (
 
     const userCartIndex = await getUserCartIndex();
     await setUserCartIndex({ ...userCartIndex, [userId]: newCart.id });
+
     await writeCart(newCart).catch(async (err) => {
       await deleteUserCartIndex(userId);
       throw err;
