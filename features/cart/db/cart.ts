@@ -183,9 +183,7 @@ const deleteCart = async (cartId: string): Promise<void> => {
   return appendToCartQueue(cartId, task);
 };
 
-const getCartIdByUserId = async (
-  userId: string,
-): Promise<string | null> => {
+const getCartIdByUserId = async (userId: string): Promise<string | null> => {
   const index = await getUserCartIndex();
   return index[userId] ?? null;
 };
