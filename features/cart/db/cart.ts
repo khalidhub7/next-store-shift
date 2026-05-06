@@ -39,17 +39,17 @@ const cartsQueue = new Map();
 let userCartIndexQueue = Promise.resolve();
 
 const appendToCartQueue = async (cartId: string, task: Task) => {
-  const cartQueue = cartsQueue.get(cartId) || Promise.resolve();
+  const last = cartsQueue.get(cartId) || Promise.resolve();
 
-  const result = cartQueue.then(task);
+  const next = last.then(task);
   cartsQueue.set(
     cartId,
-    result.catch(() => {}),
+    next.catch(() => {}),
   );
-  return result;
+  return next;
 };
 
-const appendToEmailIndexQueue = async (task: Task) => {
+const appendToCartIndexQueue = async (task: Task) => {
   const result = userCartIndexQueue.then(() => task());
   userCartIndexQueue = result.catch(() => {});
   return result;
@@ -81,25 +81,18 @@ const getUserCartIndex = async (): Promise<UserCartIndex> => {
     return JSON.parse(data) as UserCartIndex;
   };
 
-  return appendToEmailIndexQueue(task);
-};
-
-const setUserCartIndex = async (index: UserCartIndex): Promise<void> => {
-  const task = async () => {
-    await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
-  };
-
-  return appendToEmailIndexQueue(task);
+  return appendToCartIndexQueue(task);
 };
 
 const deleteUserCartIndex = async (userId: string): Promise<void> => {
   const task = async () => {
-    const index = await getUserCartIndex();
+    const data = await readFile(userCartIndexPath, "utf-8");
+    const index = JSON.parse(data);
     delete index[userId];
     await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
 
-  return appendToEmailIndexQueue(task);
+  return appendToCartIndexQueue(task);
 };
 
 // cart crud
@@ -144,14 +137,28 @@ const createCart = async (
       updatedAt: new Date().toISOString(),
     };
 
-    const userCartIndex = await getUserCartIndex();
-    await setUserCartIndex({ ...userCartIndex, [userId]: newCart.id });
-
-    await writeCart(newCart).catch(async (err) => {
-      await deleteUserCartIndex(userId);
-      throw err;
-    });
-    return newCart.id;
+    // in that task avoid userCartIndex get and set
+    // bcs of lost update problem (“last write wins”)
+    const userCartIndexTask = async () => {
+      // write index
+      try {
+        const data = await readFile(userCartIndexPath, "utf-8");
+        const index = JSON.parse(data);
+        await writeFile(
+          userCartIndexPath,
+          JSON.stringify({ ...index, [userId]: newCart.id }, null, 2),
+        );
+        await writeCart(newCart);
+        return newCart.id;
+      } catch (err) {
+        const data = await readFile(userCartIndexPath, "utf-8");
+        const index = JSON.parse(data);
+        delete index[userId];
+        await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
+        throw err; // don't swallow the error
+      }
+    };
+    return appendToCartIndexQueue(userCartIndexTask);
   };
   return task(); // not need to be queued
 };
