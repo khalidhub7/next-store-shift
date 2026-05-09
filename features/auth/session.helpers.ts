@@ -1,10 +1,10 @@
 import { randomUUID } from "crypto";
 import { Session } from "./types/session";
 
-/* session.helpers.ts → build session object
-   db/session.ts      → save/delete session
-   service.ts         → business logic
-   actions.ts         → orchestrate */
+/* session.helpers.ts → build session object + validate
+db/session.ts         → read/write storage
+service.ts            → orchestrate (calls helpers + db)
+actions.ts            → entry point (cookies, rate limit, call service) */
 
 const createSession = (userId: string) => {
   /* this func need try catch ? hmmm
