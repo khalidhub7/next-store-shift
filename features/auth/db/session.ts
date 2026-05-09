@@ -2,12 +2,12 @@
 /* idea
 
 Now (fake DB)
-data/*.json = source of truth
-db.ts = reads/writes files
+storage/auth/sessions & userSessions = source of truth
+db/session.ts = reads/writes files
 
 Later (real DB)
-DELETE data/ folder
-db.ts → connects to real DB
+DELETE storage/ folder
+db/session.ts → connects to real DB
 */
 
 import path from "path";
