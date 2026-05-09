@@ -2,12 +2,12 @@
 /* idea
 
 Now (fake DB)
-data/*.json = source of truth
-db/* = reads/writes files
+storage/auth/users & emailIndex.json = source of truth
+db/user.ts = reads/writes files
 
 Later (real DB)
-DELETE data/ folder
-db.ts → connects to real DB
+DELETE storage/ folder
+db/user.ts → connects to real DB
 */
 
 import path from "path";
