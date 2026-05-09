@@ -196,25 +196,29 @@ const saveSession = async (session: Session): Promise<string | false> => {
 
 const deleteSession = async (sessionId: string): Promise<any> => {
   const task = async () => {
-    const filePath = path.join(
-      process.cwd(),
-      "storage",
-      "auth",
-      "sessions",
-      `${sessionId}.json`,
-    );
+    try {
+      const filePath = path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "sessions",
+        `${sessionId}.json`,
+      );
 
-    // Read file before deleting
-    const sessionData = await readFile(filePath, "utf-8");
-    const userId = JSON.parse(sessionData).userId;
+      // Read file before deleting
+      const sessionData = await readFile(filePath, "utf-8");
+      const userId = JSON.parse(sessionData).userId;
 
-    // Delete file
-    const [fileDeleted, userUpdated] = await Promise.all([
-      deleteFile(filePath),
-      deleteUserSessionsEntry(userId, sessionId),
-    ]);
+      // Delete file
+      const [fileDeleted, userUpdated] = await Promise.all([
+        deleteFile(filePath),
+        deleteUserSessionsEntry(userId, sessionId),
+      ]);
 
-    if (!fileDeleted || !userUpdated) {
+      if (!fileDeleted || !userUpdated) {
+        throw new Error("Delete failed");
+      }
+    } catch {
       throw new Error("Delete failed");
     }
   };

@@ -1,7 +1,7 @@
 // export server comps
 export { requireUser } from "./guard";
 export { getSession } from "./db/session";
-export { hashSessionId } from "./service"
+export { hashSessionId } from "./service";
 export { isSessionValid } from "./session.helpers";
 
 /* 
