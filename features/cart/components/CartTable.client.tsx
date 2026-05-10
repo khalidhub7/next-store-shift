@@ -16,9 +16,17 @@ import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 // cartDialog dropdown actions
 
-type ClientUpdateQtyProps = { productId: string; qty: number };
+type ClientUpdateQtyProps = {
+  productId: string;
+  qty: number;
+  onUpdate: (qty: number) => void;
+};
 
-const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
+const ClientUpdateQty = ({
+  productId,
+  qty,
+  onUpdate,
+}: ClientUpdateQtyProps) => {
   // qty prop: is always the last server value
 
   const [newQty, setNewQty] = useState(qty);
@@ -31,6 +39,7 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
     const value = Number(e.target.value);
 
     setNewQty(value);
+    onUpdate(value);
 
     const id = toast.loading("Saving ...", {
       position: "top-center",
@@ -148,6 +157,16 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
   };
 
+  const handleUpdateQty = (productId: string, qty: number) => {
+    startTransition(async () => {
+      setOptimisticCart((state) =>
+        qty <= 0
+          ? state.filter((p) => p.id !== productId)
+          : state.map((p) => (p.id === productId ? { ...p, qty } : p)),
+      );
+    });
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -168,7 +187,11 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
             <TableCell>{item.price}</TableCell>
 
-            <ClientUpdateQty productId={item.id} qty={item.qty} />
+            <ClientUpdateQty
+              productId={item.id}
+              qty={item.qty}
+              onUpdate={(qty) => handleUpdateQty(item.id, qty)}
+            />
 
             <TableCell className="text-right">
               <DropdownMenu>
