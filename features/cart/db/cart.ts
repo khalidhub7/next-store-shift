@@ -167,6 +167,19 @@ const createCart = async (
   return task(); // not need to be queued
 };
 
+const touchCart = async (cartId: string): Promise<void> => {
+  // refresh expiration time
+  const task = async () => {
+    const cart = await getCart(cartId);
+    if (!cart) throw new Error("Cart not found");
+    await writeCart({
+      ...cart,
+      updatedAt: new Date().toISOString(),
+    });
+  };
+  return appendToCartQueue(cartId, task);
+};
+
 const updateCart = async (
   cartId: string,
   newItems: Array<CartItem>,
@@ -203,6 +216,7 @@ const getCartIdByUserId = async (userId: string): Promise<string | null> => {
 };
 
 export {
+  touchCart,
   createCart,
   updateCart,
   deleteCart,
