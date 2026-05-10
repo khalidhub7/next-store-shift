@@ -3,6 +3,11 @@ import { getCart, updateCart } from "./db/cart";
 import { fetchProductById } from "../products/server";
 import { getCartByUserId, deleteCart } from "./db/cart";
 
+/* cart.ts (db)    → read/write storage
+service.ts         → orchestrate (calls db + products)
+actions.ts         → entry point (cookies, revalidate, call service)
+queries.ts         → read-only (session check + get cart items) */
+
 const getValidCartByUserId = async (userId: string) => {
   const CART_TTL = 1000 * 60 * 60 * 24 * 3;
   const cart = await getCartByUserId(userId);

@@ -140,6 +140,8 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
   };
 
+  
+
   return (
     <Table>
       <TableHeader>
