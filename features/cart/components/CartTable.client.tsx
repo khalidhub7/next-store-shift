@@ -20,12 +20,14 @@ type ClientUpdateQtyProps = {
   productId: string;
   qty: number;
   onUpdate: (qty: number) => void;
+  onRevert: () => void;
 };
 
 const ClientUpdateQty = ({
   productId,
   qty,
   onUpdate,
+  onRevert,
 }: ClientUpdateQtyProps) => {
   // qty prop: is always the last server value
 
@@ -55,6 +57,7 @@ const ClientUpdateQty = ({
       .catch(() => {
         toast.error("Update failed", options);
         setNewQty(qty);
+        onRevert(); // tell parent to revert
       });
   };
 
@@ -191,6 +194,15 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
               productId={item.id}
               qty={item.qty}
               onUpdate={(qty) => handleUpdateQty(item.id, qty)}
+              onRevert={() => {
+                startTransition(async () => {
+                  setOptimisticCart((state) =>
+                    state.map((p) =>
+                      p.id === item.id ? { ...p, qty: item.qty } : p,
+                    ),
+                  );
+                });
+              }} // revert to original
             />
 
             <TableCell className="text-right">
