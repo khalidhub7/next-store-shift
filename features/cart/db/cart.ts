@@ -115,23 +115,16 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
   return appendToCartQueue(cartId, task);
 };
 
-const getCartByUserId = async (userId: string): Promise<Cart | undefined> => {
+const getCartByUserId = async (userId: string) => {
   const index = await getUserCartIndex();
   const cartId = index[userId];
-  const CART_TTL = 1000 * 60 * 60 * 24 * 3;
-
   if (!cartId) return undefined;
   const cart = await getCart(cartId);
   if (!cart) {
     await deleteUserCartIndex(userId);
     return undefined;
   }
-  const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
-  if (expired) {
-    await deleteUserCartIndex(userId);
-    await deleteCart(cart.id)
-    return undefined;
-  }
+  return cart;
 };
 
 const createCart = async (
