@@ -82,24 +82,20 @@ const updateQtyService = async (
   productId: string,
   qty: number,
 ) => {
-  const task = async () => {
+  
     // throw new Error("test error"); // force fail for testing
     let newCartItems: Array<CartItem>;
-
     const cart = await getCart(cartId);
     if (!cart) throw new Error("Cart not found");
 
     const { items: cartItems } = cart;
-
     newCartItems = cartItems
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,
       )
       .filter((item: CartItem) => item.qty > 0);
     await updateCart(cartId, newCartItems);
-  };
-
-  return appendToQueue(task);
+  
 };
 
 export {
