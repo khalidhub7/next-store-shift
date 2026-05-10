@@ -89,7 +89,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
       await increaseQty(productId)
         .then(() => toast.success("+1 added", options))
-        .catch(() => toast.error("Couldn't increase", options));
+        .catch(() => {
+          toast.error("Couldn't increase", options);
+          throw new Error(); // let React revert optimistic state
+        });
     });
   };
 
@@ -112,7 +115,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
       await decreaseQty(productId)
         .then(() => toast.success("-1 removed", options))
-        .catch(() => toast.error("Couldn't decrease", options));
+        .catch(() => {
+          toast.error("Couldn't decrease", options);
+          throw new Error();
+        });
     });
   };
 
@@ -135,7 +141,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
       await removeFromCart(productId)
         .then(() => toast.success("Item removed", options))
-        .catch(() => toast.error("Couldn't remove item", options));
+        .catch(() => {
+          toast.error("Couldn't remove item", options);
+          throw new Error();
+        });
     });
   };
 
