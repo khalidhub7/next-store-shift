@@ -146,9 +146,10 @@ const updateQtyService = async (
 };
 
 export {
+  updateQtyService,
   addToCartService,
   decreaseQtyService,
-  removeFromCartService,
-  updateQtyService,
   increaseQtyService,
+  getValidCartByUserId,
+  removeFromCartService,
 };

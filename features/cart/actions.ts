@@ -2,13 +2,14 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
-import { getCartByUserId, createCart } from "./db/cart";
+import { createCart } from "./db/cart";
 import {
   addToCartService,
   decreaseQtyService,
   increaseQtyService,
   removeFromCartService,
   updateQtyService,
+  getValidCartByUserId,
 } from "./service";
 
 const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
@@ -25,7 +26,7 @@ const getCartId = async () => {
   const userId = await requireUser("/products");
 
   // get cart by user_id
-  const userCart = await getCartByUserId(userId);
+  const userCart = await getValidCartByUserId(userId);
 
   if (!userCart) {
     const cookieStore = await cookies();
