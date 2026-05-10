@@ -1,6 +1,19 @@
 import { CartItem } from "./types/cart";
 import { getCart, updateCart } from "./db/cart";
 import { fetchProductById } from "../products/server";
+import { getCartByUserId, deleteCart } from "./db/cart";
+
+const getValidCartByUserId = async (userId: string) => {
+  const CART_TTL = 1000 * 60 * 60 * 24 * 3;
+  const cart = await getCartByUserId(userId);
+  if (!cart) return undefined;
+  const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
+  if (expired) {
+    await deleteCart(cart.id);
+    return undefined;
+  }
+  return cart;
+};
 
 type Task = () => Promise<void>;
 
