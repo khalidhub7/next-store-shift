@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
-import { createCart } from "./db/cart";
+import { createCart, updateCart } from "./db/cart";
 import {
   addToCartService,
   decreaseQtyService,
@@ -34,7 +34,7 @@ const getCartId = async () => {
     cookieStore.set("cart", cartId, cookieOptions);
     return cartId;
   }
-  // update expiration
+  await updateCart(userCart.id, []) // just update updatedAt key
   return userCart.id;
 };
 
