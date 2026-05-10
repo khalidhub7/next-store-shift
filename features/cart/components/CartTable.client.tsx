@@ -65,7 +65,6 @@ const ClientUpdateQty = ({ productId, qty }: ClientUpdateQtyProps) => {
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
-
   const [, startTransition] = useTransition();
 
   // event handlers
@@ -139,8 +138,6 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         .catch(() => toast.error("Couldn't remove item", options));
     });
   };
-
-  
 
   return (
     <Table>
