@@ -1,8 +1,9 @@
 "use server";
 
-import { requireUser } from "../auth/server";
+
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { requireUser } from "../auth/server";
 import { getCartByUserId, createCart } from "./db/cart";
 import {
   addToCartService,
@@ -27,12 +28,14 @@ const getCartId = async () => {
 
   // get cart by user_id
   const userCart = await getCartByUserId(userId);
+
   if (!userCart) {
     const cookieStore = await cookies();
     const cartId = await createCart(userId, []);
     cookieStore.set("cart", cartId, cookieOptions);
     return cartId;
   }
+  // update expiration
   return userCart.id;
 };
 

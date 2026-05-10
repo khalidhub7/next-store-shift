@@ -118,9 +118,15 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
 const getCartByUserId = async (userId: string): Promise<Cart | undefined> => {
   const index = await getUserCartIndex();
   const cartId = index[userId];
+  const CART_TTL = 1000 * 60 * 60 * 24 * 3;
 
   if (!cartId) return undefined;
-  return await getCart(cartId);
+  const cart = await getCart(cartId);
+  if (!cart) {
+    await deleteUserCartIndex(userId);
+    return undefined;
+  }
+  const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
 };
 
 const createCart = async (
