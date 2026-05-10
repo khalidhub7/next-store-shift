@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
-import { createCart, updateCart, touchCart } from "./db/cart";
+import { createCart, touchCart } from "./db/cart";
 import {
   addToCartService,
   decreaseQtyService,
