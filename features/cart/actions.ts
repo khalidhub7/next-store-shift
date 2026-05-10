@@ -28,13 +28,14 @@ const getCartId = async () => {
   // get cart by user_id
   const userCart = await getValidCartByUserId(userId);
 
+  const cookieStore = await cookies();
   if (!userCart) {
-    const cookieStore = await cookies();
     const cartId = await createCart(userId, []);
     cookieStore.set("cart", cartId, cookieOptions);
     return cartId;
   }
   await touchCart(userCart.id); // just update updatedAt key
+  cookieStore.set("cart", userCart.id, cookieOptions);
   return userCart.id;
 };
 
