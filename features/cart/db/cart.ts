@@ -174,11 +174,7 @@ const touchCart = async (cartId: string): Promise<void> => {
     const cart = await getCart(cartId);
 
     if (!cart) throw new Error("Cart not found");
-
-    await writeCart({
-      ...cart,
-      updatedAt: new Date().toISOString(),
-    });
+    await writeCart({ ...cart,  updatedAt: new Date().toISOString() });
   };
   return task(); // not need to be queued
 };
