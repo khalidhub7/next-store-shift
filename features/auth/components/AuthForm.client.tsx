@@ -39,8 +39,8 @@ const AuthForm = ({ type }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (values: LoginData | RegisterData) => {
+    // console.log(values)
     const options = { position: "top-center" } as const;
-
     try {
       setIsSubmitting(true);
       let resolved = false;

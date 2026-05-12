@@ -68,7 +68,11 @@ const registerAction = async (data: RegisterData) => {
   try {
     const values = registerSchema.parse(data);
     const { email, password, name } = values;
+    
     const { sessionId, userId } = await register(email, password, name);
+
+    // console.log({sessionId, userId})
+
     if (sessionId && userId) {
       const store = await cookies();
       store.set("sessionId", sessionId, cookieOptions);
@@ -82,10 +86,12 @@ const logoutAction = async () => {
   try {
     const store = await cookies();
     const sessionId = store.get("sessionId");
+    const cartCookie = store.get("cart");
 
     if (sessionId) {
       await logout(sessionId.value); // rm from db
       store.delete("sessionId");
+      if (cartCookie) store.delete("cart");
       return { success: true, message: "Logged out" };
     }
   } catch {}

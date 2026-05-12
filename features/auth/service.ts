@@ -41,13 +41,12 @@ const login = async (email: string, password: string) => {
 // check if user exists > hash password > create user > return userId
 const register = async (email: string, password: string, name: string) => {
   const hashedPassword = await hashPassword(password);
-  const userData = {
-    email,
-    password: hashedPassword,
-    name,
-  };
+  const userData = { email, password: hashedPassword, name };
+
   // this throw if the email already exist
   const userId = await createUser(userData);
+  console.log(userId);
+
   if (!userId) throw new Error("Failed to create user");
 
   // create session

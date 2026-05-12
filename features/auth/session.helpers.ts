@@ -17,8 +17,8 @@ const createSession = (userId: string) => {
     userId,
     createdAt: createdAt.toISOString(),
     expiresAt: new Date(
-      // createdAt.getTime() + 1000 * 60 * 60 * 24 * 3, // 3 days
-      createdAt.getTime() + 1000 * 60, // 60s for test
+      createdAt.getTime() + 1000 * 60 * 60 * 24 * 3, // 3 days
+      // createdAt.getTime() + 1000 * 60, // 60s for test
     ).toISOString(),
   };
   return session;
