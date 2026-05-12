@@ -45,8 +45,6 @@ const register = async (email: string, password: string, name: string) => {
 
   // this throw if the email already exist
   const userId = await createUser(userData);
-  console.log(userId);
-
   if (!userId) throw new Error("Failed to create user");
 
   // create session

@@ -70,7 +70,10 @@ const getEmailIndex = async (): Promise<EmailIndexType> => {
 const setEmailIndex = async (id: string, email: string) => {
   const task = async () => {
     const data = await getEmailIndex();
-    if (data[email]) throw new Error("Email already exists");
+    if (data[email])
+      throw new Error(
+        "Unable to create account. Try logging in if you already registered.",
+      );
     await writeFile(
       emailIndexPath,
       JSON.stringify({ ...data, [email]: id }, null, 2),
@@ -92,6 +95,7 @@ const deleteEmailIndex = async (email: string) => {
 const writeUser = async (user: User) => {
   const task = async () => {
     try {
+      console.log("*** here ***");
       const userPath = path.join(
         process.cwd(),
         "storage",
@@ -99,6 +103,7 @@ const writeUser = async (user: User) => {
         "users",
         `${user.id}.json`,
       );
+      console.log(userPath);
       await writeFile(userPath, JSON.stringify(user, null, 2));
     } catch (err) {
       throw err;
@@ -140,34 +145,30 @@ const getUserByEmail = async (email: string): Promise<User | undefined> => {
 const createUser = async (
   userData: CreateUserData,
 ): Promise<string | false> => {
-  // userData like {email, pswd, role}
+  // userData like {email, password, role}
 
   const id = randomUUID();
-
   const task = async () => {
     // await delay(10000); // 10s delay (for testing)
-    try {
-      const newUser = {
-        id,
-        ...userData,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      // setEmailIndex check also email if already registered
-      await setEmailIndex(newUser.id, newUser.email);
-      await writeUser(newUser).catch(async (err) => {
-        // rollback and rethrow
-        await deleteEmailIndex(newUser.email);
-        throw err;
-      });
 
-      return newUser.id;
-    } catch (err) {
+    const newUser = {
+      id,
+      ...userData,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // setEmailIndex throw email if already registered
+    await setEmailIndex(newUser.id, newUser.email);
+    await writeUser(newUser).catch(async (err) => {
+      // rollback and rethrow
+      await deleteEmailIndex(newUser.email);
       throw err;
-    }
+    });
+    return newUser.id;
   };
-
-  return appendToUserQueue(id, task);
+  // not need to be queued
+  return task();
 };
 
 const updateUser = async (
@@ -185,7 +186,8 @@ const updateUser = async (
       throw err;
     }
   };
-  return appendToUserQueue(id, task);
+  // not need to be queued
+  return task();
 };
 
 const deleteUser = async (id: string): Promise<void> => {

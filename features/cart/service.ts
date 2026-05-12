@@ -11,6 +11,7 @@ queries.ts         → read-only (session check + get cart items) */
 const getValidCartByUserId = async (userId: string) => {
   const CART_TTL = 1000 * 60 * 60 * 24 * 3;
   const cart = await getCartByUserId(userId);
+  
   if (!cart) return undefined;
   const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
   if (expired) {
@@ -19,6 +20,7 @@ const getValidCartByUserId = async (userId: string) => {
   }
   return cart;
 };
+
 
 const addToCartService = async (cartId: string, productId: string) => {
   // throw new Error("test error")

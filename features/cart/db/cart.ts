@@ -118,6 +118,7 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
 const getCartByUserId = async (userId: string) => {
   const index = await getUserCartIndex();
   const cartId = index[userId];
+
   if (!cartId) return undefined;
   const cart = await getCart(cartId);
   if (!cart) {
@@ -171,13 +172,14 @@ const touchCart = async (cartId: string): Promise<void> => {
   // refresh expiration time
   const task = async () => {
     const cart = await getCart(cartId);
+    console.log("*** here ***");
     if (!cart) throw new Error("Cart not found");
     await writeCart({
       ...cart,
       updatedAt: new Date().toISOString(),
     });
   };
-  return appendToCartQueue(cartId, task);
+  return task(); // not need to be queued
 };
 
 const updateCart = async (
@@ -188,7 +190,6 @@ const updateCart = async (
     const cart = await getCart(cartId);
 
     if (!cart) throw new Error("Cart not found");
-
     await writeCart({
       ...cart,
       items: newItems,
