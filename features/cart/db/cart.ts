@@ -172,8 +172,9 @@ const touchCart = async (cartId: string): Promise<void> => {
   // refresh expiration time
   const task = async () => {
     const cart = await getCart(cartId);
-    console.log("*** here ***");
+
     if (!cart) throw new Error("Cart not found");
+
     await writeCart({
       ...cart,
       updatedAt: new Date().toISOString(),
