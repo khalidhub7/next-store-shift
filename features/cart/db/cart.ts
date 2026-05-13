@@ -194,7 +194,7 @@ const updateCart = async (
     });
   };
 
-  return appendToCartQueue(cartId, task);
+  return task(); // not need to be queued
 };
 
 const deleteCart = async (cartId: string): Promise<void> => {
