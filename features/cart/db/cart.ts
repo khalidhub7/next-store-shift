@@ -38,12 +38,12 @@ type Task = () => Promise<any>;
 const cartsQueue = new Map();
 let userCartIndexQueue = Promise.resolve();
 
-const appendToCartQueue = async (cartId: string, task: Task) => {
-  const last = cartsQueue.get(cartId) || Promise.resolve();
+const appendToCartQueue = async (userId: string, task: Task) => {
+  const last = cartsQueue.get(userId) || Promise.resolve();
 
   const next = last.then(task);
   cartsQueue.set(
-    cartId,
+    userId,
     next.catch(() => {}),
   );
   return next;
@@ -80,7 +80,7 @@ const getUserCartIndex = async (): Promise<UserCartIndex> => {
     const data = await readFile(userCartIndexPath, "utf-8");
     return JSON.parse(data) as UserCartIndex;
   };
-  return appendToCartIndexQueue(task);
+  return task();
 };
 
 const setUserCartIndex = async (
@@ -89,13 +89,14 @@ const setUserCartIndex = async (
 ): Promise<void> => {
   const task = async () => {
     const index = await getUserCartIndex();
+    if (index[userId]) throw new Error("cart already exist");
 
     await writeFile(
       userCartIndexPath,
       JSON.stringify({ ...index, [userId]: cartId }, null, 2),
     );
   };
-  return appendToCartIndexQueue(task);
+  return task();
 };
 
 const deleteUserCartIndex = async (userId: string): Promise<void> => {
@@ -104,7 +105,7 @@ const deleteUserCartIndex = async (userId: string): Promise<void> => {
     delete index[userId];
     await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
-  return appendToCartIndexQueue(task);
+  return task();
 };
 
 // cart crud
@@ -128,7 +129,7 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
 };
 
 const getCartByUserId = async (userId: string) => {
-  const index = await getUserCartIndex();
+  const index = await appendToCartIndexQueue(getUserCartIndex);
   const cartId = index[userId];
   if (!cartId) return undefined;
 
@@ -140,7 +141,7 @@ const getCartByUserId = async (userId: string) => {
     }
     return cart;
   };
-  return appendToCartQueue(cartId, task);
+  return appendToCartQueue(userId, task);
 };
 
 const createCart = async (
@@ -158,30 +159,17 @@ const createCart = async (
       updatedAt: new Date().toISOString(),
     };
 
-    // in that task avoid userCartIndex get and set
-    // bcs of lost update problem (“last write wins”)
-    const userCartIndexTask = async () => {
-      // write index
-      try {
-        const data = await readFile(userCartIndexPath, "utf-8");
-        const index = JSON.parse(data);
-        await writeFile(
-          userCartIndexPath,
-          JSON.stringify({ ...index, [userId]: newCart.id }, null, 2),
-        );
-        await writeCart(newCart);
-        return newCart.id;
-      } catch (err) {
-        const data = await readFile(userCartIndexPath, "utf-8");
-        const index = JSON.parse(data);
-        delete index[userId];
-        await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
-        throw err; // don't swallow the error
-      }
-    };
-    return appendToCartIndexQueue(userCartIndexTask);
+    try {
+      await appendToCartIndexQueue(() =>
+        setUserCartIndex(newCart.userId, cartId),
+      );
+      await writeCart(newCart);
+      return newCart.id;
+    } catch (err) {
+      throw err; // don't swallow the error
+    }
   };
-  return task(); // not need to be queued
+  return appendToCartQueue(userId, task);
 };
 
 const touchCart = async (cartId: string): Promise<void> => {
