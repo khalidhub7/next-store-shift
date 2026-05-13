@@ -71,7 +71,7 @@ const writeCart = async (cart: Cart) => {
       throw err;
     }
   };
-  return appendToCartQueue(cart.id, task);
+  return task(); // not need to be queued
 };
 
 // UserCartIndex crud
@@ -112,7 +112,7 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
       return undefined;
     }
   };
-  return appendToCartQueue(cartId, task);
+  return task(); // not need to be queued
 };
 
 const getCartByUserId = async (userId: string) => {
@@ -194,7 +194,7 @@ const updateCart = async (
     });
   };
 
-  return task(); // not need to be queued
+  return appendToCartQueue(cartId, task);
 };
 
 const deleteCart = async (cartId: string): Promise<void> => {
