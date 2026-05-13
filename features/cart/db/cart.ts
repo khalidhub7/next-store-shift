@@ -80,7 +80,7 @@ const getUserCartIndex = async (): Promise<UserCartIndex> => {
     const data = await readFile(userCartIndexPath, "utf-8");
     return JSON.parse(data) as UserCartIndex;
   };
-  return task();
+  return appendToCartIndexQueue(task);
 };
 
 const setUserCartIndex = async (
@@ -95,8 +95,7 @@ const setUserCartIndex = async (
       JSON.stringify({ ...index, [userId]: cartId }, null, 2),
     );
   };
-
-  return task();
+  return appendToCartIndexQueue(task);
 };
 
 const deleteUserCartIndex = async (userId: string): Promise<void> => {
@@ -105,7 +104,7 @@ const deleteUserCartIndex = async (userId: string): Promise<void> => {
     delete index[userId];
     await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
-  return task();
+  return appendToCartIndexQueue(task);
 };
 
 // cart crud
@@ -129,16 +128,19 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
 };
 
 const getCartByUserId = async (userId: string) => {
-  const index = await appendToCartIndexQueue(getUserCartIndex);
+  const index = await getUserCartIndex();
   const cartId = index[userId];
-
   if (!cartId) return undefined;
-  const cart = await getCart(cartId);
-  if (!cart) {
-    await deleteUserCartIndex(userId);
-    return undefined;
-  }
-  return cart;
+
+  const task = async () => {
+    const cart = await getCart(cartId);
+    if (!cart) {
+      await deleteUserCartIndex(userId);
+      return undefined;
+    }
+    return cart;
+  };
+  return appendToCartQueue(cartId, task);
 };
 
 const createCart = async (
@@ -146,6 +148,7 @@ const createCart = async (
   items: Array<CartItem>,
 ): Promise<string> => {
   const cartId = randomUUID();
+
   const task = async () => {
     const newCart = {
       id: cartId,
