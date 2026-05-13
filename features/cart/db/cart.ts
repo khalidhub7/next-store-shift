@@ -82,6 +82,7 @@ const getUserCartIndex = async (): Promise<UserCartIndex> => {
   };
   return task();
 };
+
 const setUserCartIndex = async (
   userId: string,
   cartId: string,
@@ -97,6 +98,7 @@ const setUserCartIndex = async (
 
   return task();
 };
+
 const deleteUserCartIndex = async (userId: string): Promise<void> => {
   const task = async () => {
     const index = await getUserCartIndex();
@@ -127,7 +129,7 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
 };
 
 const getCartByUserId = async (userId: string) => {
-  const index = await getUserCartIndex();
+  const index = await appendToCartIndexQueue(getUserCartIndex);
   const cartId = index[userId];
 
   if (!cartId) return undefined;
