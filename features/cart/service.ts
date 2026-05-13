@@ -32,23 +32,17 @@ const addToCartService = async (cartId: string, productId: string) => {
   const { items: cartItems } = cart;
   // update cart in db
   const productInCart = cartItems.find((i: CartItem) => i.id === productId);
-  /* if (productInCart) {
-    newCartItems = cartItems.map((p: CartItem) => {
-      return p.id === productId ? { ...p, qty: p.qty + 1 } : p;
-    });
-  } else {
-    const { id, title, price } = await fetchProductById(productId);
-    newCartItems = [...cartItems, { id, title, price, qty: 1 }];
-  } */
 
-  if (productInCart) {
-    newCartItems = cartItems.map((p: CartItem) => p.id === productId ? { ...p, qty: p.qty + 1 } : p);
-  } else {
+  if (productInCart)
+    newCartItems = cartItems.map((p: CartItem) =>
+      p.id === productId ? { ...p, qty: p.qty + 1 } : p,
+    );
+  else {
     const { id, title, price } = await fetchProductById(productId);
     newCartItems = [...cartItems, { id, title, price, qty: 1 }];
   }
 
-  // await updateCart(cartId, newCartItems);
+  await updateCart(cartId, newCartItems);
 };
 
 const increaseQtyService = async (cartId: string, productId: string) => {
