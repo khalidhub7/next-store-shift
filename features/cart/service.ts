@@ -41,11 +41,12 @@ const addToCartService = async (cartId: string, productId: string) => {
     newCartItems = [...cartItems, { id, title, price, qty: 1 }];
   } */
 
-  productInCart
-    ? (newCartItems = cartItems.map((p: CartItem) =>
-        p.id === productId ? { ...p, qty: p.qty + 1 } : p,
-      ))
-    : undefined;
+  if (productInCart) {
+    newCartItems = cartItems.map((p: CartItem) => p.id === productId ? { ...p, qty: p.qty + 1 } : p);
+  } else {
+    const { id, title, price } = await fetchProductById(productId);
+    newCartItems = [...cartItems, { id, title, price, qty: 1 }];
+  }
 
   // await updateCart(cartId, newCartItems);
 };
