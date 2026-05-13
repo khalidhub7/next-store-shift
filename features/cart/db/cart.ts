@@ -80,19 +80,30 @@ const getUserCartIndex = async (): Promise<UserCartIndex> => {
     const data = await readFile(userCartIndexPath, "utf-8");
     return JSON.parse(data) as UserCartIndex;
   };
-
-  return appendToCartIndexQueue(task);
+  return task();
 };
+const setUserCartIndex = async (
+  userId: string,
+  cartId: string,
+): Promise<void> => {
+  const task = async () => {
+    const index = await getUserCartIndex();
 
+    await writeFile(
+      userCartIndexPath,
+      JSON.stringify({ ...index, [userId]: cartId }, null, 2),
+    );
+  };
+
+  return task();
+};
 const deleteUserCartIndex = async (userId: string): Promise<void> => {
   const task = async () => {
-    const data = await readFile(userCartIndexPath, "utf-8");
-    const index = JSON.parse(data);
+    const index = await getUserCartIndex();
     delete index[userId];
     await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
-
-  return appendToCartIndexQueue(task);
+  return task();
 };
 
 // cart crud
