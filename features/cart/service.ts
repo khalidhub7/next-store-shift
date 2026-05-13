@@ -42,9 +42,9 @@ const addToCartService = async (cartId: string, productId: string) => {
   } */
 
   productInCart
-    ? (newCartItems = cartItems.map((p: CartItem) => {
-        return p.id === productId ? { ...p, qty: p.qty + 1 } : p;
-      }))
+    ? (newCartItems = cartItems.map((p: CartItem) =>
+        p.id === productId ? { ...p, qty: p.qty + 1 } : p,
+      ))
     : undefined;
 
   // await updateCart(cartId, newCartItems);
