@@ -140,7 +140,7 @@ const getCart = async (
 
 const getCartByUserId = async (userId: string) => {
   const task = async () => {
-    const index = await appendToCartIndexQueue(getUserCartIndex);
+    const index = await getUserCartIndex();
     const cartId = index[userId];
     if (!cartId) return undefined;
     const cart = await getCart(cartId);
