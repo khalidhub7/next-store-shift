@@ -38,12 +38,12 @@ type Task = () => Promise<any>;
 const cartsQueue = new Map();
 let userCartIndexQueue = Promise.resolve();
 
-const appendToCartQueue = async (userId: string, task: Task) => {
-  const last = cartsQueue.get(userId) || Promise.resolve();
+const appendToCartQueue = async (cartId: string, task: Task) => {
+  const last = cartsQueue.get(cartId) || Promise.resolve();
 
   const next = last.then(task);
   cartsQueue.set(
-    userId,
+    cartId,
     next.catch(() => {}),
   );
   return next;
@@ -56,7 +56,7 @@ const appendToCartIndexQueue = async (task: Task) => {
 };
 
 // helpers
-const writeCart = async (cart: Cart) => {
+const writeCart = async (cart: Cart, useQueue: boolean = true) => {
   const task = async () => {
     try {
       const userPath = path.join(
@@ -71,21 +71,24 @@ const writeCart = async (cart: Cart) => {
       throw err;
     }
   };
-  return task(); // not need to be queued
+  return useQueue ? appendToCartQueue(cart.id, task) : task();
 };
 
 // UserCartIndex crud
-const getUserCartIndex = async (): Promise<UserCartIndex> => {
+const getUserCartIndex = async (
+  useQueue: boolean = true,
+): Promise<UserCartIndex> => {
   const task = async () => {
     const data = await readFile(userCartIndexPath, "utf-8");
     return JSON.parse(data) as UserCartIndex;
   };
-  return task();
+  return useQueue ? appendToCartIndexQueue(task) : task();
 };
 
 const setUserCartIndex = async (
   userId: string,
   cartId: string,
+  useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
     const index = await getUserCartIndex();
@@ -96,20 +99,27 @@ const setUserCartIndex = async (
       JSON.stringify({ ...index, [userId]: cartId }, null, 2),
     );
   };
-  return task();
+  return useQueue ? appendToCartIndexQueue(task) : task();
 };
 
-const deleteUserCartIndex = async (userId: string): Promise<void> => {
+const deleteUserCartIndex = async (
+  userId: string,
+  useQueue: boolean = true,
+): Promise<void> => {
   const task = async () => {
     const index = await getUserCartIndex();
     delete index[userId];
     await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
-  return task();
+  return useQueue ? appendToCartIndexQueue(task) : task();
 };
 
 // cart crud
-const getCart = async (cartId: string): Promise<Cart | undefined> => {
+const getCart = async (
+  cartId: string,
+  useQueue: boolean = true,
+): Promise<Cart | undefined> => {
+  // useQueue help to avoid deadlock
   const task = async () => {
     try {
       const sessionPath = path.join(
@@ -125,16 +135,16 @@ const getCart = async (cartId: string): Promise<Cart | undefined> => {
       return undefined;
     }
   };
-  return task(); // not need to be queued
+  return useQueue ? appendToCartQueue(cartId, task) : task();
 };
 
 const getCartByUserId = async (userId: string) => {
-  const index = await appendToCartIndexQueue(getUserCartIndex);
-  const cartId = index[userId];
-  if (!cartId) return undefined;
-
   const task = async () => {
+    const index = await appendToCartIndexQueue(getUserCartIndex);
+    const cartId = index[userId];
+    if (!cartId) return undefined;
     const cart = await getCart(cartId);
+
     if (!cart) {
       await deleteUserCartIndex(userId);
       return undefined;
