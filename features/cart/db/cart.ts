@@ -139,19 +139,19 @@ const getCart = async (
 };
 
 const getCartByUserId = async (userId: string) => {
-  const task = async () => {
-    const index = await getUserCartIndex();
-    const cartId = index[userId];
-    if (!cartId) return undefined;
-    const cart = await getCart(cartId);
+  const index = await getUserCartIndex();
+  const cartId = index[userId];
+  if (!cartId) return undefined;
 
+  const task = async () => {
+    const cart = await getCart(cartId);
     if (!cart) {
       await deleteUserCartIndex(userId);
       return undefined;
     }
     return cart;
   };
-  return appendToCartQueue(userId, task);
+  return appendToCartQueue(cartId, task);
 };
 
 const createCart = async (
