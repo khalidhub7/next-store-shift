@@ -144,7 +144,7 @@ const getCartByUserId = async (userId: string) => {
   if (!cartId) return undefined;
 
   const task = async () => {
-    const cart = await getCart(cartId);
+    const cart = await getCart(cartId, false);
     if (!cart) {
       await deleteUserCartIndex(userId);
       return undefined;
