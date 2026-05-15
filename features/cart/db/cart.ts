@@ -91,7 +91,7 @@ const setUserCartIndex = async (
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    const index = await getUserCartIndex();
+    const index = await getUserCartIndex(useQueue ? false : true);
     if (index[userId]) throw new Error("cart already exist");
 
     await writeFile(
@@ -99,6 +99,7 @@ const setUserCartIndex = async (
       JSON.stringify({ ...index, [userId]: cartId }, null, 2),
     );
   };
+
   return useQueue ? appendToCartIndexQueue(task) : task();
 };
 
@@ -107,7 +108,7 @@ const deleteUserCartIndex = async (
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    const index = await getUserCartIndex();
+    const index = await getUserCartIndex(useQueue ? false : true);
     delete index[userId];
     await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
@@ -170,27 +171,28 @@ const createCart = async (
     };
 
     try {
-      await appendToCartIndexQueue(() =>
-        setUserCartIndex(newCart.userId, cartId),
-      );
-      await writeCart(newCart);
+      await setUserCartIndex(newCart.userId, cartId);
+      await writeCart(newCart, false).catch(async (err) => {
+        await deleteUserCartIndex(userId);
+        throw err;
+      });
       return newCart.id;
     } catch (err) {
       throw err; // don't swallow the error
     }
   };
-  return appendToCartQueue(userId, task);
+  return appendToCartQueue(cartId, task);
 };
 
 const touchCart = async (cartId: string): Promise<void> => {
   // refresh expiration time
   const task = async () => {
-    const cart = await getCart(cartId);
+    const cart = await getCart(cartId, false);
 
     if (!cart) throw new Error("Cart not found");
-    await writeCart({ ...cart, updatedAt: new Date().toISOString() });
+    await writeCart({ ...cart, updatedAt: new Date().toISOString() }, false);
   };
-  return task(); // not need to be queued
+  return appendToCartQueue(cartId, task);
 };
 
 const updateCart = async (
@@ -198,24 +200,29 @@ const updateCart = async (
   newItems: Array<CartItem>,
 ): Promise<void> => {
   const task = async () => {
-    const cart = await getCart(cartId);
+    const cart = await getCart(cartId, false);
 
     if (!cart) throw new Error("Cart not found");
-    await writeCart({
-      ...cart,
-      items: newItems,
-      updatedAt: new Date().toISOString(),
-    });
+    await writeCart(
+      {
+        ...cart,
+        items: newItems,
+        updatedAt: new Date().toISOString(),
+      },
+      false,
+    );
   };
-
   return appendToCartQueue(cartId, task);
 };
 
 const deleteCart = async (cartId: string): Promise<void> => {
   const task = async () => {
-    const cart = await getCart(cartId);
+    // check cart
+    const cart = await getCart(cartId, false);
     if (!cart) throw new Error("Cart not found");
+    // delete index
     await deleteUserCartIndex(cart.userId);
+    // delete file
     const cartPath = path.join(cartsDir, `${cartId}.json`);
     await unlink(cartPath);
   };
