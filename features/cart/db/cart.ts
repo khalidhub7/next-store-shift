@@ -35,7 +35,7 @@ try {
 type UserCartIndex = Record<string, string>;
 type Task = () => Promise<any>;
 
-const cartsQueue = new Map();
+const cartsQueue = new Map<string, Promise<void>>();
 let userCartIndexQueue = Promise.resolve();
 
 const appendToCartQueue = async (userId: string, task: Task) => {
@@ -58,18 +58,14 @@ const appendToCartIndexQueue = async (task: Task) => {
 // helpers
 const writeCart = async (cart: Cart, useQueue: boolean = true) => {
   const task = async () => {
-    try {
-      const userPath = path.join(
-        process.cwd(),
-        "storage",
-        "cart",
-        "carts",
-        `${cart.id}.json`,
-      );
-      await writeFile(userPath, JSON.stringify(cart, null, 2));
-    } catch (err) {
-      throw err;
-    }
+    const userPath = path.join(
+      process.cwd(),
+      "storage",
+      "cart",
+      "carts",
+      `${cart.id}.json`,
+    );
+    await writeFile(userPath, JSON.stringify(cart, null, 2));
   };
   return useQueue ? appendToCartQueue(cart.userId, task) : task();
 };
@@ -91,7 +87,7 @@ const setUserCartIndex = async (
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    const index = await getUserCartIndex(useQueue ? false : true);
+    const index = await getUserCartIndex(false);
     if (index[userId]) throw new Error("cart already exist");
 
     await writeFile(
@@ -108,7 +104,7 @@ const deleteUserCartIndex = async (
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    const index = await getUserCartIndex(useQueue ? false : true);
+    const index = await getUserCartIndex(false);
     delete index[userId];
     await writeFile(userCartIndexPath, JSON.stringify(index, null, 2));
   };
@@ -147,7 +143,7 @@ const getCartByUserId = async (userId: string) => {
   if (!cartId) return undefined;
 
   const task = async () => {
-    const cart = await getCart(cartId, false);
+    const cart = await getCart(userId, cartId, false);
     if (!cart) {
       await deleteUserCartIndex(userId);
       return undefined;
@@ -200,7 +196,7 @@ const updateCart = async (
   newItems: Array<CartItem>,
 ): Promise<void> => {
   const task = async () => {
-    const cart = await getCart(cartId, false);
+    const cart = await getCart(userId, cartId, false);
 
     if (!cart) throw new Error("Cart not found");
     await writeCart(
@@ -218,7 +214,7 @@ const updateCart = async (
 const deleteCart = async (userId: string, cartId: string): Promise<void> => {
   const task = async () => {
     // check cart
-    const cart = await getCart(cartId, false);
+    const cart = await getCart(userId, cartId, false);
     if (!cart) throw new Error("Cart not found");
     // delete index
     await deleteUserCartIndex(cart.userId);

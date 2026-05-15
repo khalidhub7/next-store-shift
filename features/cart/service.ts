@@ -21,15 +21,19 @@ const getValidCartByUserId = async (userId: string) => {
   return cart;
 };
 
-const addToCartService = async (cartId: string, productId: string) => {
+const addToCartService = async (
+  userId: string,
+  cartId: string,
+  productId: string,
+) => {
   // throw new Error("test error")
 
   let newCartItems: Array<CartItem>;
-  const cart = await getCart(cartId);
+  const cart = await getCart(userId, cartId);
 
   if (!cart) throw new Error("Cart not found");
 
-  const { userId, items: cartItems } = cart;
+  const { items: cartItems } = cart;
   // update cart in db
   const productInCart = cartItems.find((i: CartItem) => i.id === productId);
 
@@ -45,28 +49,36 @@ const addToCartService = async (cartId: string, productId: string) => {
   await updateCart(userId, cartId, newCartItems);
 };
 
-const increaseQtyService = async (cartId: string, productId: string) => {
+const increaseQtyService = async (
+  userId: string,
+  cartId: string,
+  productId: string,
+) => {
   // throw new Error("test error")
 
   let newCartItems: Array<CartItem>;
-  const cart = await getCart(cartId);
+  const cart = await getCart(userId, cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { userId, items: cartItems } = cart;
+  const { items: cartItems } = cart;
   newCartItems = cartItems.map((item: CartItem) =>
     item.id === productId ? { ...item, qty: item.qty + 1 } : item,
   );
   await updateCart(userId, cartId, newCartItems); // update db
 };
 
-const decreaseQtyService = async (cartId: string, productId: string) => {
+const decreaseQtyService = async (
+  userId: string,
+  cartId: string,
+  productId: string,
+) => {
   // throw new Error("test error")
 
   let newCartItems: Array<CartItem>;
-  const cart = await getCart(cartId);
+  const cart = await getCart(userId, cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { userId, items: cartItems } = cart;
+  const { items: cartItems } = cart;
   newCartItems = cartItems
     .map((item: CartItem) =>
       item.id === productId ? { ...item, qty: item.qty - 1 } : item,
@@ -75,29 +87,34 @@ const decreaseQtyService = async (cartId: string, productId: string) => {
   await updateCart(userId, cartId, newCartItems);
 };
 
-const removeFromCartService = async (cartId: string, productId: string) => {
+const removeFromCartService = async (
+  userId: string,
+  cartId: string,
+  productId: string,
+) => {
   // throw new Error("test error")
 
   let newCartItems: Array<CartItem>;
-  const cart = await getCart(cartId);
+  const cart = await getCart(userId, cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { userId, items: cartItems } = cart;
+  const { items: cartItems } = cart;
   newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
   await updateCart(userId, cartId, newCartItems);
 };
 
 const updateQtyService = async (
+  userId: string,
   cartId: string,
   productId: string,
   qty: number,
 ) => {
   // throw new Error("test error"); // force fail for testing
   let newCartItems: Array<CartItem>;
-  const cart = await getCart(cartId);
+  const cart = await getCart(userId, cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { userId, items: cartItems } = cart;
+  const { items: cartItems } = cart;
   newCartItems = cartItems
     .map((item: CartItem) => (item.id === productId ? { ...item, qty } : item))
     .filter((item: CartItem) => item.qty > 0);

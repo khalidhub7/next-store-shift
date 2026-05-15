@@ -18,7 +18,7 @@ const getCartItems = async (): Promise<Array<CartItem>> => {
     if (!session) throw new Error();
     if (!isSessionValid(session)) throw new Error();
 
-    const cart = await getCart(cartId);
+    const cart = await getCart(session.userId, cartId);
     if (!cart) throw new Error();
     if (session.userId != cart.userId) throw new Error();
     return cart.items;
