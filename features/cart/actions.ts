@@ -34,7 +34,7 @@ const getCartId = async () => {
     cookieStore.set("cart", cartId, cookieOptions);
     return cartId;
   }
-  await touchCart(userCart.id); // just update updatedAt key
+  await touchCart(userCart); // just update updatedAt key
   cookieStore.set("cart", userCart.id, cookieOptions);
   return userCart.id;
 };

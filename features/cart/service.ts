@@ -15,7 +15,7 @@ const getValidCartByUserId = async (userId: string) => {
   if (!cart) return undefined;
   const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
   if (expired) {
-    await deleteCart(cart.id);
+    await deleteCart(userId, cart.id);
     return undefined;
   }
   return cart;
@@ -29,7 +29,7 @@ const addToCartService = async (cartId: string, productId: string) => {
 
   if (!cart) throw new Error("Cart not found");
 
-  const { items: cartItems } = cart;
+  const { userId, items: cartItems } = cart;
   // update cart in db
   const productInCart = cartItems.find((i: CartItem) => i.id === productId);
 
@@ -42,7 +42,7 @@ const addToCartService = async (cartId: string, productId: string) => {
     newCartItems = [...cartItems, { id, title, price, qty: 1 }];
   }
 
-  await updateCart(cartId, newCartItems);
+  await updateCart(userId, cartId, newCartItems);
 };
 
 const increaseQtyService = async (cartId: string, productId: string) => {
@@ -52,11 +52,11 @@ const increaseQtyService = async (cartId: string, productId: string) => {
   const cart = await getCart(cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { items: cartItems } = cart;
+  const { userId, items: cartItems } = cart;
   newCartItems = cartItems.map((item: CartItem) =>
     item.id === productId ? { ...item, qty: item.qty + 1 } : item,
   );
-  await updateCart(cartId, newCartItems); // update db
+  await updateCart(userId, cartId, newCartItems); // update db
 };
 
 const decreaseQtyService = async (cartId: string, productId: string) => {
@@ -66,13 +66,13 @@ const decreaseQtyService = async (cartId: string, productId: string) => {
   const cart = await getCart(cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { items: cartItems } = cart;
+  const { userId, items: cartItems } = cart;
   newCartItems = cartItems
     .map((item: CartItem) =>
       item.id === productId ? { ...item, qty: item.qty - 1 } : item,
     )
     .filter((item: CartItem) => item.qty > 0);
-  await updateCart(cartId, newCartItems);
+  await updateCart(userId, cartId, newCartItems);
 };
 
 const removeFromCartService = async (cartId: string, productId: string) => {
@@ -82,9 +82,9 @@ const removeFromCartService = async (cartId: string, productId: string) => {
   const cart = await getCart(cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { items: cartItems } = cart;
+  const { userId, items: cartItems } = cart;
   newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
-  await updateCart(cartId, newCartItems);
+  await updateCart(userId, cartId, newCartItems);
 };
 
 const updateQtyService = async (
@@ -97,11 +97,11 @@ const updateQtyService = async (
   const cart = await getCart(cartId);
   if (!cart) throw new Error("Cart not found");
 
-  const { items: cartItems } = cart;
+  const { userId, items: cartItems } = cart;
   newCartItems = cartItems
     .map((item: CartItem) => (item.id === productId ? { ...item, qty } : item))
     .filter((item: CartItem) => item.qty > 0);
-  await updateCart(cartId, newCartItems);
+  await updateCart(userId, cartId, newCartItems);
 };
 
 export {

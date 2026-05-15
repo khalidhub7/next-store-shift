@@ -38,12 +38,12 @@ type Task = () => Promise<any>;
 const cartsQueue = new Map();
 let userCartIndexQueue = Promise.resolve();
 
-const appendToCartQueue = async (cartId: string, task: Task) => {
-  const last = cartsQueue.get(cartId) || Promise.resolve();
+const appendToCartQueue = async (userId: string, task: Task) => {
+  const last = cartsQueue.get(userId) || Promise.resolve();
 
   const next = last.then(task);
   cartsQueue.set(
-    cartId,
+    userId,
     next.catch(() => {}),
   );
   return next;
@@ -71,7 +71,7 @@ const writeCart = async (cart: Cart, useQueue: boolean = true) => {
       throw err;
     }
   };
-  return useQueue ? appendToCartQueue(cart.id, task) : task();
+  return useQueue ? appendToCartQueue(cart.userId, task) : task();
 };
 
 // UserCartIndex crud
@@ -117,10 +117,12 @@ const deleteUserCartIndex = async (
 
 // cart crud
 const getCart = async (
+  userId: string,
   cartId: string,
   useQueue: boolean = true,
 ): Promise<Cart | undefined> => {
   // useQueue help to avoid deadlock
+
   const task = async () => {
     try {
       const sessionPath = path.join(
@@ -136,7 +138,7 @@ const getCart = async (
       return undefined;
     }
   };
-  return useQueue ? appendToCartQueue(cartId, task) : task();
+  return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
 const getCartByUserId = async (userId: string) => {
@@ -152,7 +154,7 @@ const getCartByUserId = async (userId: string) => {
     }
     return cart;
   };
-  return appendToCartQueue(cartId, task);
+  return appendToCartQueue(userId, task);
 };
 
 const createCart = async (
@@ -181,21 +183,19 @@ const createCart = async (
       throw err; // don't swallow the error
     }
   };
-  return appendToCartQueue(cartId, task);
+  return appendToCartQueue(userId, task);
 };
 
-const touchCart = async (cartId: string): Promise<void> => {
+const touchCart = async (cart: Cart): Promise<void> => {
   // refresh expiration time
   const task = async () => {
-    const cart = await getCart(cartId, false);
-
-    if (!cart) throw new Error("Cart not found");
     await writeCart({ ...cart, updatedAt: new Date().toISOString() }, false);
   };
-  return appendToCartQueue(cartId, task);
+  return appendToCartQueue(cart.userId, task);
 };
 
 const updateCart = async (
+  userId: string,
   cartId: string,
   newItems: Array<CartItem>,
 ): Promise<void> => {
@@ -212,10 +212,10 @@ const updateCart = async (
       false,
     );
   };
-  return appendToCartQueue(cartId, task);
+  return appendToCartQueue(userId, task);
 };
 
-const deleteCart = async (cartId: string): Promise<void> => {
+const deleteCart = async (userId: string, cartId: string): Promise<void> => {
   const task = async () => {
     // check cart
     const cart = await getCart(cartId, false);
@@ -226,7 +226,7 @@ const deleteCart = async (cartId: string): Promise<void> => {
     const cartPath = path.join(cartsDir, `${cartId}.json`);
     await unlink(cartPath);
   };
-  return appendToCartQueue(cartId, task);
+  return appendToCartQueue(userId, task);
 };
 
 const getCartIdByUserId = async (userId: string): Promise<string | null> => {
@@ -235,11 +235,11 @@ const getCartIdByUserId = async (userId: string): Promise<string | null> => {
 };
 
 export {
+  getCart,
   touchCart,
   createCart,
   updateCart,
   deleteCart,
-  getCart,
   getCartByUserId,
   getCartIdByUserId,
 };
