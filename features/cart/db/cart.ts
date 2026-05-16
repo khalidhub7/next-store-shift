@@ -40,12 +40,15 @@ let userCartIndexQueue = Promise.resolve();
 
 const appendToCartQueue = async (userId: string, task: Task) => {
   const last = cartsQueue.get(userId) || Promise.resolve();
-
   const next = last.then(task);
-  cartsQueue.set(
-    userId,
-    next.catch(() => {}),
-  );
+  const safeNext = next.catch(() => {});
+
+  cartsQueue.set(userId, safeNext);
+  safeNext.finally(() => {
+    if (cartsQueue.get(userId) === safeNext) {
+      cartsQueue.delete(userId);
+    }
+  });
   return next;
 };
 
