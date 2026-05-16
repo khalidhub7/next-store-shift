@@ -1,12 +1,12 @@
-import { CartItem } from "./types/cart";
-import { getCart, updateCart } from "./db/cart";
-import { fetchProductById } from "../products/server";
-import { getCartByUserId, deleteCart } from "./db/cart";
-
 /* cart.ts (db)    → read/write storage
 service.ts         → orchestrate (calls db + products)
 actions.ts         → entry point (cookies, revalidate, call service)
 queries.ts         → read-only (session check + get cart items) */
+
+import { CartItem } from "./types/cart";
+import { getCart, updateCart } from "./db/cart";
+import { fetchProductById } from "../products/server";
+import { getCartByUserId, deleteCart } from "./db/cart";
 
 const getValidCartByUserId = async (userId: string) => {
   const CART_TTL = 1000 * 60 * 60 * 24 * 3;
@@ -110,6 +110,10 @@ const updateQtyService = async (
   qty: number,
 ) => {
   // throw new Error("test error"); // force fail for testing
+
+  if (!Number.isInteger(qty) || qty < 0 || qty > 10)
+    throw new Error("Invalid Quantity");
+
   let newCartItems: Array<CartItem>;
   const cart = await getCart(userId, cartId);
   if (!cart) throw new Error("Cart not found");

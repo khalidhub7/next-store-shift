@@ -54,8 +54,8 @@ const ClientUpdateQty = ({
 
     await updateQty(productId, value)
       .then(() => toast.success("Quantity updated", options))
-      .catch(() => {
-        toast.error("Update failed", options);
+      .catch((err) => {
+        toast.error(err.message, options);
         setNewQty(qty);
         onRevert(); // tell parent to revert
       });

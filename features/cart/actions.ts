@@ -86,14 +86,10 @@ const removeFromCart = async (productId: string) => {
 };
 
 const updateQty = async (productId: string, qty: number) => {
-  try {
-    const { cartId, userId } = await getCartContext();
-    await updateQtyService(userId, cartId, productId, qty);
+  const { cartId, userId } = await getCartContext();
+  await updateQtyService(userId, cartId, productId, qty);
 
-    revalidatePath("/products", "layout");
-  } catch {
-    throw new Error("update qty failed");
-  }
+  revalidatePath("/products", "layout");
 };
 
 export { addToCart, decreaseQty, removeFromCart, updateQty, increaseQty };
