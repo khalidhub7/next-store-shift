@@ -112,7 +112,9 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   const handleDecrease = (productId: string) => {
     startTransition(async () => {
       setOptimisticCart((state) =>
-        state.map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p)),
+        state
+          .map((p) => (p.id === productId ? { ...p, qty: p.qty - 1 } : p))
+          .filter((p) => p.qty > 0),
       );
 
       const id = toast.loading("Updating ...", {

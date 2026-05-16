@@ -2,15 +2,10 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
-import { createCart, touchCart } from "./db/cart";
-import {
-  addToCartService,
-  decreaseQtyService,
-  increaseQtyService,
-  removeFromCartService,
-  updateQtyService,
-  getValidCartByUserId,
-} from "./service";
+import { createCart } from "./db/cart";
+import { addToCartService, decreaseQtyService } from "./service";
+import { updateQtyService, getValidCartByUserId } from "./service";
+import { increaseQtyService, removeFromCartService } from "./service";
 
 const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   {
@@ -34,7 +29,7 @@ const getCartContext = async () => {
     cookieStore.set("cart", cartId, cookieOptions);
     return { cartId, userId };
   }
-  await touchCart(userCart); // just update updatedAt key
+
   cookieStore.set("cart", userCart.id, cookieOptions);
   return { cartId: userCart.id, userId };
 };

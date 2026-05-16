@@ -182,14 +182,6 @@ const createCart = async (
   return appendToCartQueue(userId, task);
 };
 
-const touchCart = async (cart: Cart): Promise<void> => {
-  // refresh expiration time
-  const task = async () => {
-    await writeCart({ ...cart, updatedAt: new Date().toISOString() }, false);
-  };
-  return appendToCartQueue(cart.userId, task);
-};
-
 const updateCart = async (
   userId: string,
   cartId: string,
@@ -232,7 +224,6 @@ const getCartIdByUserId = async (userId: string): Promise<string | null> => {
 
 export {
   getCart,
-  touchCart,
   createCart,
   updateCart,
   deleteCart,
