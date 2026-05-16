@@ -39,6 +39,7 @@ const ClientUpdateQty = ({
 
   const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
+    if (value === qty) return;
 
     setNewQty(value);
     onUpdate(value);
