@@ -9,7 +9,10 @@ const fetchProducts = async () => {
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
   const url = `https://dummyjson.com/products?limit=${n}&skip=${start}`;
   const products = await fetch(url)
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw new Error("HTTP error");
+      return res.json() as Promise<{ products: Product[] }>;
+    })
     .catch(() => ({ products: [] }));
 
   // always differentiate HTTP errors from network errors
