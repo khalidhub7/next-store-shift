@@ -5,7 +5,7 @@ tsconfig.tsbuildinfo
 # project files
 .next/
 storage/*
-../dump.rdb
+./dump.rdb
 ../dump.txt
 node_modules/
 package-lock.json
