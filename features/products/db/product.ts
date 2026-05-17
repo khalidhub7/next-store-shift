@@ -34,7 +34,7 @@ const fetchProductById = async (id: string) => {
   if (!res.ok) notFound();
 
   const product = (await res.json()) as Product;
-  return { ...product, id: String(id) };
+  return product;
 };
 
 export { fetchProductById, fetchProducts };
