@@ -14,7 +14,7 @@ const comparePassword = async (
   return await bcrypt.compare(plainPwd, hashedPwd);
 };
 const hashPassword = async (password: string) => {
-  return await bcrypt.hash(password, 10);
+  return await bcrypt.hash(password, 12);
 };
 const hashSessionId = (sessionId: string) => {
   return crypto.createHash("sha256").update(sessionId).digest("hex");
