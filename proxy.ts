@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "./features/auth/server";
-import { isSessionValid } from "./features/auth/session.helpers";
-import { deleteSession } from "./features/auth/db/session";
 import { hashSessionId } from "./features/auth/server";
+import { deleteSession } from "./features/auth/db/session";
+import { isSessionValid } from "./features/auth/session.helpers";
 
 const middleware = async (request: NextRequest) => {
   const { pathname, searchParams } = request.nextUrl;

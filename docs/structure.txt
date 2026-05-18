@@ -103,11 +103,16 @@
 │   ├── auth
 │   │   ├── emailIndex.json
 │   │   ├── sessions
+│   │   │   ├── 84389ed0dfa7bd408436b8fab2becabfa3b62741dba2756f39f4d408f7085988.json
+│   │   │   └── be2c7c65f25ff11e079e1f069bb1939257b3095e21599deb87f7b887fcb4da45.json
 │   │   ├── userSessions
+│   │   │   └── 31a2467f-28f0-47e3-9548-094d5cebc9a1.json
 │   │   └── users
+│   │       └── 31a2467f-28f0-47e3-9548-094d5cebc9a1.json
 │   └── cart
 │       ├── carts
+│       │   └── 97a9f0f8-a7f0-4716-a967-e51e9cf9dac6.json
 │       └── userCartIndex.json
 └── tsconfig.json
 
-35 directories, 75 files
+35 directories, 80 files

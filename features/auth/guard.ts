@@ -4,6 +4,14 @@ import { getSession, deleteSession } from "./db/session";
 import { isSessionValid } from "./session.helpers";
 import { hashSessionId } from "./service";
 
+/* 
+actions.ts      → entry point
+service.ts      → business logic
+db/*.ts         → persistence
+session.helpers → session logic
+guard.ts        → authorization
+*/
+
 const requireUser = async (redirectTo: string) => {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
