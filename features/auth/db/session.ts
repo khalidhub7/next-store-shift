@@ -171,8 +171,9 @@ const saveSession = async (
     );
     await writeFile(sessionPath, JSON.stringify(session, null, 2));
     await addUserSessionsEntry(session.userId, session.sessionId).catch(
-      async () => {
-        await unlink(sessionPath);
+      async (err) => {
+        await unlink(sessionPath).catch(() => {});
+        throw err; // original error
       },
     );
     return session.sessionId;
@@ -194,7 +195,7 @@ const deleteSession = async (
     );
 
     const userId = await getUserIdBySessionId(sessionId, false);
-    if (!userId) throw new Error("Session not found");
+    if (!userId) return; // Logout/delete should succeed even if already deleted.
 
     // Delete file
     await Promise.all([
