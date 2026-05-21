@@ -185,33 +185,29 @@ const saveSession = async (
   return useQueue ? appendToSessionQueue(session.sessionId, task) : task();
 };
 
-const deleteSession = async (sessionId: string): Promise<any> => {
+const deleteSession = async (
+  sessionId: string,
+  useQueue: boolean = true,
+): Promise<any> => {
   const task = async () => {
-    try {
-      const filePath = path.join(
-        process.cwd(),
-        "storage",
-        "auth",
-        "sessions",
-        `${sessionId}.json`,
-      );
+    const filePath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "sessions",
+      `${sessionId}.json`,
+    );
 
-      // Read file before deleting
-      const sessionData = await readFile(filePath, "utf-8");
-      const userId = JSON.parse(sessionData).userId;
+    const userId = await getUserIdBySessionId(sessionId);
+    if (!userId) throw new Error("Session not found");
 
-      // Delete file
-      const [fileDeleted, userUpdated] = await Promise.all([
-        deleteFile(filePath),
-        deleteUserSessionsEntry(userId, sessionId),
-      ]);
+    // Delete file
+    const [fileDeleted, userUpdated] = await Promise.all([
+      deleteFile(filePath),
+      deleteUserSessionsEntry(userId, sessionId),
+    ]);
 
-      if (!fileDeleted || !userUpdated) {
-        throw new Error("Delete failed");
-      }
-    } catch {
-      throw new Error("Delete failed");
-    }
+    if (!fileDeleted || !userUpdated) throw new Error("Delete failed");
   };
 
   return appendToSessionQueue(sessionId, task);
