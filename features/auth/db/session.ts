@@ -176,14 +176,11 @@ const saveSession = async (
         `${session.sessionId}.json`,
       );
       await writeFile(sessionPath, JSON.stringify(session, null, 2));
-      const added = await addUserSessionsEntry(
-        session.userId,
-        session.sessionId,
+      await addUserSessionsEntry(session.userId, session.sessionId).catch(
+        async () => {
+          await deleteFile(sessionPath);
+        },
       );
-      if (!added) {
-        await deleteFile(sessionPath);
-        return false;
-      }
       return session.sessionId;
     } catch {
       return false;
