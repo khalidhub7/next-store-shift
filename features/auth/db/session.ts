@@ -136,23 +136,22 @@ const deleteUserSessionsEntry = async (
 
 // session crud
 
-const getSession = async (sessionId: string): Promise<Session | undefined> => {
+const getSession = async (
+  sessionId: string,
+  useQueue: boolean = true,
+): Promise<Session | undefined> => {
   const task = async () => {
-    try {
-      const sessionPath = path.join(
-        process.cwd(),
-        "storage",
-        "auth",
-        "sessions",
-        `${sessionId}.json`,
-      );
-      const data = await readFile(sessionPath, "utf-8");
-      return JSON.parse(data) as Session;
-    } catch {
-      return undefined;
-    }
+    const sessionPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "sessions",
+      `${sessionId}.json`,
+    );
+    const data = await readFile(sessionPath, "utf-8");
+    return JSON.parse(data) as Session;
   };
-  return appendToSessionQueue(sessionId, task);
+  return useQueue ? appendToSessionQueue(sessionId, task) : task();
 };
 
 const getUserIdBySessionId = async (
