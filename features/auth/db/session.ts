@@ -167,26 +167,22 @@ const saveSession = async (
 ): Promise<string | false> => {
   const task = async () => {
     /* await cleanExpiredSessions(); */
-    try {
-      const sessionPath = path.join(
-        process.cwd(),
-        "storage",
-        "auth",
-        "sessions",
-        `${session.sessionId}.json`,
-      );
-      await writeFile(sessionPath, JSON.stringify(session, null, 2));
-      await addUserSessionsEntry(session.userId, session.sessionId).catch(
-        async () => {
-          await deleteFile(sessionPath);
-        },
-      );
-      return session.sessionId;
-    } catch {
-      return false;
-    }
+    const sessionPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "sessions",
+      `${session.sessionId}.json`,
+    );
+    await writeFile(sessionPath, JSON.stringify(session, null, 2));
+    await addUserSessionsEntry(session.userId, session.sessionId).catch(
+      async () => {
+        await deleteFile(sessionPath);
+      },
+    );
+    return session.sessionId;
   };
-  return appendToSessionQueue(session.sessionId, task);
+  return useQueue ? appendToSessionQueue(session.sessionId, task) : task();
 };
 
 const deleteSession = async (sessionId: string): Promise<any> => {
