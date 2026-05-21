@@ -127,10 +127,10 @@ const deleteUserSessionsEntry = async (
   useQueue: boolean = true,
 ) => {
   const task = async () => {
-    const sessions = await getUserSessions(userId);
+    const sessions = await getUserSessions(userId, false);
     // remove the sessionId
     const updatedSessions = sessions.filter((id) => id !== sessionId);
-    await saveUserSessions(userId, updatedSessions);
+    await saveUserSessions(userId, updatedSessions, false);
   };
   return useQueue ? appendToUserSessionsQueue(userId, task) : task();
 };
