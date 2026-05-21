@@ -56,6 +56,7 @@ const appendToSessionQueue = async (sessionId: string, task: Task) => {
 
   return result;
 };
+
 const appendToUserSessionsQueue = async (userId: string, task: Task) => {
   const queue = userSessionsQueue.get(userId) || Promise.resolve();
 
@@ -71,8 +72,11 @@ const appendToUserSessionsQueue = async (userId: string, task: Task) => {
 
 // userSessions crud
 
-const getUserSessions = async (userId: string): Promise<Array<string>> => {
-  try {
+const getUserSessions = async (
+  userId: string,
+  useQueue: boolean = true,
+): Promise<Array<string>> => {
+  const task = async () => {
     const filePath = path.join(
       process.cwd(),
       "storage",
@@ -82,16 +86,16 @@ const getUserSessions = async (userId: string): Promise<Array<string>> => {
     );
     const userSessions = await readFile(filePath, "utf-8");
     return JSON.parse(userSessions);
-  } catch {
-    return [];
-  }
+  };
+  return useQueue ? appendToUserSessionsQueue(userId, task) : task();
 };
 
 const saveUserSessions = async (
   userId: string,
   sessions: Array<string>,
+  useQueue: boolean = true,
 ): Promise<void> => {
-  try {
+  const task = async () => {
     const filePath = path.join(
       process.cwd(),
       "storage",
@@ -100,9 +104,8 @@ const saveUserSessions = async (
       `${userId}.json`,
     );
     await writeFile(filePath, JSON.stringify(sessions, null, 2));
-  } catch (err) {
-    throw err;
-  }
+  };
+  return useQueue ? appendToUserSessionsQueue(userId, task) : task();
 };
 
 const addUserSessionsEntry = async (userId: string, sessionId: string) => {
