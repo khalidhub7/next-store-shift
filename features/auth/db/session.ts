@@ -204,8 +204,7 @@ const deleteSession = async (
       }),
     ]);
   };
-
-  return appendToSessionQueue(sessionId, task);
+  return useQueue ? appendToSessionQueue(sessionId, task) : task();
 };
 
 export { getSession, saveSession, deleteSession, getUserIdBySessionId };
