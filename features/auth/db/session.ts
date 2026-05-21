@@ -121,22 +121,18 @@ const addUserSessionsEntry = async (
   return useQueue ? appendToUserSessionsQueue(userId, task) : task();
 };
 
-const deleteUserSessionsEntry = async (userId: string, sessionId: string) => {
+const deleteUserSessionsEntry = async (
+  userId: string,
+  sessionId: string,
+  useQueue: boolean = true,
+) => {
   const task = async () => {
-    try {
-      const sessions = await getUserSessions(userId);
-
-      // remove the sessionId
-      const updatedSessions = sessions.filter((id) => id !== sessionId);
-
-      await saveUserSessions(userId, updatedSessions);
-      return true;
-    } catch {
-      return false;
-    }
+    const sessions = await getUserSessions(userId);
+    // remove the sessionId
+    const updatedSessions = sessions.filter((id) => id !== sessionId);
+    await saveUserSessions(userId, updatedSessions);
   };
-
-  return appendToUserSessionsQueue(userId, task);
+  return useQueue ? appendToUserSessionsQueue(userId, task) : task();
 };
 
 // session crud
