@@ -157,12 +157,14 @@ const getSession = async (
 const getUserIdBySessionId = async (
   sessionId: string,
 ): Promise<string | undefined> => {
-  // that ensure last write ends before read
   const session = await getSession(sessionId);
   return session?.userId;
 };
 
-const saveSession = async (session: Session): Promise<string | false> => {
+const saveSession = async (
+  session: Session,
+  useQueue: boolean = true,
+): Promise<string | false> => {
   const task = async () => {
     /* await cleanExpiredSessions(); */
     try {
