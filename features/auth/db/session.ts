@@ -108,18 +108,17 @@ const saveUserSessions = async (
   return useQueue ? appendToUserSessionsQueue(userId, task) : task();
 };
 
-const addUserSessionsEntry = async (userId: string, sessionId: string) => {
+const addUserSessionsEntry = async (
+  userId: string,
+  sessionId: string,
+  useQueue: boolean = true,
+) => {
   const task = async () => {
-    try {
-      const sessions = await getUserSessions(userId);
-      const newSessions = [...sessions, sessionId];
-      await saveUserSessions(userId, newSessions);
-      return true;
-    } catch {
-      return false;
-    }
+    const sessions = await getUserSessions(userId, false);
+    const newSessions = [...sessions, sessionId];
+    await saveUserSessions(userId, newSessions, false);
   };
-  return appendToUserSessionsQueue(userId, task);
+  return useQueue ? appendToUserSessionsQueue(userId, task) : task();
 };
 
 const deleteUserSessionsEntry = async (userId: string, sessionId: string) => {
