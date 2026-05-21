@@ -40,12 +40,13 @@ const appendToSessionQueue = async (sessionId: string, task: Task) => {
   const queue = sessionQueues.get(sessionId) || Promise.resolve();
 
   const result = queue.then(task);
+  const safeResult = result.catch(() => {});
 
-  sessionQueues.set(
-    sessionId,
-    result.catch(() => {}),
-  );
-
+  sessionQueues.set(sessionId, safeResult);
+  safeResult.finally(() => {
+    if (sessionQueues.get(sessionId) === safeResult)
+      sessionQueues.delete(sessionId);
+  });
   return result;
 };
 
@@ -53,12 +54,13 @@ const appendToUserSessionsQueue = async (userId: string, task: Task) => {
   const queue = userSessionsQueue.get(userId) || Promise.resolve();
 
   const result = queue.then(task);
+  const safeResult = result.catch(() => {});
 
-  userSessionsQueue.set(
-    userId,
-    result.catch(() => {}),
-  );
-
+  userSessionsQueue.set(userId, safeResult);
+  safeResult.finally(() => {
+    if (userSessionsQueue.get(userId) === safeResult)
+      userSessionsQueue.delete(userId);
+  });
   return result;
 };
 
