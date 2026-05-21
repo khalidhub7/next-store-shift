@@ -15,14 +15,6 @@ import { Session } from "../types/session";
 import { readFile, writeFile, mkdir, unlink } from "fs/promises";
 
 // helpers
-const deleteFile = async (filePath: string): Promise<boolean> => {
-  try {
-    await unlink(filePath);
-    return true;
-  } catch {
-    return false; // file may not exist
-  }
-};
 
 // create files
 const sessionsDir = path.join(process.cwd(), "storage", "auth", "sessions");
@@ -156,8 +148,9 @@ const getSession = async (
 
 const getUserIdBySessionId = async (
   sessionId: string,
+  useQueue: boolean = true,
 ): Promise<string | undefined> => {
-  const session = await getSession(sessionId);
+  const session = await getSession(sessionId, useQueue);
   return session?.userId;
 };
 
@@ -177,7 +170,7 @@ const saveSession = async (
     await writeFile(sessionPath, JSON.stringify(session, null, 2));
     await addUserSessionsEntry(session.userId, session.sessionId).catch(
       async () => {
-        await deleteFile(sessionPath);
+        await unlink(sessionPath);
       },
     );
     return session.sessionId;
@@ -198,16 +191,18 @@ const deleteSession = async (
       `${sessionId}.json`,
     );
 
-    const userId = await getUserIdBySessionId(sessionId);
+    const userId = await getUserIdBySessionId(sessionId, false);
     if (!userId) throw new Error("Session not found");
 
     // Delete file
-    const [fileDeleted, userUpdated] = await Promise.all([
-      deleteFile(filePath),
-      deleteUserSessionsEntry(userId, sessionId),
+    await Promise.all([
+      unlink(filePath).catch(() => {
+        throw new Error("Delete failed");
+      }),
+      deleteUserSessionsEntry(userId, sessionId).catch(() => {
+        throw new Error("Delete failed");
+      }),
     ]);
-
-    if (!fileDeleted || !userUpdated) throw new Error("Delete failed");
   };
 
   return appendToSessionQueue(sessionId, task);
