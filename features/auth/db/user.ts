@@ -31,6 +31,9 @@ try {
   await writeFile(emailIndexPath, "{}");
 }
 
+// helpers
+const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 // setup queues
 type Task = () => Promise<any>;
 type EmailIndexType = Record<string, string>;
@@ -56,21 +59,25 @@ const appendToEmailIndexQueue = async (task: Task) => {
   return result;
 };
 
-// user crud helpers
-const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+// email index crud helpers
 
-const getEmailIndex = async (): Promise<EmailIndexType> => {
-  try {
+const getEmailIndex = async (
+  useQueue: boolean = true,
+): Promise<EmailIndexType> => {
+  const task = async () => {
     const users = await readFile(emailIndexPath, "utf-8");
     return JSON.parse(users);
-  } catch {
-    return {} as EmailIndexType;
-  }
+  };
+  return useQueue ? appendToEmailIndexQueue(task) : task();
 };
 
-const setEmailIndex = async (id: string, email: string) => {
+const setEmailIndex = async (
+  id: string,
+  email: string,
+  useQueue: boolean = true,
+) => {
   const task = async () => {
-    const data = await getEmailIndex();
+    const data = await getEmailIndex(false);
     if (data[email])
       throw new Error(
         "Unable to create account. Try logging in if you already registered.",
@@ -80,17 +87,17 @@ const setEmailIndex = async (id: string, email: string) => {
       JSON.stringify({ ...data, [email]: id }, null, 2),
     );
   };
-  return appendToEmailIndexQueue(task);
+  return useQueue ? appendToEmailIndexQueue(task) : task();
 };
 
-const deleteEmailIndex = async (email: string) => {
+const deleteEmailIndex = async (email: string, useQueue: boolean = true) => {
   const task = async () => {
-    const data = await getEmailIndex();
+    const data = await getEmailIndex(false);
     if (!data[email]) throw new Error("Email not found");
     delete data[email];
     await writeFile(emailIndexPath, JSON.stringify(data, null, 2));
   };
-  return appendToEmailIndexQueue(task);
+  return useQueue ? appendToEmailIndexQueue(task) : task();
 };
 
 const writeUser = async (user: User) => {
