@@ -196,12 +196,9 @@ const deleteUser = async (
     );
     const user = await getUserById(id);
     if (!user) throw new Error("User not found");
-    // remove user
-    await unlink(userPath);
-    // remove index
-    const emailIndex = await getEmailIndex();
-    delete emailIndex[user.email];
-    await writeFile(emailIndexPath, JSON.stringify(emailIndex, null, 2));
+    
+    await unlink(userPath); // remove user
+    await deleteEmailIndex(user.email) // remove index
   };
   return useQueue ? appendToUserQueue(id, task) : task();
 };
