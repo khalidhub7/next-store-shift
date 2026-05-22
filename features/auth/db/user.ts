@@ -127,8 +127,9 @@ const getUserById = async (id: string): Promise<User> => {
       const data = await readFile(userPath, "utf-8");
       const user = JSON.parse(data);
       return user as User;
-    } catch {
-      throw new Error("User not found");
+    } catch (err: any) {
+      if (err.code === "ENOENT") throw new Error("User not found");
+      throw err;
     }
   };
   return task();
