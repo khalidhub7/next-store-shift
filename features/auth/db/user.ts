@@ -64,8 +64,12 @@ const getEmailIndex = async (
   useQueue: boolean = true,
 ): Promise<EmailIndexType> => {
   const task = async () => {
-    const users = await readFile(emailIndexPath, "utf-8");
-    return JSON.parse(users);
+    try {
+      const users = await readFile(emailIndexPath, "utf-8");
+      return JSON.parse(users);
+    } catch {
+      throw new Error("Failed to get email index");
+    }
   };
   return useQueue ? appendToEmailIndexQueue(task) : task();
 };
@@ -76,23 +80,31 @@ const setEmailIndex = async (
   useQueue: boolean = true,
 ) => {
   const task = async () => {
-    const data = await getEmailIndex(false);
-    if (data[email]) {
-      throw new Error(
-        "Unable to create account. Try logging in if you already registered.",
-      );
+    try {
+      const data = await getEmailIndex(false);
+      if (data[email]) {
+        throw new Error(
+          "Unable to create account. Try logging in if you already registered.",
+        );
+      }
+      await writeFile(emailIndexPath, JSON.stringify({ ...data, [email]: id }));
+    } catch (error) {
+      throw new Error("Failed to set email index");
     }
-    await writeFile(emailIndexPath, JSON.stringify({ ...data, [email]: id }));
   };
   return useQueue ? appendToEmailIndexQueue(task) : task();
 };
 
 const deleteEmailIndex = async (email: string, useQueue: boolean = true) => {
   const task = async () => {
-    const data = await getEmailIndex(false);
-    if (!data[email]) throw new Error("Email not found");
-    delete data[email];
-    await writeFile(emailIndexPath, JSON.stringify(data, null, 2));
+    try {
+      const data = await getEmailIndex(false);
+      if (!data[email]) throw new Error("Email not found");
+      delete data[email];
+      await writeFile(emailIndexPath, JSON.stringify(data, null, 2));
+    } catch {
+      throw new Error("Failed to delete email index");
+    }
   };
   return useQueue ? appendToEmailIndexQueue(task) : task();
 };
@@ -100,20 +112,27 @@ const deleteEmailIndex = async (email: string, useQueue: boolean = true) => {
 // user crud
 const writeUser = async (user: User, useQueue: boolean = true) => {
   const task = async () => {
-    const userPath = path.join(
-      process.cwd(),
-      "storage",
-      "auth",
-      "users",
-      `${user.id}.json`,
-    );
-    await writeFile(userPath, JSON.stringify(user, null, 2));
+    try {
+      const userPath = path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "users",
+        `${user.id}.json`,
+      );
+      await writeFile(userPath, JSON.stringify(user, null, 2));
+    } catch {
+      throw new Error("Failed to write user");
+    }
   };
   return useQueue ? appendToUserQueue(user.id, task) : task();
 };
 
 // user crud
-const getUserById = async (id: string): Promise<User> => {
+const getUserById = async (
+  id: string,
+  useQueue: boolean = true,
+): Promise<User> => {
   const task = async () => {
     try {
       const userPath = path.join(
@@ -126,12 +145,11 @@ const getUserById = async (id: string): Promise<User> => {
       const data = await readFile(userPath, "utf-8");
       const user = JSON.parse(data);
       return user as User;
-    } catch (err: any) {
-      if (err.code === "ENOENT") throw new Error("User not found");
-      throw err;
+    } catch {
+      throw new Error("Failed to get user");
     }
   };
-  return task();
+  return useQueue ? appendToUserQueue(id, task) : task();
 };
 
 const getUserByEmail = async (email: string): Promise<User> => {
@@ -149,22 +167,22 @@ const createUser = async (
 
   const id = randomUUID();
   const task = async () => {
-    // await delay(10000); // 10s delay (for testing)
-    const newUser = {
-      id,
-      ...userData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    try {
+      // await delay(10000); // 10s delay (for testing)
+      const newUser = {
+        id,
+        ...userData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-    // setEmailIndex throw email if already registered
-    await setEmailIndex(newUser.id, newUser.email);
-    await writeUser(newUser, false).catch(async (err) => {
-      // rollback and rethrow
-      await deleteEmailIndex(newUser.email);
-      throw err;
-    });
-    return newUser.id;
+      // setEmailIndex throw email if already registered
+      await setEmailIndex(newUser.id, newUser.email);
+      await writeUser(newUser, false);
+      return newUser.id;
+    } catch {
+      throw new Error("Failed to create user");
+    }
   };
   return useQueue ? appendToUserQueue(id, task) : task();
 };
@@ -175,32 +193,28 @@ const updateUser = async (
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    const user = await getUserById(id);
+    try {
+      const user = await getUserById(id);
 
-    const updatedUser = {
-      ...user,
-      ...newData,
-      updatedAt: new Date().toISOString(),
-    };
-
-    // email changed need to change index
-    const newEmail = newData.email;
-    if (newEmail && newEmail !== user.email) {
-      const emailIndexTask = async () => {
-        try {
-          await deleteEmailIndex(user.email, false);
-          await setEmailIndex(id, newEmail, false);
-          await writeUser(updatedUser, false);
-        } catch (err) {
-          await deleteEmailIndex(newEmail, false).catch(() => {});
-          await setEmailIndex(id, user.email, false).catch(() => {});
-          throw err;
-        }
+      const updatedUser = {
+        ...user,
+        ...newData,
+        updatedAt: new Date().toISOString(),
       };
-      await appendToEmailIndexQueue(emailIndexTask);
-      return;
+
+      // email changed need to change index
+      const newEmail = newData.email;
+      if (newEmail && newEmail !== user.email) {
+        const emailIndexTask = async () => {
+          await deleteEmailIndex(user.email, false); // delete old email
+          await setEmailIndex(id, newEmail, false); // set new email
+        };
+        await appendToEmailIndexQueue(emailIndexTask);
+      }
+      await writeUser(updatedUser, false);
+    } catch {
+      throw new Error("Failed to update user");
     }
-    await writeUser(updatedUser, false);
   };
 
   return useQueue ? appendToUserQueue(id, task) : task();
@@ -211,18 +225,22 @@ const deleteUser = async (
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    // check user
-    const userPath = path.join(
-      process.cwd(),
-      "storage",
-      "auth",
-      "users",
-      `${id}.json`,
-    );
-    const user = await getUserById(id);
+    try {
+      // check user
+      const userPath = path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "users",
+        `${id}.json`,
+      );
+      const user = await getUserById(id);
 
-    await deleteEmailIndex(user.email); // remove index
-    await unlink(userPath); // remove user
+      await deleteEmailIndex(user.email); // remove index
+      await unlink(userPath); // remove user
+    } catch {
+      throw new Error("Failed to delete user");
+    }
   };
   return useQueue ? appendToUserQueue(id, task) : task();
 };
