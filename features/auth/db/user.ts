@@ -181,8 +181,12 @@ const updateUser = async (
   return useQueue ? appendToUserQueue(id, task) : task();
 };
 
-const deleteUser = async (id: string): Promise<void> => {
-  const userTask = async () => {
+const deleteUser = async (
+  id: string,
+  useQueue: boolean = true,
+): Promise<void> => {
+  const task = async () => {
+    // check user
     const userPath = path.join(
       process.cwd(),
       "storage",
@@ -192,19 +196,14 @@ const deleteUser = async (id: string): Promise<void> => {
     );
     const user = await getUserById(id);
     if (!user) throw new Error("User not found");
+    // remove user
     await unlink(userPath);
-    return user.email;
-  };
-
-  const email = await appendToUserQueue(id, userTask);
-
-  const emailTask = async () => {
+    // remove index
     const emailIndex = await getEmailIndex();
-    delete emailIndex[email];
+    delete emailIndex[user.email];
     await writeFile(emailIndexPath, JSON.stringify(emailIndex, null, 2));
   };
-
-  return appendToEmailIndexQueue(emailTask);
+  return useQueue ? appendToUserQueue(id, task) : task();
 };
 
 export { createUser, updateUser, deleteUser, getUserById, getUserByEmail };
