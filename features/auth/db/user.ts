@@ -38,7 +38,7 @@ try {
 type Task = () => Promise<any>;
 type EmailIndexType = Record<string, string>;
 
-const userQueues = new Map(); // write user
+const userQueues = new Map<string, Promise<void>>(); // write user
 let emailIndexQueue = Promise.resolve(); // ensures email stays unique (lock)
 
 const appendToUserQueue = async (userId: string, task: Task) => {
@@ -119,16 +119,20 @@ const writeUser = async (user: User, useQueue: boolean = true) => {
 // user crud
 const getUserById = async (id: string): Promise<User> => {
   const task = async () => {
-    const userPath = path.join(
-      process.cwd(),
-      "storage",
-      "auth",
-      "users",
-      `${id}.json`,
-    );
-    const data = await readFile(userPath, "utf-8");
-    const user = JSON.parse(data);
-    return user as User;
+    try {
+      const userPath = path.join(
+        process.cwd(),
+        "storage",
+        "auth",
+        "users",
+        `${id}.json`,
+      );
+      const data = await readFile(userPath, "utf-8");
+      const user = JSON.parse(data);
+      return user as User;
+    } catch {
+      throw new Error("User not found");
+    }
   };
   return task();
 };
@@ -136,6 +140,7 @@ const getUserById = async (id: string): Promise<User> => {
 const getUserByEmail = async (email: string): Promise<User> => {
   const emailIndex = await getEmailIndex();
   const id = emailIndex[email];
+  if (!id) throw new Error("User not found");
   return await getUserById(id);
 };
 
@@ -175,23 +180,28 @@ const updateUser = async (
   const task = async () => {
     const user = await getUserById(id);
 
-    if (!user) throw new Error("User not found");
-
     const updatedUser = {
       ...user,
       ...newData,
       updatedAt: new Date().toISOString(),
     };
 
-    // email changed
-    if (newData.email && newData.email !== user.email) {
-      await deleteEmailIndex(user.email);
-      try {
-        await setEmailIndex(id, newData.email);
-      } catch (err) {
-        await setEmailIndex(id, user.email); // rollback old email
-        throw err;
-      }
+    // email changed need to change index
+    const newEmail = newData.email;
+    if (newEmail && newEmail !== user.email) {
+      const emailIndexTask = async () => {
+        try {
+          await deleteEmailIndex(user.email, false);
+          await setEmailIndex(id, newEmail, false);
+          await writeUser(updatedUser, false);
+        } catch (err) {
+          await deleteEmailIndex(newEmail, false).catch(() => {});
+          await setEmailIndex(id, user.email, false).catch(() => {});
+          throw err;
+        }
+      };
+      await appendToEmailIndexQueue(emailIndexTask);
+      return;
     }
     await writeUser(updatedUser, false);
   };
@@ -215,8 +225,8 @@ const deleteUser = async (
     const user = await getUserById(id);
     if (!user) throw new Error("User not found");
 
-    await unlink(userPath); // remove user
     await deleteEmailIndex(user.email); // remove index
+    await unlink(userPath); // remove user
   };
   return useQueue ? appendToUserQueue(id, task) : task();
 };
