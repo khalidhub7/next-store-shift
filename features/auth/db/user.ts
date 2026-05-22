@@ -132,23 +132,21 @@ const getUserById = async (id: string): Promise<User> => {
   return task();
 };
 
-const getUserByEmail = async (email: string): Promise<User | undefined> => {
-  // not need to be queued bcs EmailIndex already  guarantees email uniqueness
+const getUserByEmail = async (email: string): Promise<User> => {
   const emailIndex = await getEmailIndex();
-
   const id = emailIndex[email];
-  return id ? await getUserById(id) : undefined;
+  return await getUserById(id);
 };
 
 const createUser = async (
   userData: CreateUserData,
-): Promise<string | false> => {
+  useQueue: boolean = true,
+): Promise<string> => {
   // userData like {email, password, role}
 
   const id = randomUUID();
   const task = async () => {
     // await delay(10000); // 10s delay (for testing)
-
     const newUser = {
       id,
       ...userData,
@@ -158,34 +156,29 @@ const createUser = async (
 
     // setEmailIndex throw email if already registered
     await setEmailIndex(newUser.id, newUser.email);
-    await writeUser(newUser).catch(async (err) => {
+    await writeUser(newUser, false).catch(async (err) => {
       // rollback and rethrow
       await deleteEmailIndex(newUser.email);
       throw err;
     });
     return newUser.id;
   };
-  // not need to be queued
-  return task();
+  return useQueue ? appendToUserQueue(id, task) : task();
 };
 
 const updateUser = async (
   id: string,
   newData: Partial<User>,
+  useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    try {
-      const user = await getUserById(id);
-      if (!user) throw new Error("user not found");
-      const updatedUser = { ...user, ...newData };
+    const user = await getUserById(id);
+    if (!user) throw new Error("user not found");
+    const updatedUser = { ...user, ...newData };
 
-      await writeUser(updatedUser);
-    } catch (err) {
-      throw err;
-    }
+    await writeUser(updatedUser, false);
   };
-  // not need to be queued
-  return task();
+  return useQueue ? appendToUserQueue(id, task) : task();
 };
 
 const deleteUser = async (id: string): Promise<void> => {
