@@ -32,7 +32,7 @@ try {
 }
 
 // helpers
-const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+// const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // setup queues
 type Task = () => Promise<any>;
@@ -78,10 +78,11 @@ const setEmailIndex = async (
 ) => {
   const task = async () => {
     const data = await getEmailIndex(false);
-    if (data[email])
+    if (data[email]) {
       throw new Error(
         "Unable to create account. Try logging in if you already registered.",
       );
+    }
     await writeFile(
       emailIndexPath,
       JSON.stringify({ ...data, [email]: id }, null, 2),
@@ -173,11 +174,28 @@ const updateUser = async (
 ): Promise<void> => {
   const task = async () => {
     const user = await getUserById(id);
-    if (!user) throw new Error("user not found");
-    const updatedUser = { ...user, ...newData };
 
+    if (!user) throw new Error("User not found");
+
+    const updatedUser = {
+      ...user,
+      ...newData,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // email changed
+    if (newData.email && newData.email !== user.email) {
+      await deleteEmailIndex(user.email);
+      try {
+        await setEmailIndex(id, newData.email);
+      } catch (err) {
+        await setEmailIndex(id, user.email); // rollback old email
+        throw err;
+      }
+    }
     await writeUser(updatedUser, false);
   };
+
   return useQueue ? appendToUserQueue(id, task) : task();
 };
 
@@ -196,9 +214,9 @@ const deleteUser = async (
     );
     const user = await getUserById(id);
     if (!user) throw new Error("User not found");
-    
+
     await unlink(userPath); // remove user
-    await deleteEmailIndex(user.email) // remove index
+    await deleteEmailIndex(user.email); // remove index
   };
   return useQueue ? appendToUserQueue(id, task) : task();
 };
