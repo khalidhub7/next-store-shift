@@ -31,11 +31,12 @@ await writeFile(emailIndexPath, "{}", { flag: "wx" }).catch(() => {});
 // const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // setup queues
-type Task = () => Promise<any>;
+type Task<T = any> = () => Promise<T>;
 type EmailIndexType = Record<string, string>;
 
 const userQueues = new Map<string, Promise<void>>(); // write user
-let emailIndexQueue = Promise.resolve(); // ensures email stays unique (lock)
+// ensures email stays unique (lock)
+let emailIndexQueue: Promise<any> = Promise.resolve();
 
 const appendToUserQueue = async (userId: string, task: Task) => {
   const queue = userQueues.get(userId) || Promise.resolve();
