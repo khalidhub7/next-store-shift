@@ -25,11 +25,7 @@ const emailIndexPath = path.join(
   "auth",
   "emailIndex.json",
 );
-try {
-  await access(emailIndexPath);
-} catch {
-  await writeFile(emailIndexPath, "{}");
-}
+await writeFile(emailIndexPath, "{}", { flag: "wx" }).catch(() => {});
 
 // helpers
 // const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
