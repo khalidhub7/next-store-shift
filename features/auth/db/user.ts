@@ -103,21 +103,16 @@ const deleteEmailIndex = async (email: string, useQueue: boolean = true) => {
 // user crud
 const writeUser = async (user: User, useQueue: boolean = true) => {
   const task = async () => {
-    try {
-      const userPath = path.join(
-        process.cwd(),
-        "storage",
-        "auth",
-        "users",
-        `${user.id}.json`,
-      );
-      console.log(userPath);
-      await writeFile(userPath, JSON.stringify(user, null, 2));
-    } catch (err) {
-      throw err;
-    }
+    const userPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "users",
+      `${user.id}.json`,
+    );
+    await writeFile(userPath, JSON.stringify(user, null, 2));
   };
-  return appendToUserQueue(user.id, task);
+  return useQueue ? appendToUserQueue(user.id, task) : task();
 };
 
 // user crud
