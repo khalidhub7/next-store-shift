@@ -116,7 +116,7 @@ const writeUser = async (user: User, useQueue: boolean = true) => {
 };
 
 // user crud
-const getUserById = async (id: string): Promise<User | undefined> => {
+const getUserById = async (id: string): Promise<User> => {
   const task = async () => {
     const userPath = path.join(
       process.cwd(),
@@ -125,15 +125,10 @@ const getUserById = async (id: string): Promise<User | undefined> => {
       "users",
       `${id}.json`,
     );
-    try {
-      const data = await readFile(userPath, "utf-8");
-      const user = JSON.parse(data);
-      return user as User;
-    } catch {
-      return undefined;
-    }
+    const data = await readFile(userPath, "utf-8");
+    const user = JSON.parse(data);
+    return user as User;
   };
-  // return appendToUserQueue(id, task);
   return task();
 };
 
