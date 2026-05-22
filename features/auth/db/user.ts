@@ -40,12 +40,13 @@ let emailIndexQueue = Promise.resolve(); // ensures email stays unique (lock)
 
 const appendToUserQueue = async (userId: string, task: Task) => {
   const queue = userQueues.get(userId) || Promise.resolve();
-
   const result = queue.then(task);
-  userQueues.set(
-    userId,
-    result.catch(() => {}),
-  );
+  const safeResult = result.catch(() => {});
+
+  userQueues.set(userId, safeResult);
+  safeResult.finally(() => {
+    if (userQueues.get(userId) === safeResult) userQueues.delete(userId);
+  });
   return result;
 };
 
