@@ -14,7 +14,7 @@ import path from "path";
 import { mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
 import { User, CreateUserData } from "../types/user";
-import { readFile, writeFile, rename, unlink } from "fs/promises";
+import { readFile, writeFile, unlink } from "fs/promises";
 
 // assume that Filesystem operations are always success
 
