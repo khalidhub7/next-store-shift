@@ -100,10 +100,10 @@ const deleteEmailIndex = async (email: string, useQueue: boolean = true) => {
   return useQueue ? appendToEmailIndexQueue(task) : task();
 };
 
-const writeUser = async (user: User) => {
+// user crud
+const writeUser = async (user: User, useQueue: boolean = true) => {
   const task = async () => {
     try {
-      console.log("*** here ***");
       const userPath = path.join(
         process.cwd(),
         "storage",
