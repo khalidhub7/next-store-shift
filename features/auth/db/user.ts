@@ -16,6 +16,8 @@ import { randomUUID } from "crypto";
 import { User, CreateUserData } from "../types/user";
 import { readFile, writeFile, rename, unlink } from "fs/promises";
 
+// assume that Filesystem operations are always success
+
 // create files
 const usersDir = path.join(process.cwd(), "storage", "auth", "users");
 await mkdir(usersDir, { recursive: true });
@@ -29,11 +31,6 @@ await writeFile(emailIndexPath, "{}", { flag: "wx" }).catch(() => {});
 
 // helpers
 // const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-const atomicWrite = async (filePath: string, data: object) => {
-  const tmpPath = filePath + ".tmp." + randomUUID();
-  await writeFile(tmpPath, JSON.stringify(data, null, 2));
-  await rename(tmpPath, filePath);
-};
 
 // setup queues
 type Task<T = any> = () => Promise<T>;
@@ -85,7 +82,7 @@ const setEmailIndex = async (
         "Unable to create account. Try logging in if you already registered.",
       );
     }
-    await atomicWrite(emailIndexPath, { ...data, [email]: id });
+    await writeFile(emailIndexPath, JSON.stringify({ ...data, [email]: id }));
   };
   return useQueue ? appendToEmailIndexQueue(task) : task();
 };
