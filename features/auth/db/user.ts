@@ -195,7 +195,7 @@ const updateUser = async (
 ): Promise<void> => {
   const task = async () => {
     try {
-      const user = await getUserById(id);
+      const user = await getUserById(id, false);
 
       const updatedUser = {
         ...user,
