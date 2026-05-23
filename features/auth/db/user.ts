@@ -235,7 +235,7 @@ const deleteUser = async (
         "users",
         `${id}.json`,
       );
-      const user = await getUserById(id);
+      const user = await getUserById(id, false);
 
       await deleteEmailIndex(user.email); // remove index
       await unlink(userPath); // remove user
