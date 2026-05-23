@@ -68,7 +68,7 @@ const registerAction = async (data: RegisterData) => {
   try {
     const values = registerSchema.parse(data);
     const { email, password, name } = values;
-    
+
     const { sessionId, userId } = await register(email, password, name);
 
     // console.log({sessionId, userId})
@@ -78,6 +78,7 @@ const registerAction = async (data: RegisterData) => {
       store.set("sessionId", sessionId, cookieOptions);
       return { success: true, message: "Account created" };
     }
+    return { success: false, message: "Something went wrong" };
   } catch (err: any) {
     return { success: false, message: err.message };
   }

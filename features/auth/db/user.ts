@@ -36,8 +36,9 @@ await writeFile(emailIndexPath, "{}", { flag: "wx" }).catch(() => {});
 type Task<T = any> = () => Promise<T>;
 type EmailIndexType = Record<string, string>;
 
-const userQueues = new Map<string, Promise<void>>(); // write user
-// ensures email stays unique (lock)
+// one queue per userId to run tasks one at a time, in order
+const userQueues = new Map<string, Promise<void>>();
+// global lock to run email tasks one at a time, in order
 let emailIndexQueue: Promise<any> = Promise.resolve();
 
 const appendToUserQueue = async (userId: string, task: Task) => {
