@@ -32,8 +32,8 @@ await mkdir(userSessionsDir, { recursive: true });
 type Task = () => Promise<any>;
 
 // setup queues
-const sessionQueues = new Map(); // ensure queues per session ordered
-const userSessionsQueue = new Map(); // ensure userSessions queues ordered
+const sessionQueues = new Map(); // one queue per sessionId to serialize access
+const userSessionsQueue = new Map(); // one queue per userId to serialize access
 
 const appendToSessionQueue = async (sessionId: string, task: Task) => {
   const queue = sessionQueues.get(sessionId) || Promise.resolve();
