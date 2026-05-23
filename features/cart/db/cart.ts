@@ -10,6 +10,7 @@ DELETE storage/ folder
 db/cart.ts → connects to real DB
 */
 
+// assume that Filesystem operations are always success
 import path from "path";
 import { randomUUID } from "crypto";
 import { Cart, CartItem } from "../types/cart";
@@ -172,10 +173,7 @@ const createCart = async (
 
     try {
       await setUserCartIndex(newCart.userId, cartId);
-      await writeCart(newCart, false).catch(async (err) => {
-        await deleteUserCartIndex(userId);
-        throw err;
-      });
+      await writeCart(newCart, false);
       return newCart.id;
     } catch (err) {
       throw err; // don't swallow the error
