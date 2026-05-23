@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 // client actions > add toast
 
-type ClientAddToCartProps = { productId: string };
+type ClientAddToCartProps = { productId: number };
 
 const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
   const [onAction, setOnAction] = useState(false);

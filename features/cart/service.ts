@@ -27,19 +27,15 @@ const addToCartService = async (
   productId: number,
 ) => {
   // throw new Error("test error")
-
   let newCartItems: Array<CartItem>;
   const cart = await getCart(userId, cartId);
-
   if (!cart) throw new Error("Cart not found");
 
   const { items: cartItems } = cart;
-
   // update cart in db
   const productInCart = cartItems.find(
     (i: CartItem) => i.id === productId,
   );
-
   if (productInCart) {
     newCartItems = cartItems.map((p: CartItem) =>
       p.id === productId ? { ...p, qty: p.qty + 1 } : p,
@@ -57,7 +53,7 @@ const addToCartService = async (
 const increaseQtyService = async (
   userId: string,
   cartId: string,
-  productId: string,
+  productId: number,
 ) => {
   // throw new Error("test error")
 
@@ -75,7 +71,7 @@ const increaseQtyService = async (
 const decreaseQtyService = async (
   userId: string,
   cartId: string,
-  productId: string,
+  productId: number,
 ) => {
   // throw new Error("test error")
 
@@ -95,7 +91,7 @@ const decreaseQtyService = async (
 const removeFromCartService = async (
   userId: string,
   cartId: string,
-  productId: string,
+  productId: number,
 ) => {
   // throw new Error("test error")
 
@@ -111,7 +107,7 @@ const removeFromCartService = async (
 const updateQtyService = async (
   userId: string,
   cartId: string,
-  productId: string,
+  productId: number,
   qty: number,
 ) => {
   // throw new Error("test error"); // force fail for testing

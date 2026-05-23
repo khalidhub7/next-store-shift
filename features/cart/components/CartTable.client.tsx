@@ -17,7 +17,7 @@ import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 // cartDialog dropdown actions
 
 type ClientUpdateQtyProps = {
-  productId: string;
+  productId: number;
   qty: number;
   onUpdate: (qty: number) => void;
   onRevert: () => void;
@@ -82,7 +82,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
   // event handlers
 
-  const handleIncrease = (productId: string) => {
+  const handleIncrease = (productId: number) => {
     startTransition(async () => {
       // update ui immediately with fake data
       setOptimisticCart((state) =>
@@ -109,7 +109,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
   };
 
-  const handleDecrease = (productId: string) => {
+  const handleDecrease = (productId: number) => {
     startTransition(async () => {
       setOptimisticCart((state) =>
         state
@@ -137,7 +137,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
   };
 
-  const handleRemove = (productId: string) => {
+  const handleRemove = (productId: number) => {
     startTransition(async () => {
       setOptimisticCart((state) =>
         state.filter((item) => item.id !== productId),
@@ -163,7 +163,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
     });
   };
 
-  const handleUpdateQty = (productId: string, qty: number) => {
+  const handleUpdateQty = (productId: number, qty: number) => {
     startTransition(async () => {
       setOptimisticCart((state) =>
         qty <= 0

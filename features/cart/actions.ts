@@ -34,7 +34,7 @@ const getCartContext = async () => {
   return { cartId: userCart.id, userId };
 };
 
-const addToCart = async (productId: string) => {
+const addToCart = async (productId: number) => {
   try {
     const { cartId, userId } = await getCartContext();
     await addToCartService(userId, cartId, productId);
@@ -47,7 +47,7 @@ const addToCart = async (productId: string) => {
   }
 };
 
-const increaseQty = async (productId: string) => {
+const increaseQty = async (productId: number) => {
   try {
     const { cartId, userId } = await getCartContext();
     await increaseQtyService(userId, cartId, productId);
@@ -58,7 +58,7 @@ const increaseQty = async (productId: string) => {
   }
 };
 
-const decreaseQty = async (productId: string) => {
+const decreaseQty = async (productId: number) => {
   try {
     const { cartId, userId } = await getCartContext();
     await decreaseQtyService(userId, cartId, productId);
@@ -69,7 +69,7 @@ const decreaseQty = async (productId: string) => {
   }
 };
 
-const removeFromCart = async (productId: string) => {
+const removeFromCart = async (productId: number) => {
   try {
     const { cartId, userId } = await getCartContext();
     await removeFromCartService(userId, cartId, productId);
@@ -80,7 +80,7 @@ const removeFromCart = async (productId: string) => {
   }
 };
 
-const updateQty = async (productId: string, qty: number) => {
+const updateQty = async (productId: number, qty: number) => {
   const { cartId, userId } = await getCartContext();
   await updateQtyService(userId, cartId, productId, qty);
 

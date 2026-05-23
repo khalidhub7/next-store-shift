@@ -20,7 +20,7 @@ const fetchProducts = async () => {
   return products;
 };
 
-const fetchProductById = async (id: string) => {
+const fetchProductById = async (id: number) => {
   let res: Response;
 
   try {
