@@ -80,7 +80,8 @@ const getUserSessions = async (
       const userSessions = await readFile(filePath, "utf-8");
       return JSON.parse(userSessions);
     } catch {
-      throw new Error("Failed to get userSessions");
+      // throw new Error("Failed to get userSessions");
+      return [];
     }
   };
   return useQueue ? appendToUserSessionsQueue(userId, task) : task();
