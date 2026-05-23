@@ -24,7 +24,7 @@ const getValidCartByUserId = async (userId: string) => {
 const addToCartService = async (
   userId: string,
   cartId: string,
-  productId: string,
+  productId: number,
 ) => {
   // throw new Error("test error")
 
@@ -34,17 +34,22 @@ const addToCartService = async (
   if (!cart) throw new Error("Cart not found");
 
   const { items: cartItems } = cart;
-  // update cart in db
-  const productInCart = cartItems.find((i: CartItem) => i.id === productId);
 
-  if (productInCart)
+  // update cart in db
+  const productInCart = cartItems.find(
+    (i: CartItem) => i.id === productId,
+  );
+
+  if (productInCart) {
     newCartItems = cartItems.map((p: CartItem) =>
       p.id === productId ? { ...p, qty: p.qty + 1 } : p,
     );
-  else {
+  } else {
     const { id, title, price } = await fetchProductById(productId);
     newCartItems = [...cartItems, { id, title, price, qty: 1 }];
   }
+
+  console.log(`*** ${JSON.stringify(newCartItems, null, 2)} ***`);
 
   await updateCart(userId, cartId, newCartItems);
 };

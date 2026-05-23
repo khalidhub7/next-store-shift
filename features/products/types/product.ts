@@ -1,5 +1,5 @@
 interface Product {
-  id: string;
+  id: number;
   title: string;
   stock: number;
   brand: string;
