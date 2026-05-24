@@ -34,7 +34,7 @@ try {
 // avoid race conditions
 
 type UserCartIndex = Record<string, string>;
-type Task = () => Promise<any>;
+type Task<T = any> = () => Promise<T>;
 
 const cartsQueue = new Map<string, Promise<void>>();
 let userCartIndexQueue = Promise.resolve();

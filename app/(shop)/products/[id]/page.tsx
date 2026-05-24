@@ -5,13 +5,13 @@ import { fetchProductById } from "@/features/products/server";
 import { CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
-
 interface ProductDetailsProps {
   params: Promise<{ id: string }>;
 }
 
 const ProductDetails = async ({ params }: ProductDetailsProps) => {
-  const { id } = await params;
+  const id = await params.then((obj) => Number(obj.id));
+
   const product = await fetchProductById(id);
 
   // console.log(`*** ${JSON.stringify(product)} ***`);

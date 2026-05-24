@@ -80,7 +80,6 @@ const getUserSessions = async (
       const userSessions = await readFile(filePath, "utf-8");
       return JSON.parse(userSessions);
     } catch {
-      // throw new Error("Failed to get userSessions");
       return [];
     }
   };
@@ -161,7 +160,7 @@ const getSession = async (
       const data = await readFile(sessionPath, "utf-8");
       return JSON.parse(data) as Session;
     } catch {
-      throw new Error("Failed to get session");
+      return undefined;
     }
   };
   return useQueue ? appendToSessionQueue(sessionId, task) : task();
@@ -203,24 +202,20 @@ const deleteSession = async (
   useQueue: boolean = true,
 ): Promise<any> => {
   const task = async () => {
-    try {
-      const filePath = path.join(
-        process.cwd(),
-        "storage",
-        "auth",
-        "sessions",
-        `${sessionId}.json`,
-      );
-      const userId = await getUserIdBySessionId(sessionId, false);
-      // Logout/delete should succeed even if already deleted.
-      if (!userId) return;
+    const filePath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "sessions",
+      `${sessionId}.json`,
+    );
+    const userId = await getUserIdBySessionId(sessionId, false);
+    // Logout/delete should succeed even if already deleted.
+    if (!userId) return;
 
-      // Delete file
-      await unlink(filePath);
-      await deleteUserSessionsEntry(userId, sessionId);
-    } catch {
-      throw new Error("Failed to delete session");
-    }
+    // Delete file
+    await unlink(filePath);
+    await deleteUserSessionsEntry(userId, sessionId);
   };
   return useQueue ? appendToSessionQueue(sessionId, task) : task();
 };

@@ -40,10 +40,16 @@ const login = async (email: string, password: string) => {
 
 // check if user exists > hash password > create user > return userId
 const register = async (email: string, password: string, name: string) => {
+  // check if email already exist
+  const anyUser = await getUserByEmail(email);
+  if (anyUser)
+    throw new Error(
+      "Unable to create account. Try logging in if you already registered.",
+    );
+
   const hashedPassword = await hashPassword(password);
   const userData = { email, password: hashedPassword, name };
 
-  // this throw if the email already exist
   const userId = await createUser(userData);
   if (!userId) throw new Error("Failed to create user");
 

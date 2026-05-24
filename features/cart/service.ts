@@ -32,10 +32,11 @@ const addToCartService = async (
   if (!cart) throw new Error("Cart not found");
 
   const { items: cartItems } = cart;
+
   // update cart in db
-  const productInCart = cartItems.find(
-    (i: CartItem) => i.id === productId,
-  );
+  const productInCart = cartItems.find((i: CartItem) => i.id === productId);
+  // console.log(`*** ${JSON.stringify(productInCart, null, 2)} ***`);
+
   if (productInCart) {
     newCartItems = cartItems.map((p: CartItem) =>
       p.id === productId ? { ...p, qty: p.qty + 1 } : p,
@@ -44,8 +45,6 @@ const addToCartService = async (
     const { id, title, price } = await fetchProductById(productId);
     newCartItems = [...cartItems, { id, title, price, qty: 1 }];
   }
-
-  console.log(`*** ${JSON.stringify(newCartItems, null, 2)} ***`);
 
   await updateCart(userId, cartId, newCartItems);
 };
@@ -120,6 +119,7 @@ const updateQtyService = async (
   if (!cart) throw new Error("Cart not found");
 
   const { items: cartItems } = cart;
+  
   newCartItems = cartItems
     .map((item: CartItem) => (item.id === productId ? { ...item, qty } : item))
     .filter((item: CartItem) => item.qty > 0);
