@@ -1,44 +1,36 @@
 import { redis } from "./lib/redis";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getSession } from "./features/auth/server";
 import { hashSessionId } from "./features/auth/server";
-import { deleteSession } from "./features/auth/db/session";
-import { isSessionValid } from "./features/auth/session.helpers";
 
 const middleware = async (request: NextRequest) => {
   const { pathname, searchParams } = request.nextUrl;
-  const saferRedirects = ["/products"]; // prevent bad redirects
 
+  // prevent bad redirects
+  const saferRedirects = ["/products"];
   const redirectTo = searchParams.get("redirect");
-
   if (redirectTo) {
     if (!saferRedirects.includes(redirectTo)) {
       const url = new URL(request.url);
       url.searchParams.set("redirect", "");
-
       return NextResponse.redirect(url);
     }
   }
 
   const protectedPages: Array<string> = []; // add more later
 
+  // no session cookie → user is unauthenticated → block protected routes
   const sessionId = request.cookies.get("sessionId")?.value;
 
-  // not logged in → block protected routes
-  if (!sessionId) {
-    for (const p of protectedPages) {
-      if (pathname.startsWith(p)) {
-        return NextResponse.redirect(
-          new URL(`/login?redirect=${pathname}`, request.url),
-        );
-      }
-    }
+  const isProtectedPage = protectedPages.some((p) => pathname.startsWith(p));
+  if (!sessionId && isProtectedPage) {
+    return NextResponse.redirect(
+      new URL(`/login?redirect=${pathname}`, request.url),
+    );
   }
 
-  // if 'sessionId' we should ensure that is not fake by lookup
-  // best practice is redis (ram) lookup
-  // but lets do db (disk) lookup temporarily
+  // session cookie exists → verify it against Redis to prevent fake/expired sessions
+  // best practice is redis (ram) lookup instead of (disk) lookup
 
   if (sessionId) {
     // if sessionId fake or session expired the redis.get return null

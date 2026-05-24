@@ -4,8 +4,7 @@ import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
 import { logoutAction } from "@/features/auth/server";
 
-// ndir check if session valid redis check instead of db checks
-// 3ad nrj3 n9ad logout button
+
 
 const LogoutButton = () => {
   const options = { position: "top-center" } as const;

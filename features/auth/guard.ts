@@ -1,8 +1,7 @@
+import { redis } from "@/lib/redis";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { getSession, deleteSession } from "./db/session";
-import { isSessionValid } from "./session.helpers";
 import { hashSessionId } from "./service";
+import { redirect } from "next/navigation";
 
 /* 
 actions.ts      → entry point
@@ -18,21 +17,15 @@ const requireUser = async (redirectTo: string) => {
 
   if (!sessionId) redirect(`/login?redirect=${redirectTo}`);
 
-  const session = await getSession(hashSessionId(sessionId));
-  if (!session) {
+  // if sessionId fake or session expired the redis.get return null
+  const userId = await redis.get(`session:${hashSessionId(sessionId)}`);
+
+  if (!userId) {
     cookieStore.delete("sessionId");
     redirect(`/login?redirect=${redirectTo}`);
   }
 
-  const isValid = isSessionValid(session);
-
-  if (!isValid) {
-    await deleteSession(hashSessionId(sessionId));
-    cookieStore.delete("sessionId");
-    redirect(`/login?redirect=${redirectTo}`);
-  }
-
-  return session.userId;
+  return userId;
 };
 
 export { requireUser };

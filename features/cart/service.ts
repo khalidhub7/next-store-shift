@@ -61,9 +61,17 @@ const increaseQtyService = async (
   if (!cart) throw new Error("Cart not found");
 
   const { items: cartItems } = cart;
-  newCartItems = cartItems.map((item: CartItem) =>
-    item.id === productId ? { ...item, qty: item.qty + 1 } : item,
-  );
+
+  newCartItems = cartItems.map((item: CartItem) => {
+    if (item.id === productId) {
+      const qty = item.qty + 1;
+      if (qty > 10) throw new Error("Invalid Quantity");
+      return { ...item, qty };
+    } else {
+      return item;
+    }
+  });
+
   await updateCart(userId, cartId, newCartItems); // update db
 };
 
@@ -119,7 +127,7 @@ const updateQtyService = async (
   if (!cart) throw new Error("Cart not found");
 
   const { items: cartItems } = cart;
-  
+
   newCartItems = cartItems
     .map((item: CartItem) => (item.id === productId ? { ...item, qty } : item))
     .filter((item: CartItem) => item.qty > 0);
