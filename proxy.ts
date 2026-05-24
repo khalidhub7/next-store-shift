@@ -1,3 +1,4 @@
+import { redis } from "./lib/redis";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "./features/auth/server";
@@ -40,23 +41,14 @@ const middleware = async (request: NextRequest) => {
   // but lets do db (disk) lookup temporarily
 
   if (sessionId) {
-    const session = await getSession(hashSessionId(sessionId));
-    if (!session) {
-      // fake session
+    // if sessionId fake or session expired the redis.get return null
+    const userId = await redis.get(`session:${hashSessionId(sessionId)}`);
+
+    if (!userId) {
       const res = NextResponse.redirect(
         new URL(`/login?redirect=${pathname}`, request.url),
       );
       res.cookies.delete("sessionId");
-      return res;
-    }
-    const isValid = isSessionValid(session); // expired or not yet
-    if (!isValid) {
-      // session exist but not valid → block protected routes
-      const res = NextResponse.redirect(
-        new URL(`/login?redirect=${pathname}`, request.url),
-      );
-      res.cookies.delete("sessionId");
-      await deleteSession(hashSessionId(sessionId));
       return res;
     }
 
@@ -65,7 +57,7 @@ const middleware = async (request: NextRequest) => {
       pathname.startsWith("/login") || pathname.startsWith("/register");
 
     if (isAuthPage) {
-      // logged in → block auth pages
+      // logged in → block auth pages → usually go home
       return NextResponse.redirect(new URL("/products", request.url));
     }
   }

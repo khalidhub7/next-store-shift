@@ -1,5 +1,6 @@
 // helpers (business logic)
 
+import { redis } from "@/lib/redis";
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import { createSession } from "./session.helpers";
@@ -31,10 +32,15 @@ const login = async (email: string, password: string) => {
 
   // create session
   const session = createSession(user.id);
-  await saveSession({
-    ...session,
-    sessionId: hashSessionId(session.sessionId),
-  });
+  const hashedSessionId = hashSessionId(session.sessionId);
+
+  await saveSession({ ...session, sessionId: hashedSessionId });
+  await redis.set(
+    `session:${hashedSessionId}`,
+    user.id,
+    "EX",
+    60 * 60 * 24 * 3, // 3 days
+  );
   return { sessionId: session.sessionId };
 };
 
@@ -55,17 +61,23 @@ const register = async (email: string, password: string, name: string) => {
 
   // create session
   const session = createSession(userId);
-  await saveSession({
-    ...session,
-    sessionId: hashSessionId(session.sessionId),
-  });
+  const hashedSessionId = hashSessionId(session.sessionId);
+
+  await saveSession({ ...session, sessionId: hashedSessionId });
+  await redis.set(
+    `session:${hashedSessionId}`,
+    userId,
+    "EX",
+    60 * 60 * 24 * 3, // 3 days
+  );
+
   return { sessionId: session.sessionId, userId };
 };
 
 const logout = async (sessionId: string) => {
   if (!sessionId) return;
-  // hmm cookie also should removed
   await deleteSession(hashSessionId(sessionId)); // from db
+  await redis.del(`session:${hashSessionId(sessionId)}`);
 };
 
 export { login, register, logout, hashSessionId };
