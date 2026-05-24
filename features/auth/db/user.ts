@@ -81,12 +81,12 @@ const setEmailIndex = async (
   useQueue: boolean = true,
 ) => {
   const task = async () => {
-    try {
-      const data = await getEmailIndex(false);
-      await writeFile(emailIndexPath, JSON.stringify({ ...data, [email]: id }));
-    } catch (error) {
-      throw new Error("Failed to set email index");
-    }
+    const data = await getEmailIndex(false);
+    if (data[email])
+      throw new Error(
+        "Unable to create account. Try logging in if you already registered.",
+      );
+    await writeFile(emailIndexPath, JSON.stringify({ ...data, [email]: id }));
   };
   return useQueue ? appendToEmailIndexQueue(task) : task();
 };
