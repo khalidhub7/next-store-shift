@@ -1,28 +1,27 @@
 ../app-basics/
-├── README.md
 ├── app
 │   ├── (auth)
 │   │   ├── login
 │   │   │   └── page.tsx
 │   │   └── register
 │   │       └── page.tsx
+│   ├── error.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── not-found.tsx
 │   ├── (public)
 │   │   ├── about
 │   │   │   └── page.tsx
 │   │   └── page.tsx
-│   ├── (shop)
-│   │   ├── layout.tsx
-│   │   └── products
-│   │       ├── [id]
-│   │       │   ├── loading.tsx
-│   │       │   ├── not-found.tsx
-│   │       │   └── page.tsx
-│   │       ├── loading.tsx
-│   │       └── page.tsx
-│   ├── error.tsx
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── not-found.tsx
+│   └── (shop)
+│       ├── layout.tsx
+│       └── products
+│           ├── [id]
+│           │   ├── loading.tsx
+│           │   ├── not-found.tsx
+│           │   └── page.tsx
+│           ├── loading.tsx
+│           └── page.tsx
 ├── components
 │   ├── layout
 │   │   ├── ClientNav.client.tsx
@@ -47,6 +46,7 @@
 ├── docs
 │   ├── route-handlers-refactor-notes.md
 │   └── structure.txt
+├── dump.rdb
 ├── eslint.config.mjs
 ├── features
 │   ├── auth
@@ -91,28 +91,28 @@
 ├── lib
 │   ├── redis.ts
 │   └── utils.ts
-├── next-env.d.ts
 ├── next.config.ts
-├── package-lock.json
+├── next-env.d.ts
 ├── package.json
+├── package-lock.json
 ├── postcss.config.mjs
 ├── proxy.ts
 ├── public
 │   └── favicon.ico
+├── README.md
 ├── storage
 │   ├── auth
 │   │   ├── emailIndex.json
 │   │   ├── sessions
-│   │   │   ├── 84389ed0dfa7bd408436b8fab2becabfa3b62741dba2756f39f4d408f7085988.json
-│   │   │   └── be2c7c65f25ff11e079e1f069bb1939257b3095e21599deb87f7b887fcb4da45.json
-│   │   ├── userSessions
-│   │   │   └── 31a2467f-28f0-47e3-9548-094d5cebc9a1.json
-│   │   └── users
-│   │       └── 31a2467f-28f0-47e3-9548-094d5cebc9a1.json
+│   │   │   └── 1578ecfd9fa01b7385b50fa7d36fe56a83814b4cba3202440d0eb51caa7aaf95.json
+│   │   ├── users
+│   │   │   └── d99c4b5b-7c30-4679-928c-fbef1af3c3a2.json
+│   │   └── userSessions
+│   │       └── d99c4b5b-7c30-4679-928c-fbef1af3c3a2.json
 │   └── cart
 │       ├── carts
-│       │   └── 97a9f0f8-a7f0-4716-a967-e51e9cf9dac6.json
+│       │   └── 06b7b919-96fc-4016-b968-ef8273492f98.json
 │       └── userCartIndex.json
 └── tsconfig.json
 
-35 directories, 80 files
+36 directories, 80 files

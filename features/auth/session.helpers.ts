@@ -40,4 +40,5 @@ const isSessionValid = (session: Session) => {
   return new Date(session.expiresAt) > new Date();
 };
 
+
 export { createSession, getUserFromSession, destroySession, isSessionValid };

@@ -4,6 +4,8 @@ export { getSession } from "./db/session";
 export { hashSessionId } from "./service";
 export { isSessionValid } from "./session.helpers";
 
+export { logoutAction } from "./actions";
+
 /* 
 hint:
 'getSession' is low level func

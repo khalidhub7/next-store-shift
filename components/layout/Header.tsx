@@ -16,9 +16,10 @@ const Header = () => (
           store
         </span>
       </div>
-
       {/* Nav */}
       <ClientNav />
+      {/* logout button */}
+
     </div>
   </header>
 );

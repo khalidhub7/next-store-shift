@@ -73,6 +73,6 @@ const middleware = async (request: NextRequest) => {
 };
 
 // (handle later)
-export const config = { matcher: ["/login", "/register"] };
+export const config = { matcher: ["/login", "/register", "/products"] };
 
 export default middleware;
