@@ -5,7 +5,6 @@ import { LogOut } from "lucide-react";
 import { logoutAction } from "@/features/auth/server";
 
 
-
 const LogoutButton = () => {
   const options = { position: "top-center" } as const;
 
