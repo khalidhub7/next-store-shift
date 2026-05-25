@@ -11,7 +11,7 @@ const Header = async () => {
 
   try {
     const sessionId = cookieStore.get("sessionId")?.value;
-    
+
     if (sessionId) {
       isAuthenticated = !!(await redis.get(
         `session:${hashSessionId(sessionId)}`,
@@ -37,7 +37,7 @@ const Header = async () => {
         {/* Nav */}
         <ClientNav />
         {/* logout button */}
-        <LogoutButton />
+        {isAuthenticated ? <LogoutButton /> : undefined}
       </div>
     </header>
   );
