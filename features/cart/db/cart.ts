@@ -9,6 +9,7 @@ Later (real DB)
 DELETE storage/ folder
 db/cart.ts → connects to real DB
 */
+import "server-only";
 
 // assume that Filesystem operations are always success
 import path from "path";

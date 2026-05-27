@@ -10,6 +10,7 @@ DELETE storage/ folder
 db/session.ts → connects to real DB
 */
 // assume that Filesystem operations are always success
+import "server-only";
 
 import path from "path";
 import { Session } from "../types/session";

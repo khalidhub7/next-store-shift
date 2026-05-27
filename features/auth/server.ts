@@ -1,4 +1,6 @@
 // export server comps
+import "server-only";
+
 export { requireUser } from "./guard";
 export { getSession } from "./db/session";
 export { hashSessionId } from "./service";

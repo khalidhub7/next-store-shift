@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getCart } from "./db/cart";
 import { cookies } from "next/headers";
 import { CartItem } from "./types/cart";

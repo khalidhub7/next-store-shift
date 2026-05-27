@@ -1,3 +1,5 @@
+import "server-only";
+
 import { redis } from "@/lib/redis";
 import { cookies } from "next/headers";
 import { hashSessionId } from "./service";

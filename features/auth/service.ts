@@ -1,4 +1,5 @@
 // helpers (business logic)
+import "server-only";
 
 import { redis } from "@/lib/redis";
 import bcrypt from "bcrypt";

@@ -3,6 +3,8 @@ service.ts         → orchestrate (calls db + products)
 actions.ts         → entry point (cookies, revalidate, call service)
 queries.ts         → read-only (session check + get cart items) */
 
+import "server-only";
+
 import { CartItem } from "./types/cart";
 import { getCart, updateCart } from "./db/cart";
 import { fetchProductById } from "../products/server";

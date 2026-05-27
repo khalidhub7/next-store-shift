@@ -9,6 +9,7 @@ Later (real DB)
 DELETE storage/ folder
 db/user.ts → connects to real DB
 */
+import "server-only";
 
 import path from "path";
 import { mkdir } from "fs/promises";
