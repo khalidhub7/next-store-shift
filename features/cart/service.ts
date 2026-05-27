@@ -135,20 +135,22 @@ const updateQtyService = async (
   const task = async () => {
     // throw new Error("test error"); // force fail for testing
 
-  if (!Number.isInteger(qty) || qty < 0 || qty > 10)
-    throw new Error("Invalid Quantity");
+    if (!Number.isInteger(qty) || qty < 0 || qty > 10)
+      throw new Error("Invalid Quantity");
 
-  let newCartItems: Array<CartItem>;
-  const cart = await getCart(userId, cartId, false);
-  if (!cart) throw new Error("Cart not found");
+    let newCartItems: Array<CartItem>;
+    const cart = await getCart(userId, cartId, false);
+    if (!cart) throw new Error("Cart not found");
 
-  const { items: cartItems } = cart;
+    const { items: cartItems } = cart;
 
-  newCartItems = cartItems
-    .map((item: CartItem) => (item.id === productId ? { ...item, qty } : item))
-    .filter((item: CartItem) => item.qty > 0);
-  await updateCart(userId, cartId, newCartItems, false);
-  }
+    newCartItems = cartItems
+      .map((item: CartItem) =>
+        item.id === productId ? { ...item, qty } : item,
+      )
+      .filter((item: CartItem) => item.qty > 0);
+    await updateCart(userId, cartId, newCartItems, false);
+  };
   await appendToCartQueue(userId, task);
 };
 
