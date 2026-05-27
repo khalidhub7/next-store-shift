@@ -187,6 +187,7 @@ const updateCart = async (
   userId: string,
   cartId: string,
   newItems: Array<CartItem>,
+  useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
     const cart = await getCart(userId, cartId, false);
@@ -201,7 +202,7 @@ const updateCart = async (
       false,
     );
   };
-  return appendToCartQueue(userId, task);
+  return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
 const deleteCart = async (userId: string, cartId: string): Promise<void> => {

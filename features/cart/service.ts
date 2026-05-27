@@ -6,6 +6,7 @@ queries.ts         → read-only (session check + get cart items) */
 import "server-only";
 
 import { CartItem } from "./types/cart";
+import { appendToCartQueue } from "./db/cart";
 import { getCart, updateCart } from "./db/cart";
 import { fetchProductById } from "../products/server";
 import { getCartByUserId, deleteCart } from "./db/cart";
@@ -51,7 +52,7 @@ const addToCartService = async (
     await updateCart(userId, cartId, newCartItems, false);
   };
 
-  await 
+  await appendToCartQueue(userId, task);
 };
 
 const increaseQtyService = async (
