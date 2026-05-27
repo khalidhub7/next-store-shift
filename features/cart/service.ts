@@ -112,15 +112,18 @@ const removeFromCartService = async (
   cartId: string,
   productId: number,
 ) => {
-  // throw new Error("test error")
+  const task = async () => {
+    // throw new Error("test error")
 
-  let newCartItems: Array<CartItem>;
-  const cart = await getCart(userId, cartId);
-  if (!cart) throw new Error("Cart not found");
+    let newCartItems: Array<CartItem>;
+    const cart = await getCart(userId, cartId, false);
+    if (!cart) throw new Error("Cart not found");
 
-  const { items: cartItems } = cart;
-  newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
-  await updateCart(userId, cartId, newCartItems);
+    const { items: cartItems } = cart;
+    newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
+    await updateCart(userId, cartId, newCartItems, false);
+  };
+  await appendToCartQueue(userId, task);
 };
 
 const updateQtyService = async (
