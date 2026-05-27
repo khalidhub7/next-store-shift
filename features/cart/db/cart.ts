@@ -223,6 +223,7 @@ const getCartIdByUserId = async (userId: string): Promise<string | null> => {
   return index[userId] ?? null;
 };
 
+// cart CRUD
 export {
   getCart,
   createCart,
@@ -231,3 +232,6 @@ export {
   getCartByUserId,
   getCartIdByUserId,
 };
+
+// queue helper for atomic cart mutations
+export { appendToCartQueue };
