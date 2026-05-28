@@ -50,7 +50,7 @@ const addToCartService = async (
       const { id, title, price } = await fetchProductById(productId);
       newCartItems = [...cartItems, { id, title, price, qty: 1 }];
     }
-    await updateCart(userId, cart.id, newCartItems, false);
+    await updateCart(userId, cart, newCartItems, false);
   };
 
   await appendToCartQueue(userId, task);
@@ -75,7 +75,7 @@ const increaseQtyService = async (
         return item;
       }
     });
-    await updateCart(userId, cart.id, newCartItems, false); // update db
+    await updateCart(userId, cart, newCartItems, false); // update db
   };
   await appendToCartQueue(userId, task);
 };
@@ -96,7 +96,7 @@ const decreaseQtyService = async (
         item.id === productId ? { ...item, qty: item.qty - 1 } : item,
       )
       .filter((item: CartItem) => item.qty > 0);
-    await updateCart(userId, cart.id, newCartItems, false);
+    await updateCart(userId, cart, newCartItems, false);
   };
   await appendToCartQueue(userId, task);
 };
@@ -113,7 +113,7 @@ const removeFromCartService = async (
 
     const { items: cartItems } = cart;
     newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
-    await updateCart(userId, cart.id, newCartItems, false);
+    await updateCart(userId, cart, newCartItems, false);
   };
   await appendToCartQueue(userId, task);
 };
@@ -139,7 +139,7 @@ const updateQtyService = async (
         item.id === productId ? { ...item, qty } : item,
       )
       .filter((item: CartItem) => item.qty > 0);
-    await updateCart(userId, cart.id, newCartItems, false);
+    await updateCart(userId, cart, newCartItems, false);
   };
   await appendToCartQueue(userId, task);
 };

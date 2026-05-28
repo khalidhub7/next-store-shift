@@ -172,14 +172,11 @@ const getOrCreateCart = async (
 
 const updateCart = async (
   userId: string,
-  cartId: string,
+  cart: Cart,
   newItems: Array<CartItem>,
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    const cart = await getCart(userId, cartId, false);
-
-    if (!cart) throw new Error("Cart not found");
     try {
       await writeCart(
         {
