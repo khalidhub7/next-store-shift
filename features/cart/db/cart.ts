@@ -183,6 +183,22 @@ const createCart = async (
   return appendToCartQueue(userId, task);
 };
 
+const getOrCreateCart = async (userId: string): Promise<string> => {
+  const task = async () => {
+    const index = await getUserCartIndex(false);
+    if (index[userId]) return index[userId]; // already exists
+
+    const cartId = randomUUID();
+    const now = new Date().toISOString();
+    const newCart = { id: cartId, userId, items: [], createdAt: now, updatedAt: now };
+
+    await setUserCartIndex(userId, cartId);
+    await writeCart(newCart, false);
+    return cartId;
+  };
+  return appendToCartQueue(userId, task);
+};
+
 const updateCart = async (
   userId: string,
   cartId: string,
@@ -230,6 +246,7 @@ export {
   createCart,
   updateCart,
   deleteCart,
+  getOrCreateCart,
   getCartByUserId,
   getCartIdByUserId,
 };

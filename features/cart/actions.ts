@@ -1,6 +1,5 @@
 "use server";
 import { cookies } from "next/headers";
-import { createCart } from "./db/cart";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
 import { addToCartService, decreaseQtyService } from "./service";
@@ -19,19 +18,11 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
 // shared helper between actions
 const getCartContext = async () => {
   const userId = await requireUser("/products");
-
-  // get cart by user_id
-  const userCart = await getValidCartByUserId(userId);
+  const cart = await getValidCartByUserId(userId);
 
   const cookieStore = await cookies();
-  if (!userCart) {
-    const cartId = await createCart(userId, []);
-    cookieStore.set("cart", cartId, cookieOptions);
-    return { cartId, userId };
-  }
-
-  cookieStore.set("cart", userCart.id, cookieOptions);
-  return { cartId: userCart.id, userId };
+  cookieStore.set("cart", cart.id, cookieOptions);
+  return { cartId: cart.id, userId };
 };
 
 const addToCart = async (productId: number) => {
