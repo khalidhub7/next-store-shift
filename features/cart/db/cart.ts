@@ -98,7 +98,6 @@ const setUserCartIndex = async (
       JSON.stringify({ ...index, [userId]: cartId }, null, 2),
     );
   };
-
   return useQueue ? appendToCartIndexQueue(task) : task();
 };
 
