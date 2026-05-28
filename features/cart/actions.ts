@@ -83,7 +83,7 @@ const updateQty = async (productId: number, qty: number) => {
     revalidatePath("/products", "layout");
   } catch (err: any) {
     if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
-    throw new Error(err.message);
+    throw new Error(err instanceof Error ? err.message : "update qty failed");
   }
 };
 
