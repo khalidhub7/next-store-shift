@@ -16,6 +16,7 @@ const getValidCartByUserId = async (userId: string) => {
   const cart = await getCartByUserId(userId);
 
   if (!cart) return undefined;
+
   const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
   if (expired) {
     await deleteCart(userId, cart.id);

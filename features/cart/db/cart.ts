@@ -92,7 +92,6 @@ const setUserCartIndex = async (
 ): Promise<void> => {
   const task = async () => {
     const index = await getUserCartIndex(false);
-    if (index[userId]) throw new Error("cart already exist");
 
     await writeFile(
       userCartIndexPath,
@@ -161,24 +160,25 @@ const createCart = async (
   userId: string,
   items: Array<CartItem>,
 ): Promise<string> => {
-  const cartId = randomUUID();
-
   const task = async () => {
+    const index = await getUserCartIndex();
+    const userCartId = index[userId];
+    if (userCartId) return userCartId;
+
+    const cartId = randomUUID();
+    const now = new Date().toISOString();
+
     const newCart = {
       id: cartId,
       userId,
       items,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
 
-    try {
-      await setUserCartIndex(newCart.userId, cartId);
-      await writeCart(newCart, false);
-      return newCart.id;
-    } catch (err) {
-      throw err; // don't swallow the error
-    }
+    await setUserCartIndex(newCart.userId, cartId);
+    await writeCart(newCart, false);
+    return newCart.id;
   };
   return appendToCartQueue(userId, task);
 };
