@@ -140,22 +140,6 @@ const getCart = async (
   return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
-const getCartByUserId = async (userId: string) => {
-  const index = await getUserCartIndex();
-  const cartId = index[userId];
-  if (!cartId) return undefined;
-
-  const task = async () => {
-    const cart = await getCart(userId, cartId, false);
-    if (!cart) {
-      await deleteUserCartIndex(userId);
-      return undefined;
-    }
-    return cart;
-  };
-  return appendToCartQueue(userId, task);
-};
-
 const createCart = async (
   userId: string,
   items: Array<CartItem>,
@@ -183,20 +167,35 @@ const createCart = async (
   return appendToCartQueue(userId, task);
 };
 
-const getOrCreateCart = async (userId: string): Promise<string> => {
+const getOrCreateCart = async (
+  userId: string,
+  useQueue: boolean = true,
+): Promise<Cart> => {
   const task = async () => {
     const index = await getUserCartIndex(false);
-    if (index[userId]) return index[userId]; // already exists
+    let cartId = index[userId];
+    if (cartId) {
+      const cart = await getCart(userId, cartId, false);
+      if (cart) return cart;
+      await deleteUserCartIndex(userId, false); // ← clean up stale index
+    }
 
-    const cartId = randomUUID();
+    // does not exist
+    cartId = randomUUID();
     const now = new Date().toISOString();
-    const newCart = { id: cartId, userId, items: [], createdAt: now, updatedAt: now };
+    const newCart = {
+      id: cartId,
+      userId,
+      items: [],
+      createdAt: now,
+      updatedAt: now,
+    };
 
     await setUserCartIndex(userId, cartId);
     await writeCart(newCart, false);
-    return cartId;
+    return newCart;
   };
-  return appendToCartQueue(userId, task);
+  return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
 const updateCart = async (
@@ -221,7 +220,11 @@ const updateCart = async (
   return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
-const deleteCart = async (userId: string, cartId: string): Promise<void> => {
+const deleteCart = async (
+  userId: string,
+  cartId: string,
+  useQueue: boolean = true,
+): Promise<void> => {
   const task = async () => {
     // check cart
     const cart = await getCart(userId, cartId, false);
@@ -232,7 +235,7 @@ const deleteCart = async (userId: string, cartId: string): Promise<void> => {
     const cartPath = path.join(cartsDir, `${cartId}.json`);
     await unlink(cartPath);
   };
-  return appendToCartQueue(userId, task);
+  return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
 const getCartIdByUserId = async (userId: string): Promise<string | null> => {
@@ -247,7 +250,6 @@ export {
   updateCart,
   deleteCart,
   getOrCreateCart,
-  getCartByUserId,
   getCartIdByUserId,
 };
 

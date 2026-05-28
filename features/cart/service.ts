@@ -9,20 +9,24 @@ import { CartItem } from "./types/cart";
 import { appendToCartQueue } from "./db/cart";
 import { getCart, updateCart } from "./db/cart";
 import { fetchProductById } from "../products/server";
-import { getCartByUserId, deleteCart } from "./db/cart";
+import { getOrCreateCart, deleteCart } from "./db/cart";
 
 const getValidCartByUserId = async (userId: string) => {
   const CART_TTL = 1000 * 60 * 60 * 24 * 3;
-  const cart = await getCartByUserId(userId);
 
-  if (!cart) return undefined;
+  const task = async () => {
+    const cart = await getOrCreateCart(userId, false);
+    const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
 
-  const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
-  if (expired) {
-    await deleteCart(userId, cart.id);
-    return undefined;
-  }
-  return cart;
+    if (expired) {
+      // cleanup
+      await deleteCart(userId, cart.id, false);
+      const newCart = await getOrCreateCart(userId, false);
+      return newCart;
+    }
+    return cart;
+  };
+  return appendToCartQueue(userId, task);
 };
 
 const addToCartService = async (
