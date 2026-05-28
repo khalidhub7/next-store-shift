@@ -47,6 +47,7 @@ const increaseQty = async (productId: number) => {
 
     revalidatePath("/products", "layout");
   } catch (err: any) {
+    // console.log(`*** ${err?.digest} ***`);
     if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
     throw new Error("increase qty failed");
   }

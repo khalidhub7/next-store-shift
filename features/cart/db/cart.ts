@@ -180,14 +180,18 @@ const updateCart = async (
     const cart = await getCart(userId, cartId, false);
 
     if (!cart) throw new Error("Cart not found");
-    await writeCart(
-      {
-        ...cart,
-        items: newItems,
-        updatedAt: new Date().toISOString(),
-      },
-      false,
-    );
+    try {
+      await writeCart(
+        {
+          ...cart,
+          items: newItems,
+          updatedAt: new Date().toISOString(),
+        },
+        false,
+      );
+    } catch {
+      throw new Error("Failed to update cart");
+    }
   };
   return useQueue ? appendToCartQueue(userId, task) : task();
 };
