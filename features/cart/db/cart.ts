@@ -199,7 +199,6 @@ const deleteCart = async (
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    
     // delete index
     await deleteUserCartIndex(cart.userId);
     // delete file
