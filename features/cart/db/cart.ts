@@ -195,17 +195,15 @@ const updateCart = async (
 
 const deleteCart = async (
   userId: string,
-  cartId: string,
+  cart: Cart,
   useQueue: boolean = true,
 ): Promise<void> => {
   const task = async () => {
-    // check cart
-    const cart = await getCart(userId, cartId, false);
-    if (!cart) throw new Error("Cart not found");
+    
     // delete index
     await deleteUserCartIndex(cart.userId);
     // delete file
-    const cartPath = path.join(cartsDir, `${cartId}.json`);
+    const cartPath = path.join(cartsDir, `${cart.id}.json`);
     await unlink(cartPath);
   };
   return useQueue ? appendToCartQueue(userId, task) : task();

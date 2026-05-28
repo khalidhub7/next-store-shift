@@ -20,7 +20,7 @@ const getValidCartByUserId = async (userId: string) => {
 
     if (expired) {
       // cleanup
-      await deleteCart(userId, cart.id, false);
+      await deleteCart(userId, cart, false);
       const newCart = await getOrCreateCart(userId, false);
       return newCart;
     }
