@@ -140,33 +140,6 @@ const getCart = async (
   return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
-const createCart = async (
-  userId: string,
-  items: Array<CartItem>,
-): Promise<string> => {
-  const task = async () => {
-    const index = await getUserCartIndex();
-    const userCartId = index[userId];
-    if (userCartId) return userCartId;
-
-    const cartId = randomUUID();
-    const now = new Date().toISOString();
-
-    const newCart = {
-      id: cartId,
-      userId,
-      items,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    await setUserCartIndex(newCart.userId, cartId);
-    await writeCart(newCart, false);
-    return newCart.id;
-  };
-  return appendToCartQueue(userId, task);
-};
-
 const getOrCreateCart = async (
   userId: string,
   useQueue: boolean = true,
@@ -246,7 +219,6 @@ const getCartIdByUserId = async (userId: string): Promise<string | null> => {
 // cart CRUD
 export {
   getCart,
-  createCart,
   updateCart,
   deleteCart,
   getOrCreateCart,
