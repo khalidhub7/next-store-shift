@@ -29,7 +29,7 @@ const getCartContext = async (): Promise<{ userId: string; cart: Cart }> => {
 const addToCart = async (productId: number) => {
   try {
     const { userId, cart } = await getCartContext();
-    await addToCartService(userId, cart.id, productId);
+    await addToCartService(userId, cart, productId);
 
     // usualy isr refresh every 1h, so that is renew ui immediately
     revalidatePath("/products", "layout");
@@ -44,7 +44,7 @@ const addToCart = async (productId: number) => {
 const increaseQty = async (productId: number) => {
   try {
     const { userId, cart } = await getCartContext();
-    await increaseQtyService(userId, cart.id, productId);
+    await increaseQtyService(userId, cart, productId);
 
     revalidatePath("/products", "layout");
   } catch (err: any) {
@@ -57,7 +57,7 @@ const increaseQty = async (productId: number) => {
 const decreaseQty = async (productId: number) => {
   try {
     const { userId, cart } = await getCartContext();
-    await decreaseQtyService(userId, cart.id, productId);
+    await decreaseQtyService(userId, cart, productId);
 
     revalidatePath("/products", "layout");
   } catch (err: any) {
@@ -69,7 +69,7 @@ const decreaseQty = async (productId: number) => {
 const removeFromCart = async (productId: number) => {
   try {
     const { userId, cart } = await getCartContext();
-    await removeFromCartService(userId, cart.id, productId);
+    await removeFromCartService(userId, cart, productId);
 
     revalidatePath("/products", "layout");
   } catch (err: any) {
@@ -81,7 +81,7 @@ const removeFromCart = async (productId: number) => {
 const updateQty = async (productId: number, qty: number) => {
   try {
     const { userId, cart } = await getCartContext();
-    await updateQtyService(userId, cart.id, productId, qty);
+    await updateQtyService(userId, cart, productId, qty);
     revalidatePath("/products", "layout");
   } catch (err: any) {
     if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
