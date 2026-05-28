@@ -33,6 +33,8 @@ const addToCart = async (productId: number) => {
     // usualy isr refresh every 1h, so that is renew ui immediately
     revalidatePath("/products", "layout");
   } catch (err: any) {
+    /* if (err?.digest?.includes("NEXT_REDIRECT"))
+      console.log(`*** ${err?.digest} ***`); */
     if (err?.digest?.includes("NEXT_REDIRECT")) throw err; // allow redirect
     throw new Error("Failed to add item");
   }
@@ -44,7 +46,8 @@ const increaseQty = async (productId: number) => {
     await increaseQtyService(userId, cartId, productId);
 
     revalidatePath("/products", "layout");
-  } catch {
+  } catch (err: any) {
+    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
     throw new Error("increase qty failed");
   }
 };
@@ -55,7 +58,8 @@ const decreaseQty = async (productId: number) => {
     await decreaseQtyService(userId, cartId, productId);
 
     revalidatePath("/products", "layout");
-  } catch {
+  } catch (err: any) {
+    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
     throw new Error("decrease qty failed");
   }
 };
@@ -66,16 +70,21 @@ const removeFromCart = async (productId: number) => {
     await removeFromCartService(userId, cartId, productId);
 
     revalidatePath("/products", "layout");
-  } catch {
+  } catch (err: any) {
+    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
     throw new Error("remove from cart failed");
   }
 };
 
 const updateQty = async (productId: number, qty: number) => {
-  const { cartId, userId } = await getCartContext();
-  await updateQtyService(userId, cartId, productId, qty);
-
-  revalidatePath("/products", "layout");
+  try {
+    const { cartId, userId } = await getCartContext();
+    await updateQtyService(userId, cartId, productId, qty);
+    revalidatePath("/products", "layout");
+  } catch (err: any) {
+    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
+    throw new Error(err.message);
+  }
 };
 
 export { addToCart, decreaseQty, removeFromCart, updateQty, increaseQty };
