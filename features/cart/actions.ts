@@ -1,4 +1,5 @@
 "use server";
+import { Cart } from "./types/cart";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
@@ -16,19 +17,19 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   };
 
 // shared helper between actions
-const getCartContext = async () => {
+const getCartContext = async (): Promise<{ userId: string; cart: Cart }> => {
   const userId = await requireUser("/products");
   const cart = await getValidCartByUserId(userId);
 
   const cookieStore = await cookies();
   cookieStore.set("cart", cart.id, cookieOptions);
-  return { cartId: cart.id, userId };
+  return { userId, cart };
 };
 
 const addToCart = async (productId: number) => {
   try {
-    const { cartId, userId } = await getCartContext();
-    await addToCartService(userId, cartId, productId);
+    const { userId, cart } = await getCartContext();
+    await addToCartService(userId, cart.id, productId);
 
     // usualy isr refresh every 1h, so that is renew ui immediately
     revalidatePath("/products", "layout");
@@ -42,8 +43,8 @@ const addToCart = async (productId: number) => {
 
 const increaseQty = async (productId: number) => {
   try {
-    const { cartId, userId } = await getCartContext();
-    await increaseQtyService(userId, cartId, productId);
+    const { userId, cart } = await getCartContext();
+    await increaseQtyService(userId, cart.id, productId);
 
     revalidatePath("/products", "layout");
   } catch (err: any) {
@@ -55,8 +56,8 @@ const increaseQty = async (productId: number) => {
 
 const decreaseQty = async (productId: number) => {
   try {
-    const { cartId, userId } = await getCartContext();
-    await decreaseQtyService(userId, cartId, productId);
+    const { userId, cart } = await getCartContext();
+    await decreaseQtyService(userId, cart.id, productId);
 
     revalidatePath("/products", "layout");
   } catch (err: any) {
@@ -67,8 +68,8 @@ const decreaseQty = async (productId: number) => {
 
 const removeFromCart = async (productId: number) => {
   try {
-    const { cartId, userId } = await getCartContext();
-    await removeFromCartService(userId, cartId, productId);
+    const { userId, cart } = await getCartContext();
+    await removeFromCartService(userId, cart.id, productId);
 
     revalidatePath("/products", "layout");
   } catch (err: any) {
@@ -79,8 +80,8 @@ const removeFromCart = async (productId: number) => {
 
 const updateQty = async (productId: number, qty: number) => {
   try {
-    const { cartId, userId } = await getCartContext();
-    await updateQtyService(userId, cartId, productId, qty);
+    const { userId, cart } = await getCartContext();
+    await updateQtyService(userId, cart.id, productId, qty);
     revalidatePath("/products", "layout");
   } catch (err: any) {
     if (err?.digest?.includes("NEXT_REDIRECT")) throw err;

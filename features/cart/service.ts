@@ -5,7 +5,7 @@ queries.ts         → read-only (session check + get cart items) */
 
 import "server-only";
 
-import { CartItem } from "./types/cart";
+import { Cart, CartItem } from "./types/cart";
 import { appendToCartQueue } from "./db/cart";
 import { getCart, updateCart } from "./db/cart";
 import { fetchProductById } from "../products/server";
@@ -31,21 +31,17 @@ const getValidCartByUserId = async (userId: string) => {
 
 const addToCartService = async (
   userId: string,
-  cartId: string,
+  cart: Cart,
   productId: number,
 ) => {
   const task = async () => {
     // throw new Error("test error")
     let newCartItems: Array<CartItem>;
-    const cart = await getCart(userId, cartId, false);
-    if (!cart) throw new Error("Cart not found");
-
     const { items: cartItems } = cart;
 
     // update cart in db
     const productInCart = cartItems.find((i: CartItem) => i.id === productId);
     // console.log(`*** ${JSON.stringify(productInCart, null, 2)} ***`);
-
     if (productInCart) {
       newCartItems = cartItems.map((p: CartItem) =>
         p.id === productId ? { ...p, qty: p.qty + 1 } : p,
@@ -54,7 +50,7 @@ const addToCartService = async (
       const { id, title, price } = await fetchProductById(productId);
       newCartItems = [...cartItems, { id, title, price, qty: 1 }];
     }
-    await updateCart(userId, cartId, newCartItems, false);
+    await updateCart(userId, cart.id, newCartItems, false);
   };
 
   await appendToCartQueue(userId, task);
