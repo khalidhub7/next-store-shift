@@ -216,13 +216,7 @@ const getCartIdByUserId = async (userId: string): Promise<string | null> => {
 };
 
 // cart CRUD
-export {
-  getCart,
-  updateCart,
-  deleteCart,
-  getOrCreateCart,
-  getCartIdByUserId,
-};
+export { getCart, updateCart, deleteCart, getOrCreateCart, getCartIdByUserId };
 
 // queue helper for atomic cart mutations
 export { appendToCartQueue };
