@@ -1,12 +1,9 @@
 "use server";
 
 import { redis } from "@/lib/redis";
-import { hashSessionId } from "./service";
 import { cookies, headers } from "next/headers";
-import { getCartIdByUserId } from "../cart/server";
 import { LoginData, RegisterData } from "./schema";
 import { login, logout, register } from "./service";
-import { getUserIdBySessionId } from "./db/session";
 import { registerSchema, loginSchema } from "./schema";
 
 const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
@@ -47,15 +44,7 @@ const loginAction = async (data: LoginData) => {
     if (sessionId) {
       const store = await cookies();
       store.set("sessionId", sessionId, cookieOptions);
-
-      // load cart
-      const userId = await getUserIdBySessionId(hashSessionId(sessionId));
-      if (userId) {
-        const cartId = await getCartIdByUserId(userId);
-        if (cartId) {
-          store.set("cart", cartId, cookieOptions);
-        }
-      }
+      
       await redis.del(key);
       return { success: true, message: "Logged in", rateLimit: false };
     } else return { success: false, message: "Login failed", rateLimit: false };

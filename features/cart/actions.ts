@@ -19,8 +19,8 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
 // shared helper between actions
 const getCartContext = async (): Promise<{ userId: string; cart: Cart }> => {
   const userId = await requireUser("/products");
-  const cart = await getValidCartByUserId(userId);
 
+  const cart = await getValidCartByUserId(userId);
   const cookieStore = await cookies();
   cookieStore.set("cart", cart.id, cookieOptions);
   return { userId, cart };

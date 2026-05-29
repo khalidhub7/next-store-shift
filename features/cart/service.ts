@@ -11,6 +11,9 @@ import { appendToCartQueue } from "./db/cart";
 import { fetchProductById } from "../products/server";
 import { getOrCreateCart, deleteCart } from "./db/cart";
 
+// helpers
+// const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 const getValidCartByUserId = async (userId: string) => {
   const CART_TTL = 1000 * 60 * 60 * 24 * 3;
 
@@ -36,19 +39,24 @@ const addToCartService = async (
 ) => {
   const task = async () => {
     // throw new Error("test error")
+    let added = false;
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
 
-    // update cart in db
-    const productInCart = cartItems.find((i: CartItem) => i.id === productId);
-    // console.log(`*** ${JSON.stringify(productInCart, null, 2)} ***`);
-    if (productInCart) {
-      newCartItems = cartItems.map((p: CartItem) =>
-        p.id === productId ? { ...p, qty: p.qty + 1 } : p,
-      );
-    } else {
+    newCartItems = cartItems.map((p: CartItem) => {
+      if (p.id === productId) {
+        const qty = p.qty + 1;
+        if (qty > 10) throw new Error("Maximum quantity reached");
+        added = true;
+        return p.id === productId ? { ...p, qty } : p;
+      } else {
+        return p;
+      }
+    });
+
+    if (!added) {
       const { id, title, price } = await fetchProductById(productId);
-      newCartItems = [...cartItems, { id, title, price, qty: 1 }];
+      newCartItems = [...newCartItems, { id, title, price, qty: 1 }];
     }
     await updateCart(userId, cart, newCartItems, false);
   };
@@ -69,12 +77,18 @@ const increaseQtyService = async (
     newCartItems = cartItems.map((item: CartItem) => {
       if (item.id === productId) {
         const qty = item.qty + 1;
-        if (qty > 10) throw new Error("Invalid Quantity");
+        if (qty > 10) throw new Error("Maximum quantity reached");
         return { ...item, qty };
       } else {
         return item;
       }
     });
+
+    /* // debug
+    console.log("READ", JSON.stringify(cartItems));
+    await testDelay(10000);
+    console.log("WRITE", JSON.stringify(newCartItems)); */
+
     await updateCart(userId, cart, newCartItems, false); // update db
   };
   await appendToCartQueue(userId, task);

@@ -208,13 +208,13 @@ const deleteCart = async (
   return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
-const getCartIdByUserId = async (userId: string): Promise<string | null> => {
+/* const getCartIdByUserId = async (userId: string): Promise<string | null> => {
   const index = await getUserCartIndex();
   return index[userId] ?? null;
-};
+}; */
 
 // cart CRUD
-export { getCart, updateCart, deleteCart, getOrCreateCart, getCartIdByUserId };
+export { getCart, updateCart, deleteCart, getOrCreateCart };
 
 // queue helper for atomic cart mutations
 export { appendToCartQueue };
