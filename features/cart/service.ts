@@ -71,8 +71,12 @@ const increaseQtyService = async (
 ) => {
   const task = async () => {
     // throw new Error("test error")
+
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
+
+    const exists = cartItems.some((p) => p.id === productId);
+    if (!exists) throw new Error("Item not found in cart");
 
     newCartItems = cartItems.map((item: CartItem) => {
       if (item.id === productId) {
@@ -101,10 +105,12 @@ const decreaseQtyService = async (
 ) => {
   const task = async () => {
     // throw new Error("test error")
-
     let newCartItems: Array<CartItem>;
-
     const { items: cartItems } = cart;
+
+    const exists = cartItems.some((p) => p.id === productId);
+    if (!exists) throw new Error("Item not found in cart");
+
     newCartItems = cartItems
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty - 1 } : item,
@@ -122,10 +128,12 @@ const removeFromCartService = async (
 ) => {
   const task = async () => {
     // throw new Error("test error")
-
     let newCartItems: Array<CartItem>;
-
     const { items: cartItems } = cart;
+
+    const exists = cartItems.some((p) => p.id === productId);
+    if (!exists) throw new Error("Item not found in cart");
+
     newCartItems = cartItems.filter((i: CartItem) => i.id !== productId);
     await updateCart(userId, cart, newCartItems, false);
   };
@@ -143,10 +151,11 @@ const updateQtyService = async (
 
     if (!Number.isInteger(qty) || qty < 0 || qty > 10)
       throw new Error("Invalid Quantity");
-
     let newCartItems: Array<CartItem>;
-
     const { items: cartItems } = cart;
+
+    const exists = cartItems.some((p) => p.id === productId);
+    if (!exists) throw new Error("Item not found in cart");
 
     newCartItems = cartItems
       .map((item: CartItem) =>
