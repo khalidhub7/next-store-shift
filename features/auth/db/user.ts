@@ -199,6 +199,8 @@ const updateUser = async (
     const newEmail = newData.email;
     if (newEmail && newEmail !== user.email) {
       const emailIndexTask = async () => {
+        const index = await getEmailIndex();
+        if (index[newEmail]) throw new Error("Email is already in use"); // is new email already taken
         await deleteEmailIndex(user.email, false); // delete old email
         await setEmailIndex(id, newEmail, false); // set new email
       };
