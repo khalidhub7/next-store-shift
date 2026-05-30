@@ -53,17 +53,18 @@ const AuthForm = ({ type }: Props) => {
           toast.error(message, options);
           return; // stop here
         }
-        success
-          ? toast.success(message, options)
-          : toast.error(message, options);
+
+        /* toast */
+        if (success) toast.success(message, options);
+        else toast.error(message, options);
       } else {
         const { success, message } = await registerAction(
           values as RegisterData,
         );
         if (success) resolved = true;
-        success
-          ? toast.success(message, options)
-          : toast.error(message, options);
+        /* toast */
+        if (success) toast.success(message, options);
+        else toast.error(message, options);
       }
 
       if (resolved) {
