@@ -1,23 +1,9 @@
-import { redis } from "@/lib/redis";
-import { cookies } from "next/headers";
+
 import ClientNav from "./ClientNav.client";
-import { hashSessionId } from "@/features/auth/server";
 import { LogoutButton } from "./LogoutButton.client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = async () => {
-  let isAuthenticated = false;
-  const cookieStore = await cookies();
-
-  try {
-    const sessionId = cookieStore.get("sessionId")?.value;
-
-    if (sessionId) {
-      isAuthenticated = !!(await redis.get(
-        `session:${hashSessionId(sessionId)}`,
-      ));
-    }
-  } catch {}
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
@@ -37,7 +23,7 @@ const Header = async () => {
         {/* Nav */}
         <ClientNav />
         {/* logout button */}
-        {isAuthenticated ? <LogoutButton /> : undefined}
+        <LogoutButton />
       </div>
     </header>
   );
