@@ -1,4 +1,4 @@
-/* global error */
+
 // app/not-found.tsx
 
 const NotFound = () => (
