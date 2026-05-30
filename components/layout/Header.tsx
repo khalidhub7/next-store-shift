@@ -1,10 +1,8 @@
-
 import ClientNav from "./ClientNav.client";
 import { LogoutButton } from "./LogoutButton.client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = async () => {
-
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6">

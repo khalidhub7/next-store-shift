@@ -4,21 +4,16 @@ import { hashSessionId } from "@/features/auth/server";
 import { LogoutButton } from "./LogoutButton.client";
 
 const AuthStatus = async () => {
+  let isAuthenticated = false;
   try {
     const sessionId = (await cookies()).get("sessionId")?.value;
-
     if (!sessionId) return null;
-
-    const isAuthenticated = !!(await redis.get(
+    isAuthenticated = !!(await redis.get(
       `session:${hashSessionId(sessionId)}`,
     ));
+  } catch {}
 
-    if (!isAuthenticated) return null;
-
-    return <LogoutButton />;
-  } catch {
-    return null;
-  }
+  return isAuthenticated ? <LogoutButton /> : null;
 };
 
 export { AuthStatus };
