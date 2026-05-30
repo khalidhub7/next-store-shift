@@ -10,11 +10,8 @@ const LogoutButton = async () => {
 
   const logoutHandler = async () => {
     const obj = await logoutAction();
-    if (obj.success) {
-      toast.success(obj.message, options);
-    } else {
-      toast.error(obj.message, options);
-    }
+    if (obj.success) toast.success(obj.message, options);
+    else toast.error(obj.message, options);
   };
 
   return (
