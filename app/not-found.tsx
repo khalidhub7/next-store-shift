@@ -1,4 +1,3 @@
-
 // app/not-found.tsx
 
 const NotFound = () => (
