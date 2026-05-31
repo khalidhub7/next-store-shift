@@ -25,8 +25,12 @@ const ClientAddToCart = ({ productId }: ClientAddToCartProps) => {
 
     await addToCart(productId)
       .then(() => toast.success("Added to cart", options))
-      .catch((err: any) => {
-        if (err?.digest?.includes("NEXT_REDIRECT")) {
+      .catch((err: unknown) => {
+        if (
+          err instanceof Error &&
+          "digest" in err && // digest is a special property added by Next.js
+          String(err.digest).includes("NEXT_REDIRECT")
+        ) {
           toast.warning("Please login first", options);
         } else {
           toast.error("Failed to add item", options);
