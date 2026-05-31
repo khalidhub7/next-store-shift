@@ -44,7 +44,7 @@ const loginAction = async (data: LoginData) => {
     if (sessionId) {
       const store = await cookies();
       store.set("sessionId", sessionId, cookieOptions);
-      
+
       await redis.del(key);
       return { success: true, message: "Logged in", rateLimit: false };
     } else return { success: false, message: "Login failed", rateLimit: false };
@@ -68,8 +68,9 @@ const registerAction = async (data: RegisterData) => {
       return { success: true, message: "Account created" };
     }
     return { success: false, message: "Something went wrong" };
-  } catch (err: any) {
-    return { success: false, message: err.message };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Something went wrong";
+    return { success: false, message };
   }
 };
 
