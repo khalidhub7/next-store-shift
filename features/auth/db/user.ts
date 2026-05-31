@@ -34,7 +34,7 @@ await writeFile(emailIndexPath, "{}", { flag: "wx" }).catch(() => {});
 // const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // setup queues
-type Task<T = any> = () => Promise<T>;
+// type Task<T = any> = () => Promise<T>;
 type EmailIndexType = Record<string, string>;
 
 // one queue per userId to run tasks one at a time, in order

@@ -201,7 +201,7 @@ const saveSession = async (
 const deleteSession = async (
   sessionId: string,
   useQueue: boolean = true,
-): Promise<any> => {
+): Promise<void> => {
   const task = async () => {
     const filePath = path.join(
       process.cwd(),
