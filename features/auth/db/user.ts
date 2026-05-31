@@ -35,15 +35,18 @@ await writeFile(emailIndexPath, "{}", { flag: "wx" }).catch(() => {});
 
 // setup queues
 // type Task<T = any> = () => Promise<T>;
-type Task = () => Promise<unknown>;
+type Task<T> = () => Promise<T>;
 type EmailIndexType = Record<string, string>;
 
 // one queue per userId to run tasks one at a time, in order
-const userQueues = new Map<string, Promise<void>>();
+const userQueues = new Map<string, Promise<unknown>>();
 // global lock to run email tasks one at a time, in order
-let emailIndexQueue: Promise<any> = Promise.resolve();
+let emailIndexQueue: Promise<unknown> = Promise.resolve();
 
-const appendToUserQueue = async (userId: string, task: Task) => {
+const appendToUserQueue = async <T>(
+  userId: string,
+  task: Task<T>,
+): Promise<T> => {
   const queue = userQueues.get(userId) || Promise.resolve();
   const result = queue.then(task);
   const safeResult = result.catch(() => {});
@@ -55,7 +58,7 @@ const appendToUserQueue = async (userId: string, task: Task) => {
   return result;
 };
 
-const appendToEmailIndexQueue = async (task: Task) => {
+const appendToEmailIndexQueue = async <T>(task: Task<T>) => {
   const result = emailIndexQueue.then(() => task());
   emailIndexQueue = result.catch(() => {});
   return result;
