@@ -30,7 +30,7 @@ await mkdir(sessionsDir, { recursive: true });
 await mkdir(userSessionsDir, { recursive: true });
 
 // types
-type Task = () => Promise<any>;
+type Task = () => Promise<unknown>;
 
 // setup queues
 const sessionQueues = new Map(); // one queue per sessionId to serialize access
