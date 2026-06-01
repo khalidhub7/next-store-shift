@@ -13,6 +13,7 @@ const AuthStatus = async () => {
     ));
   } catch {}
 
+  // console.log(`*** ${isAuthenticated} ***`)
   return isAuthenticated ? <LogoutButton /> : null;
 };
 

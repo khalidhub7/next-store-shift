@@ -11,7 +11,13 @@ import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useEffect, useOptimistic, useState, useTransition } from "react";
+import {
+  useEffect,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 // cartDialog dropdown actions
@@ -30,8 +36,14 @@ const ClientUpdateQty = ({
   onRevert,
 }: ClientUpdateQtyProps) => {
   // qty prop: is always the last server value
-
   const [newQty, setNewQty] = useState(qty);
+
+  /* console.log(`*** qty: ${qty} ***`);
+  console.log(`*** newQty: ${newQty} ***`); */
+
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  console.log("renderCount", renderCount.current);
 
   useEffect(() => {
     setNewQty(qty); // update qty in ui if the inc/dec triggered
