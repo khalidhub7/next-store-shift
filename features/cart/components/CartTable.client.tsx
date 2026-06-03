@@ -38,12 +38,12 @@ const ClientUpdateQty = ({
   // qty prop: is always the last server value
   const [newQty, setNewQty] = useState(qty);
 
-  console.log(`*** qty: ${qty} ***`);
-  console.log(`*** newQty: ${newQty} ***`);
-
   const renderCount = useRef(0);
   renderCount.current += 1;
   console.log("child renderCount", renderCount.current);
+
+  console.log(`*** qty: ${qty} ***`);
+  console.log(`*** newQty: ${newQty} ***`);
 
   console.log("---------     ---------");
 
