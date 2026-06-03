@@ -112,13 +112,14 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         duration: 300,
       } as const;
 
-      try {
-        await increaseQty(productId);
-        toast.success("+1 added", options);
-      } catch (err) {
-        toast.error("Couldn't increase", options);
-        // throw err; // let React revert optimistic state
-      }
+      await increaseQty(productId)
+        .then(() => {
+          toast.success("+1 added", options);
+        })
+        .catch((err) => {
+          toast.error("Couldn't increase", options);
+          // throw err; // let React revert optimistic state
+        });
     });
   };
 
@@ -141,13 +142,14 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         duration: 300,
       } as const;
 
-      try {
-        await decreaseQty(productId);
-        toast.success("-1 removed", options);
-      } catch (err) {
-        toast.error("Couldn't decrease", options);
-        throw err;
-      }
+      await decreaseQty(productId)
+        .then(() => {
+          toast.success("-1 removed", options);
+        })
+        .catch((err) => {
+          toast.error("Couldn't decrease", options);
+          // throw err;
+        });
     });
   };
 
@@ -169,10 +171,12 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
       } as const;
 
       await removeFromCart(productId)
-        .then(() => toast.success("Item removed", options))
-        .catch(() => {
+        .then(() => {
+          toast.success("Item removed", options);
+        })
+        .catch((err) => {
           toast.error("Couldn't remove item", options);
-          throw new Error();
+          // throw err;
         });
     });
   };
