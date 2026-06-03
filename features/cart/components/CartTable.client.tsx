@@ -90,9 +90,9 @@ const ClientUpdateQty = ({
 // rule: use optimistic just when value comes from server props
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
-  const renderCount = useRef(0);
+  /* const renderCount = useRef(0);
   renderCount.current += 1;
-  console.log("parent renderCount", renderCount.current);
+  console.log("parent renderCount", renderCount.current); */
 
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const [, startTransition] = useTransition();
