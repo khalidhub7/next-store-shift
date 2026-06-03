@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+
 "use client";
 import { toast } from "sonner";
 import { CartItem } from "../types/cart";
@@ -11,13 +13,7 @@ import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import {
-  useEffect,
-  useOptimistic,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 // cartDialog dropdown actions
@@ -33,20 +29,20 @@ const ClientUpdateQty = ({ qty, onUpdate }: ClientUpdateQtyProps) => {
 
   /* const renderCount = useRef(0);
   renderCount.current += 1;
-  console.log("child renderCount", renderCount.current); */
+  console.log("child renderCount", renderCount.current);
 
-  /* console.log(`*** qty: ${qty} ***`);
+  console.log(`*** qty: ${qty} ***`);
   console.log(`*** newQty: ${newQty} ***`);
   console.log("\n\n"); */
 
-  /* useEffect(() => {
-    setNewQty(qty); // update qty in ui if the inc/dec triggered
-  }, [qty]); */
+  // update qty in ui if the inc/dec triggered
+  useEffect(() => {
+    setNewQty(qty);
+  }, [qty]);
 
   const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (value === qty) return;
-    setNewQty(value);
 
     const revert = () => setNewQty(qty);
     onUpdate(value, revert);
