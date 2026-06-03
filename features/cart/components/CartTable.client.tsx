@@ -23,18 +23,11 @@ import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 // cartDialog dropdown actions
 
 type ClientUpdateQtyProps = {
-  productId: number;
   qty: number;
-  onUpdate: (qty: number) => void;
-  onRevert: () => void;
+  onUpdate: (qty: number, revert: () => void) => void;
 };
 
-const ClientUpdateQty = ({
-  productId,
-  qty,
-  onUpdate,
-  onRevert,
-}: ClientUpdateQtyProps) => {
+const ClientUpdateQty = ({ qty, onUpdate }: ClientUpdateQtyProps) => {
   // qty prop: is always the last server value
   const [newQty, setNewQty] = useState(qty);
 
@@ -46,33 +39,17 @@ const ClientUpdateQty = ({
   console.log(`*** newQty: ${newQty} ***`);
   console.log("\n\n"); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     setNewQty(qty); // update qty in ui if the inc/dec triggered
-  }, [qty]);
+  }, [qty]); */
 
   const handleUpdateQty = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (value === qty) return;
-
     setNewQty(value);
-    onUpdate(value);
 
-    const id = toast.loading("Saving ...", {
-      position: "top-center",
-    });
-
-    const options = {
-      id,
-      position: "top-center",
-    } as const;
-
-    await updateQty(productId, value)
-      .then(() => toast.success("Quantity updated", options))
-      .catch(() => {
-        toast.error("Failed to update quantity", options);
-        setNewQty(qty);
-        onRevert(); // tell parent to revert
-      });
+    const revert = () => setNewQty(qty);
+    onUpdate(value, revert);
   };
 
   return (
@@ -87,8 +64,9 @@ const ClientUpdateQty = ({
   );
 };
 
-// rule: use optimistic just when value comes from server props
+const TOAST_CONFIG = { position: "top-center", duration: 300 } as const;
 
+// rule: use optimistic just when value comes from server props
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   /* const renderCount = useRef(0);
   renderCount.current += 1;
@@ -111,18 +89,12 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         duration: 300,
       });
 
-      const options = {
-        id,
-        position: "top-center",
-        duration: 300,
-      } as const;
-
       await increaseQty(productId)
         .then(() => {
-          toast.success("+1 added", options);
+          toast.success("+1 added", { id, ...TOAST_CONFIG });
         })
         .catch(() => {
-          toast.error("Couldn't increase", options);
+          toast.error("Couldn't increase", { id, ...TOAST_CONFIG });
           // throw err; // let React revert optimistic state
         });
     });
@@ -141,18 +113,12 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         duration: 300,
       });
 
-      const options = {
-        id,
-        position: "top-center",
-        duration: 300,
-      } as const;
-
       await decreaseQty(productId)
         .then(() => {
-          toast.success("-1 removed", options);
+          toast.success("-1 removed", { id, ...TOAST_CONFIG });
         })
         .catch(() => {
-          toast.error("Couldn't decrease", options);
+          toast.error("Couldn't decrease", { id, ...TOAST_CONFIG });
           // throw err;
         });
     });
@@ -169,30 +135,45 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         duration: 300,
       });
 
-      const options = {
-        id,
-        position: "top-center",
-        duration: 300,
-      } as const;
-
       await removeFromCart(productId)
         .then(() => {
-          toast.success("Item removed", options);
+          toast.success("Item removed", { id, ...TOAST_CONFIG });
         })
         .catch(() => {
-          toast.error("Couldn't remove item", options);
+          toast.error("Couldn't remove item", { id, ...TOAST_CONFIG });
           // throw err;
         });
     });
   };
 
-  const handleUpdateQty = (productId: number, qty: number) => {
+  const handleUpdateQty = (
+    productId: number,
+    qty: number,
+    revert: () => void,
+  ) => {
     startTransition(async () => {
       setOptimisticCart((state) =>
         qty <= 0
           ? state.filter((p) => p.id !== productId)
           : state.map((p) => (p.id === productId ? { ...p, qty } : p)),
       );
+
+      const id = toast.loading("Saving ...", {
+        position: "top-center",
+      });
+
+      const options = {
+        id,
+        position: "top-center",
+      } as const;
+
+      await updateQty(productId, qty)
+        .then(() => toast.success("Quantity updated", options))
+        .catch(() => {
+          toast.error("Failed to update quantity", options);
+          revert();
+          // throw err;
+        });
     });
   };
 
@@ -217,18 +198,10 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
             <TableCell>{item.price}</TableCell>
 
             <ClientUpdateQty
-              productId={item.id}
               qty={item.qty}
-              onUpdate={(qty) => handleUpdateQty(item.id, qty)}
-              onRevert={() => {
-                startTransition(async () => {
-                  setOptimisticCart((state) =>
-                    state.map((p) =>
-                      p.id === item.id ? { ...p, qty: item.qty } : p,
-                    ),
-                  );
-                });
-              }} // revert to original
+              onUpdate={(qty: number, revert: () => void) =>
+                handleUpdateQty(item.id, qty, revert)
+              }
             />
 
             <TableCell className="text-right">
