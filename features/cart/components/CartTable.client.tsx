@@ -38,14 +38,13 @@ const ClientUpdateQty = ({
   // qty prop: is always the last server value
   const [newQty, setNewQty] = useState(qty);
 
-  const renderCount = useRef(0);
+  /* const renderCount = useRef(0);
   renderCount.current += 1;
-  console.log("child renderCount", renderCount.current);
+  console.log("child renderCount", renderCount.current); */
 
-  console.log(`*** qty: ${qty} ***`);
+  /* console.log(`*** qty: ${qty} ***`);
   console.log(`*** newQty: ${newQty} ***`);
-
-  console.log("---------     ---------");
+  console.log("\n\n"); */
 
   useEffect(() => {
     setNewQty(qty); // update qty in ui if the inc/dec triggered
