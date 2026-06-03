@@ -45,6 +45,8 @@ const ClientUpdateQty = ({
   renderCount.current += 1;
   console.log("child renderCount", renderCount.current);
 
+  console.log("---------     ---------");
+
   useEffect(() => {
     setNewQty(qty); // update qty in ui if the inc/dec triggered
   }, [qty]);
@@ -89,7 +91,6 @@ const ClientUpdateQty = ({
 // rule: use optimistic just when value comes from server props
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
-
   const renderCount = useRef(0);
   renderCount.current += 1;
   console.log("parent renderCount", renderCount.current);
