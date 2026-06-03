@@ -122,7 +122,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         .then(() => {
           toast.success("+1 added", options);
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error("Couldn't increase", options);
           // throw err; // let React revert optimistic state
         });
@@ -152,7 +152,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         .then(() => {
           toast.success("-1 removed", options);
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error("Couldn't decrease", options);
           // throw err;
         });
@@ -180,7 +180,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         .then(() => {
           toast.success("Item removed", options);
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error("Couldn't remove item", options);
           // throw err;
         });
