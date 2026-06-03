@@ -43,7 +43,7 @@ const ClientUpdateQty = ({
 
   const renderCount = useRef(0);
   renderCount.current += 1;
-  console.log("renderCount", renderCount.current);
+  console.log("child renderCount", renderCount.current);
 
   useEffect(() => {
     setNewQty(qty); // update qty in ui if the inc/dec triggered
@@ -92,7 +92,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
 
   const renderCount = useRef(0);
   renderCount.current += 1;
-  console.log("renderCount", renderCount.current);
+  console.log("parent renderCount", renderCount.current);
 
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const [, startTransition] = useTransition();

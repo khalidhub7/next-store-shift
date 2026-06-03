@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: false, // temporarily just to calcul real renders
   images: {
     remotePatterns: [
       {
