@@ -38,8 +38,8 @@ const ClientUpdateQty = ({
   // qty prop: is always the last server value
   const [newQty, setNewQty] = useState(qty);
 
-  /* console.log(`*** qty: ${qty} ***`);
-  console.log(`*** newQty: ${newQty} ***`); */
+  console.log(`*** qty: ${qty} ***`);
+  console.log(`*** newQty: ${newQty} ***`);
 
   const renderCount = useRef(0);
   renderCount.current += 1;
@@ -89,6 +89,7 @@ const ClientUpdateQty = ({
 // rule: use optimistic just when value comes from server props
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
+
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const [, startTransition] = useTransition();
 
@@ -116,7 +117,7 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         .then(() => toast.success("+1 added", options))
         .catch(() => {
           toast.error("Couldn't increase", options);
-          throw new Error(); // let React revert optimistic state
+          // throw new Error(); // let React revert optimistic state
         });
     });
   };

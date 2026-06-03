@@ -64,13 +64,14 @@ const addToCartService = async (
   await appendToCartQueue(userId, task);
 };
 
+
 const increaseQtyService = async (
   userId: string,
   cart: Cart,
   productId: number,
 ) => {
   const task = async () => {
-    // throw new Error("test error")
+    throw new Error("test error")
 
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
