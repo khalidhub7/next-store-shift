@@ -89,7 +89,6 @@ const ClientUpdateQty = ({
 // rule: use optimistic just when value comes from server props
 
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
-
   const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
   const [, startTransition] = useTransition();
 
@@ -113,12 +112,13 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         duration: 300,
       } as const;
 
-      await increaseQty(productId)
-        .then(() => toast.success("+1 added", options))
-        .catch(() => {
-          toast.error("Couldn't increase", options);
-          // throw new Error(); // let React revert optimistic state
-        });
+      try {
+        await increaseQty(productId);
+        toast.success("+1 added", options);
+      } catch (err) {
+        toast.error("Couldn't increase", options);
+        // throw err; // let React revert optimistic state
+      }
     });
   };
 
@@ -141,12 +141,13 @@ const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
         duration: 300,
       } as const;
 
-      await decreaseQty(productId)
-        .then(() => toast.success("-1 removed", options))
-        .catch(() => {
-          toast.error("Couldn't decrease", options);
-          throw new Error();
-        });
+      try {
+        await decreaseQty(productId);
+        toast.success("-1 removed", options);
+      } catch (err) {
+        toast.error("Couldn't decrease", options);
+        throw err;
+      }
     });
   };
 

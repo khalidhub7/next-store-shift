@@ -71,7 +71,7 @@ const increaseQtyService = async (
   productId: number,
 ) => {
   const task = async () => {
-    throw new Error("test error")
+    // throw new Error("test error")
 
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
