@@ -73,13 +73,12 @@ const increaseQtyService = async (
   const task = async () => {
     // throw new Error("test error")
 
-    let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
 
     const exists = cartItems.some((p) => p.id === productId);
     if (!exists) throw new Error("Item not found in cart");
 
-    newCartItems = cartItems.map((item: CartItem) => {
+    const newCartItems: Array<CartItem> = cartItems.map((item: CartItem) => {
       if (item.id === productId) {
         const qty = item.qty + 1;
         if (qty > 10) throw new Error("Maximum quantity reached");
@@ -106,13 +105,13 @@ const decreaseQtyService = async (
 ) => {
   const task = async () => {
     // throw new Error("test error")
-    let newCartItems: Array<CartItem>;
+    
     const { items: cartItems } = cart;
 
     const exists = cartItems.some((p) => p.id === productId);
     if (!exists) throw new Error("Item not found in cart");
 
-    newCartItems = cartItems
+    const newCartItems: Array<CartItem> = cartItems
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty - 1 } : item,
       )
