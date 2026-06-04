@@ -35,12 +35,16 @@ try {
 // avoid race conditions
 
 type UserCartIndex = Record<string, string>;
-type Task<T = any> = () => Promise<T>;
 
-const cartsQueue = new Map<string, Promise<void>>();
-let userCartIndexQueue = Promise.resolve();
+type Task<T> = () => Promise<T>;
 
-const appendToCartQueue = async (userId: string, task: Task) => {
+const cartsQueue = new Map<string, Promise<unknown>>();
+let userCartIndexQueue: Promise<unknown> = Promise.resolve();
+
+const appendToCartQueue = async <T>(
+  userId: string,
+  task: Task<T>,
+): Promise<T> => {
   const last = cartsQueue.get(userId) || Promise.resolve();
   const next = last.then(task); // Promise A
   const safeNext = next.catch(() => {}); // Promise B
@@ -53,7 +57,7 @@ const appendToCartQueue = async (userId: string, task: Task) => {
   return next;
 };
 
-const appendToCartIndexQueue = async (task: Task) => {
+const appendToCartIndexQueue = async <T>(task: Task<T>): Promise<T> => {
   const result = userCartIndexQueue.then(() => task());
   userCartIndexQueue = result.catch(() => {});
   return result;
