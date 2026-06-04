@@ -33,10 +33,19 @@ const addToCart = async (productId: number) => {
 
     // usualy isr refresh every 1h, so that is renew ui immediately
     revalidatePath("/products", "layout");
-  } catch (err: any) {
+  } catch (err: unknown) {
     /* if (err?.digest?.includes("NEXT_REDIRECT"))
       console.log(`*** ${err?.digest} ***`); */
-    if (err?.digest?.includes("NEXT_REDIRECT")) throw err; // allow redirect
+
+    if (
+      err instanceof Error &&
+      "digest" in err &&
+      typeof err.digest === "string" &&
+      err.digest.includes("NEXT_REDIRECT")
+    ) {
+      throw err; // allow redirect
+    }
+
     throw new Error("Failed to add item");
   }
 };
@@ -47,9 +56,16 @@ const increaseQty = async (productId: number) => {
     await increaseQtyService(userId, cart, productId);
 
     revalidatePath("/products", "layout");
-  } catch (err: any) {
+  } catch (err: unknown) {
     // console.log(`*** ${err?.digest} ***`);
-    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
+    if (
+      err instanceof Error &&
+      "digest" in err &&
+      typeof err.digest === "string" &&
+      err.digest.includes("NEXT_REDIRECT")
+    ) {
+      throw err; // allow redirect
+    }
     throw new Error("increase qty failed");
   }
 };
@@ -60,8 +76,15 @@ const decreaseQty = async (productId: number) => {
     await decreaseQtyService(userId, cart, productId);
 
     revalidatePath("/products", "layout");
-  } catch (err: any) {
-    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      "digest" in err &&
+      typeof err.digest === "string" &&
+      err.digest.includes("NEXT_REDIRECT")
+    ) {
+      throw err; // allow redirect
+    }
     throw new Error("decrease qty failed");
   }
 };
@@ -72,8 +95,15 @@ const removeFromCart = async (productId: number) => {
     await removeFromCartService(userId, cart, productId);
 
     revalidatePath("/products", "layout");
-  } catch (err: any) {
-    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      "digest" in err &&
+      typeof err.digest === "string" &&
+      err.digest.includes("NEXT_REDIRECT")
+    ) {
+      throw err; // allow redirect
+    }
     throw new Error("remove from cart failed");
   }
 };
@@ -83,8 +113,15 @@ const updateQty = async (productId: number, qty: number) => {
     const { userId, cart } = await getCartContext();
     await updateQtyService(userId, cart, productId, qty);
     revalidatePath("/products", "layout");
-  } catch (err: any) {
-    if (err?.digest?.includes("NEXT_REDIRECT")) throw err;
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      "digest" in err &&
+      typeof err.digest === "string" &&
+      err.digest.includes("NEXT_REDIRECT")
+    ) {
+      throw err; // allow redirect
+    }
     throw new Error(err instanceof Error ? err.message : "update qty failed");
   }
 };
