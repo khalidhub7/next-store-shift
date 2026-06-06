@@ -48,7 +48,7 @@ const addToCartService = async (
         const qty = p.qty + 1;
         if (qty > 10) throw new Error("Maximum quantity reached");
         added = true;
-        return p.id === productId ? { ...p, qty } : p;
+        return { ...p, qty };
       } else {
         return p;
       }
