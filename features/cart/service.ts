@@ -5,6 +5,7 @@ queries.ts         → read-only (session check + get cart items) */
 
 import "server-only";
 
+import { MAX_QTY } from "./constants";
 import { updateCart } from "./db/cart";
 import { Cart, CartItem } from "./types/cart";
 import { appendToCartQueue } from "./db/cart";
@@ -39,7 +40,6 @@ const addToCartService = async (
 ) => {
   const task = async () => {
     // throw new Error("test error")
-    let added = false;
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
 
@@ -47,29 +47,13 @@ const addToCartService = async (
 
     if (foundItem) {
       const newQty = foundItem.qty + 1;
-      if (newQty > 10) throw new Error("Maximum quantity reached");
+      if (newQty > MAX_QTY) throw new Error("Maximum quantity reached");
       newCartItems = cartItems.map((p) =>
         p.id === productId ? { ...p, qty: newQty } : p,
       );
     } else {
       const { id, title, price } = await fetchProductById(productId);
       newCartItems = [...cartItems, { id, title, price, qty: 1 }];
-    }
-
-    newCartItems = cartItems.map((p: CartItem) => {
-      if (p.id === productId) {
-        const qty = p.qty + 1;
-        if (qty > 10) throw new Error("Maximum quantity reached");
-        added = true;
-        return { ...p, qty };
-      } else {
-        return p;
-      }
-    });
-
-    if (!added) {
-      const { id, title, price } = await fetchProductById(productId);
-      newCartItems = [...newCartItems, { id, title, price, qty: 1 }];
     }
     await updateCart(userId, cart, newCartItems, false);
   };
