@@ -131,12 +131,10 @@ const updateQtyService = async (
   const task = async () => {
     // throw new Error("test error"); // force fail for testing
 
-    if (!Number.isInteger(qty) || qty < 0 || qty > 10)
+    if (!Number.isInteger(qty) || qty < 0 || qty > MAX_QTY)
       throw new Error("Invalid Quantity");
-    const { items: cartItems } = cart;
 
-    const exists = cartItems.some((p) => p.id === productId);
-    if (!exists) throw new Error("Item not found in cart");
+    const { items: cartItems } = cart;
 
     const newCartItems: Array<CartItem> = cartItems
       .map((item: CartItem) =>
