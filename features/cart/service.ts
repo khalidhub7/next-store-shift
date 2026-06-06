@@ -43,6 +43,19 @@ const addToCartService = async (
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
 
+    const foundItem = cartItems.find((p) => p.id === productId);
+
+    if (foundItem) {
+      const newQty = foundItem.qty + 1;
+      if (newQty > 10) throw new Error("Maximum quantity reached");
+      newCartItems = cartItems.map((p) =>
+        p.id === productId ? { ...p, qty: newQty } : p,
+      );
+    } else {
+      const { id, title, price } = await fetchProductById(productId);
+      newCartItems = [...cartItems, { id, title, price, qty: 1 }];
+    }
+
     newCartItems = cartItems.map((p: CartItem) => {
       if (p.id === productId) {
         const qty = p.qty + 1;
