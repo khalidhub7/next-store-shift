@@ -46,20 +46,17 @@ const addToCartService = async (
 
     newCartItems = cartItems.map((p) => {
       if (p.id !== productId) return p;
-
       found = true;
       const qty = p.qty + 1;
       if (qty > MAX_QTY) throw new Error("Maximum quantity reached");
       return { ...p, qty };
     });
-
     if (!found) {
       const { id, title, price } = await fetchProductById(productId);
-      newCartItems = [...cartItems, { id, title, price, qty: 1 }];
+      newCartItems = [...newCartItems, { id, title, price, qty: 1 }];
     }
     await updateCart(userId, cart, newCartItems, false);
   };
-
   await appendToCartQueue(userId, task);
 };
 
@@ -72,18 +69,11 @@ const increaseQtyService = async (
     // throw new Error("test error")
 
     const { items: cartItems } = cart;
-
-    const exists = cartItems.some((p) => p.id === productId);
-    if (!exists) throw new Error("Item not found in cart");
-
-    const newCartItems: Array<CartItem> = cartItems.map((item: CartItem) => {
-      if (item.id === productId) {
-        const qty = item.qty + 1;
-        if (qty > 10) throw new Error("Maximum quantity reached");
-        return { ...item, qty };
-      } else {
-        return item;
-      }
+    const newCartItems = cartItems.map((item) => {
+      if (item.id !== productId) return item;
+      const qty = item.qty + 1;
+      if (qty > MAX_QTY) throw new Error("Maximum quantity reached");
+      return { ...item, qty };
     });
 
     /* // debug
@@ -105,15 +95,12 @@ const decreaseQtyService = async (
     // throw new Error("test error")
 
     const { items: cartItems } = cart;
-
-    const exists = cartItems.some((p) => p.id === productId);
-    if (!exists) throw new Error("Item not found in cart");
-
     const newCartItems: Array<CartItem> = cartItems
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty: item.qty - 1 } : item,
       )
       .filter((item: CartItem) => item.qty > 0);
+
     await updateCart(userId, cart, newCartItems, false);
   };
   await appendToCartQueue(userId, task);
