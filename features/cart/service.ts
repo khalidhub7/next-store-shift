@@ -42,7 +42,6 @@ const addToCartService = async (
     // throw new Error("test error")
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
-
     const foundItem = cartItems.find((p) => p.id === productId);
 
     if (foundItem) {
