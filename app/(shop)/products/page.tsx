@@ -4,6 +4,7 @@ import { fetchProducts } from "@/features/products/server";
 
 const Products = async () => {
   const products = await fetchProducts();
+  // console.log("Products page rendered");
 
   return (
     <section className="max-w-6xl mx-auto mt-16 px-6 flex flex-col gap-10">

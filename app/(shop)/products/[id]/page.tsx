@@ -11,10 +11,10 @@ interface ProductDetailsProps {
 
 const ProductDetails = async ({ params }: ProductDetailsProps) => {
   const id = await params.then((obj) => Number(obj.id));
-
   const product = await fetchProductById(id);
 
   // console.log(`*** ${JSON.stringify(product)} ***`);
+  // console.log("Product page rendered");
 
   return (
     <section className="max-w-5xl mx-auto mt-16 px-6 pb-16">

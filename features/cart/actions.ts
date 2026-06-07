@@ -1,8 +1,8 @@
 "use server";
-import { Cart } from "./types/cart";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
+import { appendToCartQueue } from "./db/cart";
 import { addToCartService, decreaseQtyService } from "./service";
 import { updateQtyService, getValidCartByUserId } from "./service";
 import { increaseQtyService, removeFromCartService } from "./service";
@@ -17,113 +17,137 @@ const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   };
 
 // shared helper between actions
-const getCartContext = async (): Promise<{ userId: string; cart: Cart }> => {
-  const userId = await requireUser("/products");
 
-  const cart = await getValidCartByUserId(userId);
+const getUserCart = async (userId: string) => {
+  const cart = await getValidCartByUserId(userId, false);
   const cookieStore = await cookies();
   cookieStore.set("cart", cart.id, cookieOptions);
-  return { userId, cart };
+  return cart;
 };
 
 const addToCart = async (productId: number) => {
-  try {
-    const { userId, cart } = await getCartContext();
-    await addToCartService(userId, cart, productId);
+  const userId = await requireUser("/products");
 
-    // usualy isr refresh every 1h, so that is renew ui immediately
-    revalidatePath("/products", "layout");
-  } catch (err: unknown) {
-    /* if (err?.digest?.includes("NEXT_REDIRECT"))
+  const task = async () => {
+    try {
+      const cart = await getUserCart(userId);
+      await addToCartService(userId, cart, productId, false);
+
+      // Products page is cached (ISR).
+      // Revalidate now instead of waiting for the cache duration.
+      revalidatePath("/products", "layout");
+    } catch (err: unknown) {
+      /* if (err?.digest?.includes("NEXT_REDIRECT"))
       console.log(`*** ${err?.digest} ***`); */
 
-    if (
-      err instanceof Error &&
-      "digest" in err &&
-      typeof err.digest === "string" &&
-      err.digest.includes("NEXT_REDIRECT")
-    ) {
-      throw err; // allow redirect
+      if (
+        err instanceof Error &&
+        "digest" in err &&
+        typeof err.digest === "string" &&
+        err.digest.includes("NEXT_REDIRECT")
+      ) {
+        throw err; // allow redirect
+      }
+      throw new Error("Failed to add item");
     }
-
-    throw new Error("Failed to add item");
-  }
+  };
+  return appendToCartQueue(userId, task);
 };
 
 const increaseQty = async (productId: number) => {
-  try {
-    const { userId, cart } = await getCartContext();
-    await increaseQtyService(userId, cart, productId);
+  const userId = await requireUser("/products");
 
-    revalidatePath("/products", "layout");
-  } catch (err: unknown) {
-    // console.log(`*** ${err?.digest} ***`);
-    if (
-      err instanceof Error &&
-      "digest" in err &&
-      typeof err.digest === "string" &&
-      err.digest.includes("NEXT_REDIRECT")
-    ) {
-      throw err; // allow redirect
+  const task = async () => {
+    try {
+      const cart = await getUserCart(userId);
+      await increaseQtyService(userId, cart, productId, false);
+
+      revalidatePath("/products", "layout");
+    } catch (err: unknown) {
+      // console.log(`*** ${err?.digest} ***`);
+      if (
+        err instanceof Error &&
+        "digest" in err &&
+        typeof err.digest === "string" &&
+        err.digest.includes("NEXT_REDIRECT")
+      ) {
+        throw err; // allow redirect
+      }
+      throw new Error("increase qty failed");
     }
-    throw new Error("increase qty failed");
-  }
+  };
+  return appendToCartQueue(userId, task);
 };
 
 const decreaseQty = async (productId: number) => {
-  try {
-    const { userId, cart } = await getCartContext();
-    await decreaseQtyService(userId, cart, productId);
+  const userId = await requireUser("/products");
 
-    revalidatePath("/products", "layout");
-  } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      "digest" in err &&
-      typeof err.digest === "string" &&
-      err.digest.includes("NEXT_REDIRECT")
-    ) {
-      throw err; // allow redirect
+  const task = async () => {
+    try {
+      const cart = await getUserCart(userId);
+      await decreaseQtyService(userId, cart, productId, false);
+
+      revalidatePath("/products", "layout");
+    } catch (err: unknown) {
+      if (
+        err instanceof Error &&
+        "digest" in err &&
+        typeof err.digest === "string" &&
+        err.digest.includes("NEXT_REDIRECT")
+      ) {
+        throw err; // allow redirect
+      }
+      throw new Error("decrease qty failed");
     }
-    throw new Error("decrease qty failed");
-  }
+  };
+  return appendToCartQueue(userId, task);
 };
 
 const removeFromCart = async (productId: number) => {
-  try {
-    const { userId, cart } = await getCartContext();
-    await removeFromCartService(userId, cart, productId);
+  const userId = await requireUser("/products");
 
-    revalidatePath("/products", "layout");
-  } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      "digest" in err &&
-      typeof err.digest === "string" &&
-      err.digest.includes("NEXT_REDIRECT")
-    ) {
-      throw err; // allow redirect
+  const task = async () => {
+    try {
+      const cart = await getUserCart(userId);
+      await removeFromCartService(userId, cart, productId, false);
+
+      revalidatePath("/products", "layout");
+    } catch (err: unknown) {
+      if (
+        err instanceof Error &&
+        "digest" in err &&
+        typeof err.digest === "string" &&
+        err.digest.includes("NEXT_REDIRECT")
+      ) {
+        throw err; // allow redirect
+      }
+      throw new Error("remove from cart failed");
     }
-    throw new Error("remove from cart failed");
-  }
+  };
+  return appendToCartQueue(userId, task);
 };
 
 const updateQty = async (productId: number, qty: number) => {
-  try {
-    const { userId, cart } = await getCartContext();
-    await updateQtyService(userId, cart, productId, qty);
-    revalidatePath("/products", "layout");
-  } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      "digest" in err &&
-      typeof err.digest === "string" &&
-      err.digest.includes("NEXT_REDIRECT")
-    ) {
-      throw err; // allow redirect
+  const userId = await requireUser("/products");
+
+  const task = async () => {
+    try {
+      const cart = await getUserCart(userId);
+      await updateQtyService(userId, cart, productId, qty, false);
+      revalidatePath("/products", "layout");
+    } catch (err: unknown) {
+      if (
+        err instanceof Error &&
+        "digest" in err &&
+        typeof err.digest === "string" &&
+        err.digest.includes("NEXT_REDIRECT")
+      ) {
+        throw err; // allow redirect
+      }
+      throw new Error(err instanceof Error ? err.message : "update qty failed");
     }
-    throw new Error(err instanceof Error ? err.message : "update qty failed");
-  }
+  };
+  return appendToCartQueue(userId, task);
 };
 
 export { addToCart, decreaseQty, removeFromCart, updateQty, increaseQty };

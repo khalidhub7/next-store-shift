@@ -18,11 +18,22 @@ const CartDialog = async () => {
           aria-label="Open cart"
           variant="ghost"
           size="icon-lg"
-          className="p-1 fixed right-4 top-16 bg-white shadow-md rounded-full border border-gray-100 hover:shadow-lg transition-shadow duration-300"
+          className="
+fixed right-6 top-20
+size-12
+p-2
+rounded-full
+border-4 border-taupe-300
+bg-transparent
+shadow-md
+cursor-pointer
+hover:shadow-lg hover:scale-110
+transition-all duration-300
+"
         >
           <Image
-            src="https://img.icons8.com/?size=100&id=8384&format=png&color=000000"
-            alt="basket"
+            src="/icons/shopping-cart-svgrepo-com.svg"
+            alt="Cart"
             width={40}
             height={40}
           />
