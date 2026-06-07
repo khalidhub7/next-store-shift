@@ -1,5 +1,5 @@
 "use server";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth/server";
 import { appendToCartQueue } from "./db/cart";
@@ -18,17 +18,29 @@ import { increaseQtyService, removeFromCartService } from "./service";
 
 // shared helper between actions
 
-const isRedirectError = (err: unknown): boolean => {
-  return (
-    err instanceof Error &&
-    "digest" in err &&
-    typeof err.digest === "string" &&
-    err.digest.includes("NEXT_REDIRECT")
-  );
+const currentUser = async () => {
+  let userId = undefined;
+  try {
+    userId = await requireUser("/products");
+  } catch (err: unknown) {
+    // if (isRedirectError(err)) console.log(`*** ${err?.digest} ***`);
+    if (
+      err instanceof Error &&
+      "digest" in err &&
+      typeof err.digest === "string" &&
+      err.digest.includes("NEXT_REDIRECT")
+    ) {
+      throw err; // allow redirect
+    }
+    userId = undefined;
+  }
+  return userId;
 };
 
 const addToCart = async (productId: number) => {
-  const userId = await requireUser("/products");
+  const userId = await currentUser();
+  if (!userId) throw new Error("Unauthorized");
+
   const task = async () => {
     try {
       const cart = await getValidCartByUserId(userId, false);
@@ -38,11 +50,6 @@ const addToCart = async (productId: number) => {
       // Revalidate now instead of waiting for the cache duration.
       revalidatePath("/products", "layout");
     } catch (err: unknown) {
-      // if (isRedirectError(err)) console.log(`*** ${err?.digest} ***`);
-
-      if (isRedirectError(err)) {
-        throw err;
-      } // allow redirect
       throw new Error("Failed to add item");
     }
   };
