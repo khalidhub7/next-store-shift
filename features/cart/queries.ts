@@ -1,32 +1,30 @@
 import "server-only";
 
-import { getCart } from "./db/cart";
-import { cookies } from "next/headers";
 import { CartItem } from "./types/cart";
-import { getSession } from "../auth/server";
-import { hashSessionId } from "../auth/server";
-import { isSessionValid } from "../auth/server";
+import { requireUser } from "../auth/server";
+import { getValidCartByUserId } from "./service";
 
-const getCartItems = async (): Promise<Array<CartItem>> => {
-  // get cookies
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get("cart")?.value;
-  const sessionId = cookieStore.get("sessionId")?.value;
-
+const getCartItems = async (): Promise<{
+  cartItems: Array<CartItem>;
+  message: string;
+}> => {
+  // current user
+  let userId = undefined;
   try {
-    if (!sessionId || !cartId) throw new Error();
-
-    const session = await getSession(hashSessionId(sessionId));
-    if (!session) throw new Error();
-    if (!isSessionValid(session)) throw new Error();
-
-    const cart = await getCart(session.userId, cartId);
-    if (!cart) throw new Error();
-    if (session.userId != cart.userId) throw new Error();
-    return cart.items;
+    userId = await requireUser("/products");
   } catch {
-    return [];
+    userId = undefined;
   }
+
+  // items
+  if (!userId) {
+    return { cartItems: [], message: "Please log in to view your cart." };
+  }
+  const cart = await getValidCartByUserId(userId, true);
+  if (cart.items.length === 0) {
+    return { cartItems: [], message: "Your cart is empty." };
+  }
+  return { cartItems: cart.items, message: "Cart loaded successfully." };
 };
 
 export { getCartItems };

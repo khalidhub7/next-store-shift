@@ -7,47 +7,42 @@ import { addToCartService, decreaseQtyService } from "./service";
 import { updateQtyService, getValidCartByUserId } from "./service";
 import { increaseQtyService, removeFromCartService } from "./service";
 
-const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
+/* const cookieOptions: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2] =
   {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 3,
     // maxAge: 180,
-  };
+  }; */
 
 // shared helper between actions
 
-const getUserCart = async (userId: string) => {
-  const cart = await getValidCartByUserId(userId, false);
-  const cookieStore = await cookies();
-  cookieStore.set("cart", cart.id, cookieOptions);
-  return cart;
+const isRedirectError = (err: unknown): boolean => {
+  return (
+    err instanceof Error &&
+    "digest" in err &&
+    typeof err.digest === "string" &&
+    err.digest.includes("NEXT_REDIRECT")
+  );
 };
 
 const addToCart = async (productId: number) => {
   const userId = await requireUser("/products");
-
   const task = async () => {
     try {
-      const cart = await getUserCart(userId);
+      const cart = await getValidCartByUserId(userId, false);
       await addToCartService(userId, cart, productId, false);
 
       // Products page is cached (ISR).
       // Revalidate now instead of waiting for the cache duration.
       revalidatePath("/products", "layout");
     } catch (err: unknown) {
-      /* if (err?.digest?.includes("NEXT_REDIRECT"))
-      console.log(`*** ${err?.digest} ***`); */
+      // if (isRedirectError(err)) console.log(`*** ${err?.digest} ***`);
 
-      if (
-        err instanceof Error &&
-        "digest" in err &&
-        typeof err.digest === "string" &&
-        err.digest.includes("NEXT_REDIRECT")
-      ) {
-        throw err; // allow redirect
-      }
+      if (isRedirectError(err)) {
+        throw err;
+      } // allow redirect
       throw new Error("Failed to add item");
     }
   };
@@ -59,20 +54,15 @@ const increaseQty = async (productId: number) => {
 
   const task = async () => {
     try {
-      const cart = await getUserCart(userId);
+      const cart = await getValidCartByUserId(userId, false);
       await increaseQtyService(userId, cart, productId, false);
 
       revalidatePath("/products", "layout");
     } catch (err: unknown) {
       // console.log(`*** ${err?.digest} ***`);
-      if (
-        err instanceof Error &&
-        "digest" in err &&
-        typeof err.digest === "string" &&
-        err.digest.includes("NEXT_REDIRECT")
-      ) {
-        throw err; // allow redirect
-      }
+      if (isRedirectError(err)) {
+        throw err;
+      } // allow redirect
       throw new Error("increase qty failed");
     }
   };
@@ -84,19 +74,14 @@ const decreaseQty = async (productId: number) => {
 
   const task = async () => {
     try {
-      const cart = await getUserCart(userId);
+      const cart = await getValidCartByUserId(userId, false);
       await decreaseQtyService(userId, cart, productId, false);
 
       revalidatePath("/products", "layout");
     } catch (err: unknown) {
-      if (
-        err instanceof Error &&
-        "digest" in err &&
-        typeof err.digest === "string" &&
-        err.digest.includes("NEXT_REDIRECT")
-      ) {
-        throw err; // allow redirect
-      }
+      if (isRedirectError(err)) {
+        throw err;
+      } // allow redirect
       throw new Error("decrease qty failed");
     }
   };
@@ -108,19 +93,14 @@ const removeFromCart = async (productId: number) => {
 
   const task = async () => {
     try {
-      const cart = await getUserCart(userId);
+      const cart = await getValidCartByUserId(userId, false);
       await removeFromCartService(userId, cart, productId, false);
 
       revalidatePath("/products", "layout");
     } catch (err: unknown) {
-      if (
-        err instanceof Error &&
-        "digest" in err &&
-        typeof err.digest === "string" &&
-        err.digest.includes("NEXT_REDIRECT")
-      ) {
-        throw err; // allow redirect
-      }
+      if (isRedirectError(err)) {
+        throw err;
+      } // allow redirect
       throw new Error("remove from cart failed");
     }
   };
@@ -132,18 +112,13 @@ const updateQty = async (productId: number, qty: number) => {
 
   const task = async () => {
     try {
-      const cart = await getUserCart(userId);
+      const cart = await getValidCartByUserId(userId, false);
       await updateQtyService(userId, cart, productId, qty, false);
       revalidatePath("/products", "layout");
     } catch (err: unknown) {
-      if (
-        err instanceof Error &&
-        "digest" in err &&
-        typeof err.digest === "string" &&
-        err.digest.includes("NEXT_REDIRECT")
-      ) {
-        throw err; // allow redirect
-      }
+      if (isRedirectError(err)) {
+        throw err;
+      } // allow redirect
       throw new Error(err instanceof Error ? err.message : "update qty failed");
     }
   };

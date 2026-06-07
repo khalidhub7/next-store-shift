@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { CartItem } from "../types/cart";
 import { getCartItems } from "../queries";
 import { Button } from "@/components/ui/button";
 import { ClientCartTable } from "./CartTable.client";
@@ -8,7 +7,7 @@ import { DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { DialogContent, DialogDescription } from "@/components/ui/dialog";
 
 const CartDialog = async () => {
-  const cartItems: Array<CartItem> = await getCartItems();
+  const { cartItems, message } = await getCartItems();
   // console.log(JSON.stringify(cart))
   return (
     /* cart dialog */
@@ -53,6 +52,8 @@ transition-all duration-300
         <div className="overflow-y-auto flex-1">
           <ClientCartTable cart={cartItems} />
         </div>
+
+        <DialogDescription className="mt-4">{message}</DialogDescription>
       </DialogContent>
     </Dialog>
   );
