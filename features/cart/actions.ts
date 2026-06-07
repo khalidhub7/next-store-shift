@@ -40,7 +40,7 @@ const currentUser = async (): Promise<string | undefined> => {
 
 const addToCart = async (productId: number) => {
   const userId = await currentUser();
-  if (!userId) throw new Error("Unauthorized");
+  if (!userId) throw new Error("Please sign in to continue");
 
   const task = async () => {
     try {
@@ -59,7 +59,7 @@ const addToCart = async (productId: number) => {
 
 const increaseQty = async (productId: number) => {
   const userId = await currentUser();
-  if (!userId) throw new Error("Unauthorized");
+  if (!userId) throw new Error("Please sign in to continue");
 
   const task = async () => {
     try {
@@ -68,7 +68,7 @@ const increaseQty = async (productId: number) => {
 
       revalidatePath("/products", "layout");
     } catch {
-      throw new Error("increase qty failed");
+      throw new Error("Failed to increase quantity");
     }
   };
   return appendToCartQueue(userId, task);
@@ -76,7 +76,7 @@ const increaseQty = async (productId: number) => {
 
 const decreaseQty = async (productId: number) => {
   const userId = await currentUser();
-  if (!userId) throw new Error("Unauthorized");
+  if (!userId) throw new Error("Please sign in to continue");
 
   const task = async () => {
     try {
@@ -85,7 +85,7 @@ const decreaseQty = async (productId: number) => {
 
       revalidatePath("/products", "layout");
     } catch {
-      throw new Error("decrease qty failed");
+      throw new Error("Failed to decrease quantity");
     }
   };
   return appendToCartQueue(userId, task);
@@ -93,7 +93,7 @@ const decreaseQty = async (productId: number) => {
 
 const removeFromCart = async (productId: number) => {
   const userId = await currentUser();
-  if (!userId) throw new Error("Unauthorized");
+  if (!userId) throw new Error("Please sign in to continue");
 
   const task = async () => {
     try {
@@ -102,7 +102,7 @@ const removeFromCart = async (productId: number) => {
 
       revalidatePath("/products", "layout");
     } catch {
-      throw new Error("remove from cart failed");
+      throw new Error("Failed to remove item");
     }
   };
   return appendToCartQueue(userId, task);
@@ -110,7 +110,7 @@ const removeFromCart = async (productId: number) => {
 
 const updateQty = async (productId: number, qty: number) => {
   const userId = await currentUser();
-  if (!userId) throw new Error("Unauthorized");
+  if (!userId) throw new Error("Please sign in to continue");
 
   const task = async () => {
     try {
@@ -118,7 +118,7 @@ const updateQty = async (productId: number, qty: number) => {
       await updateQtyService(userId, cart, productId, qty, false);
       revalidatePath("/products", "layout");
     } catch {
-      throw new Error("update qty failed");
+      throw new Error("Failed to update quantity");
     }
   };
   return appendToCartQueue(userId, task);
