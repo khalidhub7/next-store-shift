@@ -5,7 +5,7 @@ queries.ts         → read-only (session check + get cart items) */
 
 import "server-only";
 
-import { MAX_QTY } from "./constants";
+import { MAX_QTY, CART_TTL } from "./constants";
 import { updateCart } from "./db/cart";
 import { Cart, CartItem } from "./types/cart";
 import { appendToCartQueue } from "./db/cart";
@@ -16,8 +16,6 @@ import { getOrCreateCart, deleteCart } from "./db/cart";
 // const testDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const getValidCartByUserId = async (userId: string) => {
-  const CART_TTL = 1000 * 60 * 60 * 24 * 3;
-
   const task = async () => {
     const cart = await getOrCreateCart(userId, false);
     const expired = Date.now() - new Date(cart.updatedAt).getTime() > CART_TTL;
@@ -135,12 +133,12 @@ const updateQtyService = async (
       throw new Error("Invalid Quantity");
 
     const { items: cartItems } = cart;
-
     const newCartItems: Array<CartItem> = cartItems
       .map((item: CartItem) =>
         item.id === productId ? { ...item, qty } : item,
       )
       .filter((item: CartItem) => item.qty > 0);
+
     await updateCart(userId, cart, newCartItems, false);
   };
   await appendToCartQueue(userId, task);

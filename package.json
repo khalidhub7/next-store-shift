@@ -5,12 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
   "type": "module",
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@next/bundle-analyzer": "^16.2.7",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
     "bcrypt": "^6.0.0",

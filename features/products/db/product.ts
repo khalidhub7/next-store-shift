@@ -27,7 +27,7 @@ const fetchProductById = async (id: number) => {
     const url = `https://dummyjson.com/products/${id}`;
     // console.log(params instanceof Promise) // true
     res = await fetch(url);
-  } catch (_) {
+  } catch {
     throw new Error("Network / runtime error");
   }
 

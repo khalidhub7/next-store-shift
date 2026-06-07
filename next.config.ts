@@ -1,19 +1,21 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+// Analyzes the production bundle to show 
+// what JavaScript is shipped and its size
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig: NextConfig = {
-  reactStrictMode: false, // temporarily just to calcul real renders
+  // temporarily just to calculate real renders
+  // reactStrictMode: false,
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.dummyjson.com",
-      },
-      {
-        protocol: "https",
-        hostname: "img.icons8.com",
-      },
+      { protocol: "https", hostname: "cdn.dummyjson.com" },
+      { protocol: "https", hostname: "img.icons8.com" },
     ],
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

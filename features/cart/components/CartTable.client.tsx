@@ -2,7 +2,9 @@
 
 "use client";
 import { toast } from "sonner";
+// import { useRef } from "react";
 import { CartItem } from "../types/cart";
+import { TOAST_CONFIG } from "../constants";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { increaseQty, decreaseQty } from "../actions";
@@ -59,10 +61,12 @@ const ClientUpdateQty = ({ qty, onUpdate }: ClientUpdateQtyProps) => {
     </TableCell>
   );
 };
+/* 
+rule: use optimistic just when value comes from server props
 
-const TOAST_CONFIG = { position: "top-center", duration: 300 } as const;
 
-// rule: use optimistic just when value comes from server props
+
+*/
 const ClientCartTable = ({ cart }: { cart: Array<CartItem> }) => {
   /* const renderCount = useRef(0);
   renderCount.current += 1;

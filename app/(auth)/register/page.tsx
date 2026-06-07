@@ -1,11 +1,15 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { AuthForm } from "@/features/auth";
+import { AuthFormSkeleton } from "@/features/auth";
 
 export const metadata: Metadata = { title: "Register" };
 
 const RegisterPage = () => (
   <div className="flex min-h-screen items-center justify-center p-4">
-    <AuthForm type="register" />
+    <Suspense fallback={<AuthFormSkeleton />}>
+      <AuthForm type="register" />
+    </Suspense>
   </div>
 );
 
