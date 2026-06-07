@@ -18,7 +18,7 @@ import { increaseQtyService, removeFromCartService } from "./service";
 
 // shared helper between actions
 
-const currentUser = async () => {
+const currentUser = async (): Promise<string | undefined> => {
   let userId = undefined;
   try {
     userId = await requireUser("/products");
@@ -32,6 +32,7 @@ const currentUser = async () => {
     ) {
       throw err; // allow redirect
     }
+    // later for debugging don't hide errors
     userId = undefined;
   }
   return userId;
@@ -49,7 +50,7 @@ const addToCart = async (productId: number) => {
       // Products page is cached (ISR).
       // Revalidate now instead of waiting for the cache duration.
       revalidatePath("/products", "layout");
-    } catch (err: unknown) {
+    } catch {
       throw new Error("Failed to add item");
     }
   };
@@ -57,7 +58,8 @@ const addToCart = async (productId: number) => {
 };
 
 const increaseQty = async (productId: number) => {
-  const userId = await requireUser("/products");
+  const userId = await currentUser();
+  if (!userId) throw new Error("Unauthorized");
 
   const task = async () => {
     try {
@@ -65,11 +67,7 @@ const increaseQty = async (productId: number) => {
       await increaseQtyService(userId, cart, productId, false);
 
       revalidatePath("/products", "layout");
-    } catch (err: unknown) {
-      // console.log(`*** ${err?.digest} ***`);
-      if (isRedirectError(err)) {
-        throw err;
-      } // allow redirect
+    } catch {
       throw new Error("increase qty failed");
     }
   };
@@ -77,7 +75,8 @@ const increaseQty = async (productId: number) => {
 };
 
 const decreaseQty = async (productId: number) => {
-  const userId = await requireUser("/products");
+  const userId = await currentUser();
+  if (!userId) throw new Error("Unauthorized");
 
   const task = async () => {
     try {
@@ -85,10 +84,7 @@ const decreaseQty = async (productId: number) => {
       await decreaseQtyService(userId, cart, productId, false);
 
       revalidatePath("/products", "layout");
-    } catch (err: unknown) {
-      if (isRedirectError(err)) {
-        throw err;
-      } // allow redirect
+    } catch {
       throw new Error("decrease qty failed");
     }
   };
@@ -96,7 +92,8 @@ const decreaseQty = async (productId: number) => {
 };
 
 const removeFromCart = async (productId: number) => {
-  const userId = await requireUser("/products");
+  const userId = await currentUser();
+  if (!userId) throw new Error("Unauthorized");
 
   const task = async () => {
     try {
@@ -104,10 +101,7 @@ const removeFromCart = async (productId: number) => {
       await removeFromCartService(userId, cart, productId, false);
 
       revalidatePath("/products", "layout");
-    } catch (err: unknown) {
-      if (isRedirectError(err)) {
-        throw err;
-      } // allow redirect
+    } catch {
       throw new Error("remove from cart failed");
     }
   };
@@ -115,18 +109,16 @@ const removeFromCart = async (productId: number) => {
 };
 
 const updateQty = async (productId: number, qty: number) => {
-  const userId = await requireUser("/products");
+  const userId = await currentUser();
+  if (!userId) throw new Error("Unauthorized");
 
   const task = async () => {
     try {
       const cart = await getValidCartByUserId(userId, false);
       await updateQtyService(userId, cart, productId, qty, false);
       revalidatePath("/products", "layout");
-    } catch (err: unknown) {
-      if (isRedirectError(err)) {
-        throw err;
-      } // allow redirect
-      throw new Error(err instanceof Error ? err.message : "update qty failed");
+    } catch {
+      throw new Error("update qty failed");
     }
   };
   return appendToCartQueue(userId, task);
