@@ -1,4 +1,5 @@
-import { readdir } from "fs";
+
+import { readdir } from "fs/promises";
 import path from "path";
 import { getSession } from "./server";
 
