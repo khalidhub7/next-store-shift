@@ -1,32 +1,35 @@
 ../app-basics/
+├── README.md
 ├── app
 │   ├── (auth)
 │   │   ├── login
 │   │   │   └── page.tsx
 │   │   └── register
 │   │       └── page.tsx
-│   ├── error.tsx
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── not-found.tsx
 │   ├── (public)
 │   │   ├── about
 │   │   │   └── page.tsx
 │   │   └── page.tsx
-│   └── (shop)
-│       ├── layout.tsx
-│       └── products
-│           ├── [id]
-│           │   ├── loading.tsx
-│           │   ├── not-found.tsx
-│           │   └── page.tsx
-│           ├── loading.tsx
-│           └── page.tsx
+│   ├── (shop)
+│   │   ├── layout.tsx
+│   │   └── products
+│   │       ├── [id]
+│   │       │   ├── loading.tsx
+│   │       │   ├── not-found.tsx
+│   │       │   └── page.tsx
+│   │       ├── loading.tsx
+│   │       └── page.tsx
+│   ├── error.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── not-found.tsx
 ├── components
 │   ├── layout
+│   │   ├── AuthStatus.tsx
 │   │   ├── ClientNav.client.tsx
 │   │   ├── ClientNav.module.css
-│   │   └── Header.tsx
+│   │   ├── Header.tsx
+│   │   └── LogoutButton.client.tsx
 │   └── ui
 │       ├── aspect-ratio.tsx
 │       ├── avatar.tsx
@@ -52,7 +55,8 @@
 │   ├── auth
 │   │   ├── actions.ts
 │   │   ├── components
-│   │   │   └── AuthForm.client.tsx
+│   │   │   ├── AuthForm.client.tsx
+│   │   │   └── AuthFormSkeleton.tsx
 │   │   ├── db
 │   │   │   ├── session.ts
 │   │   │   └── user.ts
@@ -71,6 +75,7 @@
 │   │   │   ├── AddToCartButton.client.tsx
 │   │   │   ├── CartDialog.client.tsx
 │   │   │   └── CartTable.client.tsx
+│   │   ├── constants.ts
 │   │   ├── db
 │   │   │   └── cart.ts
 │   │   ├── index.ts
@@ -91,28 +96,30 @@
 ├── lib
 │   ├── redis.ts
 │   └── utils.ts
-├── next.config.ts
 ├── next-env.d.ts
-├── package.json
+├── next.config.ts
 ├── package-lock.json
+├── package.json
 ├── postcss.config.mjs
 ├── proxy.ts
 ├── public
-│   └── favicon.ico
-├── README.md
+│   ├── favicon.ico
+│   └── icons
+│       └── shopping-cart-svgrepo-com.svg
 ├── storage
 │   ├── auth
 │   │   ├── emailIndex.json
 │   │   ├── sessions
-│   │   │   └── 1578ecfd9fa01b7385b50fa7d36fe56a83814b4cba3202440d0eb51caa7aaf95.json
-│   │   ├── users
-│   │   │   └── d99c4b5b-7c30-4679-928c-fbef1af3c3a2.json
-│   │   └── userSessions
-│   │       └── d99c4b5b-7c30-4679-928c-fbef1af3c3a2.json
+│   │   │   ├── 34e9da5b2c86eb1e655b92bf31e3e977c529cb068bdb7636a264a26dc4ca3a5a.json
+│   │   │   └── acfbe3a282292194da3351fb6fa25772da19190830da151ab188d7c4d31b7e05.json
+│   │   ├── userSessions
+│   │   │   └── 719dcb4a-fa19-4f7f-8774-43472d85d5a2.json
+│   │   └── users
+│   │       └── 719dcb4a-fa19-4f7f-8774-43472d85d5a2.json
 │   └── cart
 │       ├── carts
-│       │   └── 06b7b919-96fc-4016-b968-ef8273492f98.json
+│       │   └── 5ca01f09-ec8c-49bd-902c-20b6e5af733d.json
 │       └── userCartIndex.json
 └── tsconfig.json
 
-36 directories, 80 files
+36 directories, 86 files

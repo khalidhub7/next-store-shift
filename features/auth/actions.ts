@@ -78,12 +78,10 @@ const logoutAction = async () => {
   try {
     const store = await cookies();
     const sessionId = store.get("sessionId");
-    const cartCookie = store.get("cart");
 
     if (sessionId) {
       await logout(sessionId.value); // rm from db
       store.delete("sessionId");
-      if (cartCookie) store.delete("cart");
       return { success: true, message: "Logged out" };
     }
   } catch {}
