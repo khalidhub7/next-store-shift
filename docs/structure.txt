@@ -54,6 +54,7 @@
 ├── features
 │   ├── auth
 │   │   ├── actions.ts
+│   │   ├── cleanup.ts
 │   │   ├── components
 │   │   │   ├── AuthForm.client.tsx
 │   │   │   └── AuthFormSkeleton.tsx
@@ -106,10 +107,13 @@
 │   ├── favicon.ico
 │   └── icons
 │       └── shopping-cart-svgrepo-com.svg
+├── scripts
+│   └── cleanup-sessions.ts
 ├── storage
 │   ├── auth
 │   │   ├── emailIndex.json
 │   │   ├── sessions
+│   │   │   ├── 33fe0e86936dc680805ae0375b3fe74d5aabda463f683d5ffa81f80a3b9eab52.json
 │   │   │   ├── 34e9da5b2c86eb1e655b92bf31e3e977c529cb068bdb7636a264a26dc4ca3a5a.json
 │   │   │   └── acfbe3a282292194da3351fb6fa25772da19190830da151ab188d7c4d31b7e05.json
 │   │   ├── userSessions
@@ -122,4 +126,4 @@
 │       └── userCartIndex.json
 └── tsconfig.json
 
-36 directories, 86 files
+37 directories, 89 files

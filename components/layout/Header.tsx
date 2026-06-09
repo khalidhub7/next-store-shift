@@ -1,5 +1,5 @@
 import ClientNav from "./ClientNav.client";
-import { LogoutButton } from "./LogoutButton.client";
+import { AuthStatus } from "./AuthStatus";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = async () => {
@@ -21,7 +21,7 @@ const Header = async () => {
         {/* Nav */}
         <ClientNav />
         {/* logout button */}
-        <LogoutButton />
+        <AuthStatus />
       </div>
     </header>
   );

@@ -1,5 +1,4 @@
 import { Product } from "../types/product";
-import { notFound } from "next/navigation";
 
 // hint: Uses parallel fetch if more than one dataset
 
@@ -30,8 +29,7 @@ const fetchProductById = async (id: number) => {
   } catch {
     throw new Error("Network / runtime error");
   }
-
-  if (!res.ok) notFound();
+  if (!res.ok) throw new Error("Product not found");
 
   const product = (await res.json()) as Product;
   return product;

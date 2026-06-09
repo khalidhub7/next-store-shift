@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import { ClientAddToCart } from "@/features/cart";
 import { Carousel } from "@/components/ui/carousel";
 import { fetchProductById } from "@/features/products/server";
@@ -11,7 +12,13 @@ interface ProductDetailsProps {
 
 const ProductDetails = async ({ params }: ProductDetailsProps) => {
   const id = await params.then((obj) => Number(obj.id));
-  const product = await fetchProductById(id);
+  let product = undefined;
+
+  try {
+    product = await fetchProductById(id);
+  } catch {
+    return notFound();
+  }
 
   // console.log(`*** ${JSON.stringify(product)} ***`);
   // console.log("Product page rendered");
