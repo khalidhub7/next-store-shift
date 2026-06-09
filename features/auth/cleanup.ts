@@ -16,6 +16,8 @@ const cleanupSessions = async () => {
   const sessions = await getAllSessions();
 
   for (const session of sessions) {
+    const isRevoked = !!session.revokedAt;
+
     const oldRevoked =
       session.revokedAt &&
       Date.now() - new Date(session.revokedAt).getTime() > SESSION_TTL_MS;
