@@ -35,4 +35,4 @@ const cleanupSessions = async () => {
   }
 };
 
-export { cleanupSessions }
+export { cleanupSessions };
