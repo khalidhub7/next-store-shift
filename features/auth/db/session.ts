@@ -14,6 +14,7 @@ import "server-only";
 
 import path from "path";
 import { Session } from "../types/session";
+import { readdir } from "fs/promises";
 import { readFile, writeFile, mkdir, unlink } from "fs/promises";
 
 // helpers
@@ -221,4 +222,26 @@ const deleteSession = async (
   return useQueue ? appendToSessionQueue(sessionId, task) : task();
 };
 
-export { getSession, saveSession, deleteSession, getUserIdBySessionId };
+const getAllSessions = async (): Promise<Array<Session>> => {
+  const sessions: Array<Session> = [];
+  const files = await readdir(sessionsDir);
+  for (const file of files) {
+    const sessionId = file.replace(".json", "");
+    try {
+      const session = await getSession(sessionId);
+      if (!session) throw new Error();
+      sessions.push(session);
+    } catch {
+      continue;
+    }
+  }
+  return sessions;
+};
+
+export {
+  getSession,
+  saveSession,
+  deleteSession,
+  getUserIdBySessionId,
+  getAllSessions,
+};

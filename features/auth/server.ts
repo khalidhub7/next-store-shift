@@ -2,7 +2,7 @@
 import "server-only";
 
 export { requireUser } from "./guard";
-export { getSession } from "./db/session";
+export { getSession, deleteSession, getAllSessions } from "./db/session";
 export { hashSessionId } from "./service";
 export { isSessionValid } from "./session.helpers";
 
