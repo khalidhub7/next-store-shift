@@ -238,10 +238,38 @@ const getAllSessions = async (): Promise<Array<Session>> => {
   return sessions;
 };
 
+const updateSession = async (
+  sessionId: string,
+  updates: Partial<Session>,
+  useQueue: boolean = true,
+): Promise<Session> => {
+  const task = async () => {
+    const session = await getSession(sessionId, false);
+    if (!session) throw new Error("Session not found");
+
+    const updatedSession = { ...session, ...updates };
+
+    const sessionPath = path.join(
+      process.cwd(),
+      "storage",
+      "auth",
+      "sessions",
+      `${sessionId}.json`,
+    );
+
+    await writeFile(sessionPath, JSON.stringify(updatedSession, null, 2));
+
+    return updatedSession;
+  };
+
+  return useQueue ? appendToSessionQueue(sessionId, task) : task();
+};
+
 export {
   getSession,
   saveSession,
+  updateSession,
   deleteSession,
-  getUserIdBySessionId,
   getAllSessions,
+  getUserIdBySessionId,
 };

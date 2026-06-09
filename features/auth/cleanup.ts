@@ -4,10 +4,15 @@ today:  cleanupSessions()
         -> file DB
 later:  cleanupSessions()
         -> mySQL
+
+
+Delete sessions that are:
+- expired for 30+ days
+- revoked for 30+ days
 */
 
 import { getAllSessions } from "./server";
-import { getSession, deleteSession } from "./server";
+import { deleteSession } from "./server";
 
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -16,15 +21,14 @@ const cleanupSessions = async () => {
   const sessions = await getAllSessions();
 
   for (const session of sessions) {
-    const isRevoked = !!session.revokedAt;
-
-    const oldExpired = new Date(session.expiresAt) < new Date();
+    const oldExpired =
+      Date.now() > new Date(session.expiresAt).getTime() + SESSION_TTL_MS;
 
     const oldRevoked =
-      !!session.revokedAt &&
-      Date.now() - new Date(session.revokedAt).getTime() > SESSION_TTL_MS;
+      session.revokedAt != null &&
+      Date.now() > new Date(session.revokedAt).getTime() + SESSION_TTL_MS;
 
-    if (oldRevoked) {
+    if (oldRevoked || oldExpired) {
       await deleteSession(session.sessionId);
     }
   }

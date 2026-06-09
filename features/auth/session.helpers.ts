@@ -14,13 +14,14 @@ const createSession = (userId: string) => {
   // session
   const createdAt = new Date();
   const session = {
-    sessionId: randomUUID(),
     userId,
+    sessionId: randomUUID(),
     createdAt: createdAt.toISOString(),
     expiresAt: new Date(
       createdAt.getTime() + 1000 * 60 * 60 * 24 * 3, // 3 days
       // createdAt.getTime() + 1000 * 60, // 60s for test
     ).toISOString(),
+    revokedAt: null,
   };
   return session;
 };
@@ -38,7 +39,7 @@ const destroySession = () => {
 
 const isSessionValid = (session: Session) => {
   if (!session) return false;
-  return new Date(session.expiresAt) > new Date();
+  return new Date(session.expiresAt) > new Date() && session.revokedAt === null;
 };
 
 export { createSession, getUserFromSession, destroySession, isSessionValid };

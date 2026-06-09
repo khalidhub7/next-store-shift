@@ -5,6 +5,7 @@ export { requireUser } from "./guard";
 export { getSession, deleteSession, getAllSessions } from "./db/session";
 export { hashSessionId } from "./service";
 export { isSessionValid } from "./session.helpers";
+export { cleanupSessions } from "./cleanup";
 
 export { logoutAction } from "./actions";
 

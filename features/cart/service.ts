@@ -5,10 +5,10 @@ queries.ts         → read-only (session check + get cart items) */
 
 import "server-only";
 
-import { MAX_QTY, CART_TTL } from "./constants";
 import { updateCart } from "./db/cart";
 import { Cart, CartItem } from "./types/cart";
 import { appendToCartQueue } from "./db/cart";
+import { MAX_QTY, CART_TTL } from "./constants";
 import { fetchProductById } from "../products/server";
 import { getOrCreateCart, deleteCart } from "./db/cart";
 

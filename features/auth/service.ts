@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import { createSession } from "./session.helpers";
 import { getUserByEmail, createUser } from "./db/user";
-import { saveSession, deleteSession } from "./db/session";
+import { saveSession, updateSession } from "./db/session";
 
 // helpers
 const comparePassword = async (
@@ -36,6 +36,7 @@ const login = async (email: string, password: string) => {
   const hashedSessionId = hashSessionId(session.sessionId);
 
   await saveSession({ ...session, sessionId: hashedSessionId });
+
   await redis.set(
     `session:${hashedSessionId}`,
     user.id,
@@ -77,7 +78,10 @@ const register = async (email: string, password: string, name: string) => {
 
 const logout = async (sessionId: string) => {
   if (!sessionId) return;
-  await deleteSession(hashSessionId(sessionId)); // from db
+  // revoke session
+  await updateSession(hashSessionId(sessionId), {
+    revokedAt: new Date().toISOString(),
+  });
   await redis.del(`session:${hashSessionId(sessionId)}`);
 };
 
