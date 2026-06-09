@@ -23,14 +23,13 @@ const cleanupSessions = async () => {
 
     if (!sessionObj) continue;
 
-    const expired = new Date(sessionObj.expiresAt) < new Date();
-    const SESSION_TTL_MS = 90 * 24 * 60 * 60 * 1000; // 90 days
+    const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
     const oldRevoked =
       sessionObj.revokedAt &&
       Date.now() - new Date(sessionObj.revokedAt).getTime() > SESSION_TTL_MS;
 
-    if (expired || oldRevoked) {
+    if (oldRevoked) {
       await deleteSession(sessionObj.sessionId);
     }
   }
