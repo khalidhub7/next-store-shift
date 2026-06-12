@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+export const metadata = {
+  title: "404 - Page Not Found",
+};
+
 const NotFound = () => (
   <section className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
     <p className="text-7xl font-bold">404</p>
