@@ -17,7 +17,7 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
   try {
     product = await fetchProductById(id);
   } catch {
-    return notFound();
+    notFound();
   }
 
   // console.log(`*** ${JSON.stringify(product)} ***`);
