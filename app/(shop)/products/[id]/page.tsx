@@ -12,13 +12,13 @@ interface ProductDetailsProps {
 
 const ProductDetails = async ({ params }: ProductDetailsProps) => {
   const id = await params.then((obj) => Number(obj.id));
-  let product = undefined;
 
-  try {
-    product = await fetchProductById(id);
-  } catch {
-    notFound();
+  const res = await fetchProductById(id);
+  if (!res.success) {
+    if (res.status === 404) notFound();
+    throw new Error(res.error);
   }
+  const product = res.data;
 
   // console.log(`*** ${JSON.stringify(product)} ***`);
   // console.log("Product page rendered");

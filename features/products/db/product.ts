@@ -1,7 +1,11 @@
+import "server-only";
 import { Product } from "../types/product";
 
-// hint: Uses parallel fetch if more than one dataset
+type FetchResult<T> =
+  | { success: true; status: number; data: T }
+  | { success: false; status: number; error: string };
 
+// hint: Uses parallel fetch if more than one dataset
 const fetchProducts = async () => {
   // add n to make it realistic
   const start = 80;
@@ -19,20 +23,25 @@ const fetchProducts = async () => {
   return products;
 };
 
-const fetchProductById = async (id: number) => {
-  let res: Response;
+// console.log(params instanceof Promise) // true
 
+const fetchProductById = async (id: number): Promise<FetchResult<Product>> => {
   try {
     const url = `https://dummyjson.com/products/${id}`;
-    // console.log(params instanceof Promise) // true
-    res = await fetch(url);
-  } catch {
-    throw new Error("Network / runtime error");
-  }
-  if (!res.ok) throw new Error("Product not found");
+    const res = await fetch(url);
 
-  const product = (await res.json()) as Product;
-  return product;
+    if (!res.ok) {
+      if (res.status === 404) {
+        return { success: false, status: 404, error: "Product not found" };
+      }
+      return { success: false, status: res.status, error: "HTTP error" };
+    }
+
+    const product = (await res.json()) as Product;
+    return { success: true, status: 200, data: product };
+  } catch {
+    return { success: false, status: 0, error: "Network / connection error" };
+  }
 };
 
 export { fetchProductById, fetchProducts };
