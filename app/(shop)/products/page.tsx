@@ -21,7 +21,7 @@ const Products = async () => {
       </header>
 
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-sm md:max-w-none mx-auto w-full">
-        {products.products.map((p: Product) => (
+        {products.map((p: Product) => (
           <ProductCard p={p} key={p.id} />
         ))}
       </ul>

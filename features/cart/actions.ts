@@ -42,10 +42,9 @@ const addToCart = async (productId: number) => {
   const userId = await currentUser();
   if (!userId) throw new Error("Please sign in to continue");
 
-  const task = async () => {
-    try {
-      const cart = await getValidCartByUserId(userId, false);
-      await addToCartService(userId, cart, productId, false);
+  try {
+      
+      await addToCartService(userId, productId);
 
       // Products page is cached (ISR).
       // Revalidate now instead of waiting for the cache duration.
@@ -53,8 +52,7 @@ const addToCart = async (productId: number) => {
     } catch {
       throw new Error("Failed to add item");
     }
-  };
-  return appendToCartQueue(userId, task);
+
 };
 
 const increaseQty = async (productId: number) => {

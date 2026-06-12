@@ -34,14 +34,11 @@ const getValidCartByUserId = async (
   return useQueue ? appendToCartQueue(userId, task) : task();
 };
 
-const addToCartService = async (
-  userId: string,
-  cart: Cart,
-  productId: number,
-  useQueue: boolean = true,
-) => {
+const addToCartService = async (userId: string, productId: number) => {
   const task = async () => {
+    const cart = await getValidCartByUserId(userId, false);
     // throw new Error("test error")
+
     let found = false;
     let newCartItems: Array<CartItem>;
     const { items: cartItems } = cart;
@@ -54,12 +51,15 @@ const addToCartService = async (
       return { ...p, qty };
     });
     if (!found) {
-      const { id, title, price } = await fetchProductById(productId);
-      newCartItems = [...newCartItems, { id, title, price, qty: 1 }];
+      const result = await fetchProductById(productId);
+      if (result.success) {
+        const { id, title, price } = result.data;
+        newCartItems = [...newCartItems, { id, title, price, qty: 1 }];
+      } else throw new Error(result.error);
     }
     await updateCart(userId, cart, newCartItems, false);
   };
-  return useQueue ? appendToCartQueue(userId, task) : task();
+  return appendToCartQueue(userId, task);
 };
 
 const increaseQtyService = async (

@@ -18,8 +18,7 @@ const fetchProducts = async (): Promise<FetchResult<Array<Product>>> => {
 
     if (!res.ok)
       return { success: false, status: res.status, error: "HTTP error" };
-
-    const products = (await res.json()) as Array<Product>;
+    const { products } = await res.json();
 
     // always differentiate HTTP errors from network errors
 
