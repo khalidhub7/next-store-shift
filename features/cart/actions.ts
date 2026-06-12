@@ -56,60 +56,48 @@ const increaseQty = async (productId: number) => {
   const userId = await currentUser();
   if (!userId) throw new Error("Please sign in to continue");
 
-  const task = async () => {
-    try {
-      await increaseQtyService(userId, productId);
-      revalidatePath("/products", "layout");
-    } catch {
-      throw new Error("Failed to increase quantity");
-    }
-  };
-  return appendToCartQueue(userId, task);
+  try {
+    await increaseQtyService(userId, productId);
+    revalidatePath("/products", "layout");
+  } catch {
+    throw new Error("Failed to increase quantity");
+  }
 };
 
 const decreaseQty = async (productId: number) => {
   const userId = await currentUser();
   if (!userId) throw new Error("Please sign in to continue");
 
-  const task = async () => {
-    try {
-      await decreaseQtyService(userId, productId);
-      revalidatePath("/products", "layout");
-    } catch {
-      throw new Error("Failed to decrease quantity");
-    }
-  };
-  return appendToCartQueue(userId, task);
+  try {
+    await decreaseQtyService(userId, productId);
+    revalidatePath("/products", "layout");
+  } catch {
+    throw new Error("Failed to decrease quantity");
+  }
 };
 
 const removeFromCart = async (productId: number) => {
   const userId = await currentUser();
   if (!userId) throw new Error("Please sign in to continue");
 
-  const task = async () => {
-    try {
-      await removeFromCartService(userId, productId);
-      revalidatePath("/products", "layout");
-    } catch {
-      throw new Error("Failed to remove item");
-    }
-  };
-  return appendToCartQueue(userId, task);
+  try {
+    await removeFromCartService(userId, productId);
+    revalidatePath("/products", "layout");
+  } catch {
+    throw new Error("Failed to remove item");
+  }
 };
 
 const updateQty = async (productId: number, qty: number) => {
   const userId = await currentUser();
   if (!userId) throw new Error("Please sign in to continue");
 
-  const task = async () => {
-    try {
-      await updateQtyService(userId, productId, qty);
-      revalidatePath("/products", "layout");
-    } catch {
-      throw new Error("Failed to update quantity");
-    }
-  };
-  return appendToCartQueue(userId, task);
+  try {
+    await updateQtyService(userId, productId, qty);
+    revalidatePath("/products", "layout");
+  } catch {
+    throw new Error("Failed to update quantity");
+  }
 };
 
 export { addToCart, decreaseQty, removeFromCart, updateQty, increaseQty };
