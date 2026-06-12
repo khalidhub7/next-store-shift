@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { updateQtyService } from "./service";
 import { requireUser } from "../auth/server";
-import { appendToCartQueue } from "./db/cart";
 import { addToCartService, decreaseQtyService } from "./service";
 import { increaseQtyService, removeFromCartService } from "./service";
 
