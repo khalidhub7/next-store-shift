@@ -3,7 +3,12 @@ import { ProductCard } from "@/features/products/server";
 import { fetchProducts } from "@/features/products/server";
 
 const Products = async () => {
-  const products = await fetchProducts();
+  const res = await fetchProducts();
+
+  if (!res.success) throw new Error(res.error);
+
+  const products = res.data.products;
+
   // console.log("Products page rendered");
 
   return (

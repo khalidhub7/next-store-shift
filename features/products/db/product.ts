@@ -6,21 +6,29 @@ type FetchResult<T> =
   | { success: false; status: number; error: string };
 
 // hint: Uses parallel fetch if more than one dataset
-const fetchProducts = async () => {
+
+const fetchProducts = async (): Promise<
+  FetchResult<{ products: Product[] }>
+> => {
   // add n to make it realistic
   const start = 80;
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
   const url = `https://dummyjson.com/products?limit=${n}&skip=${start}`;
-  const products = await fetch(url)
-    .then((res) => {
-      if (!res.ok) throw new Error("HTTP error");
-      return res.json() as Promise<{ products: Product[] }>;
-    })
-    .catch(() => ({ products: [] }));
 
-  // always differentiate HTTP errors from network errors
+  try {
+    const res = await fetch(url);
 
-  return products;
+    if (!res.ok)
+      return { success: false, status: res.status, error: "HTTP error" };
+
+    const products = (await res.json()) as { products: Product[] };
+
+    // always differentiate HTTP errors from network errors
+
+    return { success: true, status: res.status, data: products };
+  } catch {
+    return { success: false, status: 0, error: "Network / connection error" };
+  }
 };
 
 // console.log(params instanceof Promise) // true
