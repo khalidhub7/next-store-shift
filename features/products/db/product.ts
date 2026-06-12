@@ -38,7 +38,7 @@ const fetchProductById = async (id: number): Promise<FetchResult<Product>> => {
     }
 
     const product = (await res.json()) as Product;
-    return { success: true, status: 200, data: product };
+    return { success: true, status: res.status, data: product };
   } catch {
     return { success: false, status: 0, error: "Network / connection error" };
   }
