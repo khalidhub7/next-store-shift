@@ -7,7 +7,7 @@ const Products = async () => {
 
   if (!res.success) throw new Error(res.error);
 
-  const products = res.data.products;
+  const products = res.data;
 
   // console.log("Products page rendered");
 

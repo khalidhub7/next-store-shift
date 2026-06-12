@@ -7,9 +7,7 @@ type FetchResult<T> =
 
 // hint: Uses parallel fetch if more than one dataset
 
-const fetchProducts = async (): Promise<
-  FetchResult<{ products: Product[] }>
-> => {
+const fetchProducts = async (): Promise<FetchResult<Array<Product>>> => {
   // add n to make it realistic
   const start = 80;
   const n = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
@@ -21,7 +19,7 @@ const fetchProducts = async (): Promise<
     if (!res.ok)
       return { success: false, status: res.status, error: "HTTP error" };
 
-    const products = (await res.json()) as { products: Product[] };
+    const products = (await res.json()) as Array<Product>;
 
     // always differentiate HTTP errors from network errors
 
