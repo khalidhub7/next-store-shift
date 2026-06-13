@@ -11,8 +11,7 @@ Delete sessions that are:
 - revoked for 30+ days
 */
 
-import { getAllSessions } from "./server";
-import { deleteSession } from "./server";
+import { getAllSessions, deleteSession } from "./db/session";
 
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 

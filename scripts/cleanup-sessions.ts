@@ -1,4 +1,4 @@
 
 
-import { cleanupSessions } from "@/features/auth/server";
+import { cleanupSessions } from "@/features/auth/cleanup";
 await cleanupSessions();

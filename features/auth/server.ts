@@ -4,7 +4,6 @@ import "server-only";
 
 export { hashSessionId } from "./service";
 export { logoutAction } from "./actions";
-export { cleanupSessions } from "./cleanup";
 export { isSessionValid } from "./session.helpers";
 export { requireUser, getCurrentUserId } from "./guard";
 export { deleteSession, getAllSessions } from "./db/session";

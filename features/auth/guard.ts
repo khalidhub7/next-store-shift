@@ -6,11 +6,11 @@ import { hashSessionId } from "./service";
 import { redirect } from "next/navigation";
 
 /* 
-actions.ts      → entry point
-service.ts      → business logic
-db/*.ts         → persistence
-session.helpers → session logic
-guard.ts        → authorization
+actions.ts        → entry point
+service.ts        → business logic
+db/*.ts           → persistence
+session.helpers   → session logic
+guard.ts          → authorization
 */
 
 const requireUser = async (redirectTo: string) => {
