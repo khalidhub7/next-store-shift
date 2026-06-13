@@ -31,6 +31,10 @@ const requireUser = async (redirectTo: string) => {
 };
 
 const getCurrentUserId = async (): Promise<string | null> => {
+  // For Server Components only.
+  // Next.js does not allow cookie mutations in Server Components.
+  // Read auth state only.
+
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
 
