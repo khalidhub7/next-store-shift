@@ -1,7 +1,7 @@
 import "server-only";
 
 import { CartItem } from "./types/cart";
-import { requireUser } from "../auth/server";
+import { getCurrentUserId } from "../auth/server";
 import { getValidCartByUserId } from "./service";
 
 const getCartItems = async (): Promise<{
@@ -9,12 +9,7 @@ const getCartItems = async (): Promise<{
   message: string;
 }> => {
   // current user
-  let userId = undefined;
-  try {
-    userId = await requireUser("/products");
-  } catch {
-    userId = undefined;
-  }
+  const userId = await getCurrentUserId();
 
   // items
   if (!userId) {

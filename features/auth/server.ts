@@ -1,13 +1,13 @@
 // export server comps
 import "server-only";
 
-export { requireUser } from "./guard";
-export { deleteSession, getAllSessions } from "./db/session";
-export { hashSessionId } from "./service";
-export { isSessionValid } from "./session.helpers";
-export { cleanupSessions } from "./cleanup";
 
+export { hashSessionId } from "./service";
 export { logoutAction } from "./actions";
+export { cleanupSessions } from "./cleanup";
+export { isSessionValid } from "./session.helpers";
+export { requireUser, getCurrentUserId } from "./guard";
+export { deleteSession, getAllSessions } from "./db/session";
 
 /* 
 hint:

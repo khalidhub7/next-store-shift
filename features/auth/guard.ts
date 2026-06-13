@@ -30,14 +30,14 @@ const requireUser = async (redirectTo: string) => {
   return userId;
 };
 
-const getCurrentUserId = async () => {
+const getCurrentUserId = async (): Promise<string | null> => {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
-  
+
   if (!sessionId) return null;
-  
+
   const userId = await redis.get(`session:${hashSessionId(sessionId)}`);
   return userId; // return null if expired, DON'T delete
 };
 
-export { requireUser };
+export { requireUser, getCurrentUserId };
