@@ -1,7 +1,9 @@
-/* cart.ts (db)    → read/write storage
-service.ts         → orchestrate (calls db + products)
-actions.ts         → entry point (cookies, revalidate, call service)
-queries.ts         → read-only (session check + get cart items) */
+/*
+cart.ts (db)     → read/write storage
+service.ts       → orchestrate (calls db + products)
+actions.ts       → entry point (cookies, revalidate, call service)
+queries.ts       → read-only (session check + get cart items)
+*/
 
 import "server-only";
 
