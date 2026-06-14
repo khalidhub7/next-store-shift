@@ -1,39 +1,25 @@
+
 a next js project designed to understand the
-react vs next diff
+reactjs vs nextjs diff
 
-also learning next concepts , design patterns ...
-
-
-to do later
-
-types should define in other file hmm 
-learn design system and apply them here css
-
-types should define in other file hmm
-
-ask: for example how to scale struct.txt
-
-Tailwind has 3 layers:  base → components → utilities
-
-add debounce and batching in cart actions
-already learn zustand apply for (cart)
+also learning next concepts , design patterns/enterprise patterns ...
 
 
-next mission: see best project build by next js and get inspire
+
+to do later:
+
+- frontend
+
+apply solid design system ( tailwind )
+implement throttling, debounce and batching in cart actions
+apply zustand for some ui concepts
 
 
-- what is debounce, throttling
-
-dir docker for project
-test all visually (eyes), the tests if time 
+- backend
 
 
-Session Auth Best Practices:
-PracticeWhyRedis for session storage⚡ fast lookuphttpOnly cookie🔒 XSS protectionHTTPS only (secure flag)🔒 prevents network theftSession expiry⏰ auto logoutDelete on logout🔒 no dangling sessionsRotate sessionId after login🔒 prevents session fixationRate limit login attempts🔒 prevents brute forceCSRF protection🔒 prevents cross-site attacks
+- Future Improvements
 
-
-A clean repo =
-
-keep package-lock.json ✔
-write a clear README ✔
-always add a test script ✔
+Add Docker support
+Add tests
+Add CI/CD
