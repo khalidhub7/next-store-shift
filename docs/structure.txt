@@ -59,6 +59,8 @@
 │   │   │   ├── AuthForm.client.tsx
 │   │   │   └── AuthFormSkeleton.tsx
 │   │   ├── db
+│   │   │   ├── session-core.ts
+│   │   │   ├── session.script.ts
 │   │   │   ├── session.ts
 │   │   │   └── user.ts
 │   │   ├── guard.ts
@@ -126,4 +128,4 @@
 │       └── userCartIndex.json
 └── tsconfig.json
 
-37 directories, 89 files
+37 directories, 91 files

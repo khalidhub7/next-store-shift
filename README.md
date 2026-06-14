@@ -50,6 +50,28 @@ Each feature is split by responsibility:
 
 This keeps the codebase easy to reason about, easier to refactor, and ready for a real database migration.
 
+### Server Actions Over Route Handlers
+
+This version uses Server Actions for internal mutations instead of custom route handlers. Since cart and auth mutations are called directly from the app UI, Server Actions keep the flow type-safe, colocated with the feature, and protected by the same server-only boundaries as the rest of the business logic.
+
+Mutation flow:
+
+- Client Component triggers a Server Action
+- Server Action validates auth/session and request intent
+- Service layer owns the business rule
+- DB layer handles persistence
+- `revalidatePath` refreshes affected server-rendered UI
+- Client receives success/error feedback through optimistic UI and toast states
+
+Read flow:
+
+- Server Component calls a feature query
+- Query uses read-only auth helpers
+- Service/DB layer loads the data
+- UI renders from server data with less browser JavaScript
+
+Route Handlers are still useful for public APIs, webhooks, external integrations, and non-UI HTTP endpoints. For this app's internal form/cart workflows, Server Actions provide the cleaner path.
+
 ### Auth & Security
 
 - Password hashing with `bcrypt`
@@ -77,7 +99,7 @@ This keeps the codebase easy to reason about, easier to refactor, and ready for 
 - Server Components by default
 - Client Components only where interactivity is needed
 - `server-only` boundaries
-- Server Actions
+- Server Actions for internal mutations instead of unnecessary route handlers
 - Route groups
 - `loading.tsx`, `error.tsx`, and `not-found.tsx`
 - `next/image`
@@ -153,6 +175,7 @@ This project demonstrates my ability to:
 - Implement secure auth foundations
 - Handle optimistic UI correctly
 - Think about race conditions and data ownership
+- Choose Server Actions vs Route Handlers based on the real API surface
 - Use modern React and Next.js patterns
 - Prepare code for database migration
 - Build systems that are easy for humans and AI agents to understand, extend, and refactor
