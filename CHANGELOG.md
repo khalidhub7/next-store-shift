@@ -7,3 +7,4 @@
 - Changed cart lookup from cookie-based to user-based
 - Improved authentication security
 - Fixed unnecessary client component re-renders
+
