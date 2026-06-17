@@ -110,7 +110,7 @@ git push -u origin main
 
 # 6. Remove old copy from alx-react (Safe now)
 cd ~/codes/alx-react
-git rm -r nextLearn/app-basics
+git rm -r nextLearn/app-basics/*
 git commit -m "chore: move app-basics to dedicated repository"
 git push origin master
 

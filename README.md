@@ -1,136 +1,164 @@
-# NextLearn E-Commerce
+# Next Store Shift
 
-A production-minded e-commerce web app built with Next.js, React, TypeScript, Server Components, Server Actions, Redis-backed sessions, optimistic cart UX, and feature-based architecture.
+Production-minded e-commerce application built with **Next.js**, **React**, **TypeScript**, **Server Components**, **Server Actions**, **Redis-backed sessions**, and a scalable **feature-based architecture**.
 
-This is **Version 1** of the project. The current persistence layer uses a file-based database so the focus stays on architecture, authentication, caching, server/client boundaries, and enterprise-style patterns. The next version will move the app to a real database and expand the commerce domain.
+> Version 1 focuses on architecture, authentication, server-first rendering, caching, and maintainability. The current persistence layer uses a file-based database by design. Future versions will introduce a real database and expanded commerce features.
+
+---
+
+## Highlights
+
+* Full-stack Next.js App Router application
+* Server-first architecture with minimal client JavaScript
+* Secure authentication and session management
+* Optimistic cart experience
+* Redis-backed session validation
+* Feature-based architecture with clear boundaries
+* Server Actions for internal mutations
+* Ready for database migration
+* Designed as a portfolio and production-growth project
+
+---
 
 ## Why This Project Exists
 
-This project is part of my portfolio and was built to show that I understand more than UI implementation. It demonstrates how to structure a modern full-stack React/Next.js application with clean boundaries, safe auth flows, server-first rendering, progressive enhancement, and scalable service patterns.
+This project began as a learning exercise to deeply understand modern Next.js architecture and the differences between traditional React applications and full-stack React frameworks.
 
-The goal is to build like a real product team would build: clear ownership, small modules, server/client separation, defensive authentication, and code that can evolve into a production e-commerce platform.
+As development progressed, the project evolved into a portfolio-quality application that demonstrates:
+
+* Architectural thinking
+* Authentication and security fundamentals
+* Server/client separation
+* Scalable application structure
+* Production-oriented engineering practices
+
+The long-term goal is to evolve this project into a production-ready e-commerce platform.
+
+---
 
 ## Core Features
 
-- Product listing and product details pages
-- Shopping cart with optimistic UI updates
-- Add, increase, decrease, update, and remove cart items
-- User authentication with login, register, and logout flows
-- Session creation, revocation, expiration, and cleanup
-- Redis-backed session validation
-- Login rate limiting
-- Safe redirect allowlist
-- Server-side validation with Zod
-- React Hook Form client UX
-- Loading, error, and not-found boundaries
-- ISR revalidation for product/cart-related UI freshness
-- Script-safe session cleanup command
+### Authentication
+
+* User registration and login
+* Secure logout flow
+* Session creation and revocation
+* Redis-backed session validation
+* Login rate limiting
+* Safe redirect allowlist
+
+### Shopping Cart
+
+* Add, update, increase, decrease, and remove items
+* Optimistic UI updates
+* User-owned carts
+* Race-condition protection
+* Cart cleanup support
+
+### User Experience
+
+* Loading boundaries
+* Error boundaries
+* Not-found handling
+* Form validation with Zod
+* React Hook Form integration
+* Toast notifications
+
+---
+
+## Architecture
+
+The project follows a feature-based structure:
+
+```txt
+features/
+├── auth
+├── cart
+└── products
+```
+
+Each feature is separated into focused layers:
+
+```txt
+db
+service
+actions
+queries
+components
+types
+```
+
+Benefits:
+
+* Easier maintenance
+* Easier testing
+* Clear ownership
+* Database migration readiness
+* Reduced coupling
+
+---
 
 ## Engineering Highlights
 
-### Architecture
+### Server Actions
 
-The app uses feature-based architecture:
-
-- `features/auth`
-- `features/cart`
-- `features/products`
-- `components/ui`
-- `components/layout`
-- `scripts`
-
-Each feature is split by responsibility:
-
-- `db` for persistence access
-- `service` for business logic
-- `actions` for Server Actions
-- `queries` for read-only server data
-- `components` for UI
-- `types` for domain contracts
-
-This keeps the codebase easy to reason about, easier to refactor, and ready for a real database migration.
-
-### Server Actions Over Route Handlers
-
-This version uses Server Actions for internal mutations instead of custom route handlers. Since cart and auth mutations are called directly from the app UI, Server Actions keep the flow type-safe, colocated with the feature, and protected by the same server-only boundaries as the rest of the business logic.
+Internal mutations use Server Actions instead of unnecessary route handlers.
 
 Mutation flow:
 
-- Client Component triggers a Server Action
-- Server Action validates auth/session and request intent
-- Service layer owns the business rule
-- DB layer handles persistence
-- `revalidatePath` refreshes affected server-rendered UI
-- Client receives success/error feedback through optimistic UI and toast states
+```txt
+Client Component
+        ↓
+Server Action
+        ↓
+Service Layer
+        ↓
+Persistence Layer
+        ↓
+revalidatePath
+```
 
-Read flow:
+### Security
 
-- Server Component calls a feature query
-- Query uses read-only auth helpers
-- Service/DB layer loads the data
-- UI renders from server data with less browser JavaScript
+* bcrypt password hashing
+* Hashed session identifiers
+* httpOnly cookies
+* secure cookies
+* sameSite protection
+* Login rate limiting
+* Redirect allowlist
 
-Route Handlers are still useful for public APIs, webhooks, external integrations, and non-UI HTTP endpoints. For this app's internal form/cart workflows, Server Actions provide the cleaner path.
+### Modern Next.js Patterns
 
-### Auth & Security
+* App Router
+* Server Components by default
+* Client Components only where needed
+* Route Groups
+* loading.tsx
+* error.tsx
+* not-found.tsx
+* next/image
+* ISR and revalidation
+* server-only boundaries
 
-- Password hashing with `bcrypt`
-- Session IDs are hashed before storage
-- `httpOnly`, `secure`, and `sameSite=lax` cookies
-- Redis session lookup for fast auth checks
-- Session revocation on logout
-- Session cleanup script for expired/revoked sessions
-- Redirect allowlist to avoid unsafe redirects
-- Login rate limiting by IP and email
-- Separate read-only auth helper for Server Components
+---
 
-### Cart System
+## Technology Stack
 
-- User-owned carts instead of client-owned cart cookies
-- Server Actions for mutations
-- Optimistic UI with `useOptimistic` and `useTransition`
-- Serialized cart mutations to prevent race conditions in file persistence
-- Cart TTL cleanup behavior
-- Service layer owns the fresh-read, mutate, and write flow
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* Zod
+* React Hook Form
+* Redis / ioredis
+* bcrypt
+* Radix UI
+* Lucide React
+* Sonner
+* Framer Motion
 
-### Next.js Patterns
-
-- App Router
-- Server Components by default
-- Client Components only where interactivity is needed
-- `server-only` boundaries
-- Server Actions for internal mutations instead of unnecessary route handlers
-- Route groups
-- `loading.tsx`, `error.tsx`, and `not-found.tsx`
-- `next/image`
-- ISR with `revalidate`
-- Reduced browser JavaScript through server-first rendering
-
-### UI & Developer Experience
-
-- Tailwind CSS
-- shadcn/Radix-style UI primitives
-- Lucide icons
-- Sonner toasts
-- Framer Motion form transitions
-- TypeScript strict mode
-- ESLint
-- Bundle analyzer script
-
-## Tech Stack
-
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- Zod
-- React Hook Form
-- bcrypt
-- Redis / ioredis
-- Radix UI
-- Lucide React
-- Sonner
-- Framer Motion
+---
 
 ## Scripts
 
@@ -143,43 +171,50 @@ npm run cleanup-sessions
 npm run analyze
 ```
 
+---
+
 ## Current Persistence
 
-Version 1 uses file-based persistence for users, sessions, and carts. This is intentional for the learning and architecture phase.
+Version 1 intentionally uses file-based persistence.
 
-The app is already shaped so the file database can be replaced by a real database with minimal changes to the upper layers.
+The application architecture is designed so persistence can be replaced with a real database with minimal impact on upper layers.
+
+---
 
 ## Roadmap
 
-Planned for next versions:
+Planned future improvements:
 
-- Real database integration
-- Product/order models
-- Checkout flow
-- Admin dashboard
-- Docker support
-- Automated tests
-- CI/CD pipeline
-- Better observability and logging
-- More advanced cart batching/throttling
-- Stronger design system
-- Role-based authorization
+* Real database integration
+* Product and order models
+* Checkout flow
+* Admin dashboard
+* Automated tests
+* CI/CD pipeline
+* Docker support
+* Observability and logging
+* Role-based authorization
+* Stronger design system
+
+---
 
 ## Portfolio Value
 
 This project demonstrates my ability to:
 
-- Build full-stack Next.js apps
-- Separate server and client concerns
-- Design maintainable feature architecture
-- Implement secure auth foundations
-- Handle optimistic UI correctly
-- Think about race conditions and data ownership
-- Choose Server Actions vs Route Handlers based on the real API surface
-- Use modern React and Next.js patterns
-- Prepare code for database migration
-- Build systems that are easy for humans and AI agents to understand, extend, and refactor
+* Build full-stack Next.js applications
+* Design scalable feature architectures
+* Implement secure authentication flows
+* Use Server Actions effectively
+* Handle optimistic UI correctly
+* Manage server/client boundaries
+* Design systems prepared for growth
+* Build maintainable codebases
+
+---
 
 ## Status
 
-Version 1 is architecture-focused and ready for the next major step: replacing file persistence with a real database and expanding the e-commerce domain.
+**Version 1 (v0.3.51)** is complete and represents the architecture-focused foundation of the project.
+
+The next major milestone is migrating to a real database and expanding the commerce domain.
