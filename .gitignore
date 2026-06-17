@@ -1,11 +1,11 @@
 # debug files
 tsconfig.tsbuildinfo
-../.codex
+.codex
 
 # project files
 .next/
-storage/*
 dump.rdb
-../dump.txt
+dump.txt
+storage/*
 node_modules/
 package-lock.json
