@@ -80,7 +80,7 @@ pwd && which npm
 git add . && \
 git commit -m "chore: prepare release v0.3.51" && \
 git tag -a v0.3.51 -m "Release v0.3.51" && \
-git push origin master && \
+git push origin main && \
 git push origin v0.3.51
 
 
